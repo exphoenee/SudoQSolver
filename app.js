@@ -97,47 +97,75 @@ class Solver {
   solvePuzzle() {
     const startingPuzzle = this.extractInputs();
 
-    //console.log(startingPuzzle);
-
     const boardHasIssue = this.boardHasIssue(startingPuzzle);
-
-    console.log(boardHasIssue);
+    console.log("| boardHasIssue", boardHasIssue);
   }
 
   /* if everything is fine, that means there is no issue in the rows, columns, and n x n boxes, then the table is correct*/
   boardHasIssue(puzzle) {
-    console.log(this.checkRows(puzzle) && this.checkColumns(puzzle));
-    //return this.checkRows(puzzle) && this.checkColumns(puzzle);
-    // this.checkBoxes(puzzle)
-  }
-
-  /* checking all the values are unique in the  */
-  checkRows(puzzle) {
-    console.log(
-      "| rowChecks",
-      puzzle.map((row) => this.checkBatchIsUnique(row))
+    return (
+      this.rowsHasIssue(puzzle) &&
+      this.columnsHasIssue(puzzle) &&
+      this.checkBoxes(puzzle)
     );
-    return puzzle.every((row) => this.checkBatchIsUnique(row));
   }
 
-  checkBatchIsUnique(batch) {
+  /* checking all the values are unique in the rows */
+  rowsHasIssue(puzzle) {
+    return puzzle.every((row) => this.batchHasIssue(row));
+  }
+
+  /* the method checks that in the given batch is every number is only once present */
+  batchHasIssue(batch) {
     const onlyNums = batch.filter((num) => this.validateValue(num) != 0);
-    return new Set(onlyNums).size == onlyNums.length;
+    return new Set(onlyNums).size != onlyNums.length;
   }
 
-  checkColumns(puzzle) {
+  /* this method checks all the columns tha numbers are unique */
+  columnsHasIssue(puzzle) {
     let cols = this.getColumnsOfPuzzle(puzzle);
-    console.log(
-      "| colChecks",
-      cols.map((col) => this.checkBatchIsUnique(col))
-    );
-    return cols.every((col) => this.checkBatchIsUnique(col));
+    return cols.every((col) => this.batchHasIssue(col));
   }
 
+  /* this method transposes the 2D array, to getting the columns */
   getColumnsOfPuzzle(puzzle) {
-    return puzzle[0].map((_, colNr) => puzzle.map((row) => row[colNr]));
+    return puzzle[0].map((col, colNr) => puzzle.map((row) => row[colNr]));
   }
 
+  /* getting the n x n boxes form the puzzle */
+  getBoxes(puzzle) {
+    let boxTemplate = [];
+
+    boxTemplate = this.getColumnsOfPuzzle(
+      puzzle.map((row) => {
+        const boxRows = [];
+        for (let i = 0; i < row.length; i += this.sectionSize) {
+          boxRows.push(row.slice(i, i + this.sectionSize));
+        }
+        return boxRows;
+      })
+    );
+
+    /* I couldn't solve that in the first iteration... */
+    let boxes = [];
+    boxTemplate.forEach((row) => {
+      for (let j = 0; j < this.cellsInSection; j += this.sectionSize) {
+        let box = [];
+        for (let i = 0; i < this.sectionSize; i++) {
+          box = box.concat(row[j + i]);
+        }
+        boxes.push(box);
+      }
+    });
+
+    return boxes;
+  }
+
+  /* check the n x n sized sections, the boxes, there is not replication of numbers present */
+  checkBoxes(puzzle) {
+    let boxes = this.getColumnsOfPuzzle(puzzle);
+    return boxes.every((box) => this.batchHasIssue(box));
+  }
   /**************************/
   /* UI inputs manipulation */
   /**************************/
