@@ -84,15 +84,20 @@ class Solver {
     this.render();
     //initialBoard && this.update(initialBoard);
   }
-
   update(puzzle) {
     this.cells.forEach((row, rowNr) =>
-      row.forEach((cell, colNr) => (cell.value = puzzle[rowNr][colNr]))
+      row.forEach(
+        (cell, colNr) => (cell.value = this.validateValue(puzzle[rowNr][colNr]))
+      )
     );
   }
 
   extractInputs() {
     return this.cells.map((row) => row.map((cell) => +cell.value));
+  }
+
+  validateValue(value) {
+    return value >= 1 && value <= this.cellsInSection ? value : "";
   }
 
   /* non-React UI */
