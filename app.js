@@ -92,6 +92,9 @@ class Solver {
     for (let rowNr = 0; rowNr < this.cellsInSection; rowNr++) {
       this.cells.push(this.renderRow(rowNr));
     }
+    for (let puzzle in this.examples) {
+      this.renderButton(puzzle, () => this.update(this.examples[puzzle]));
+    }
   }
 
   /* rendering the rows */
@@ -121,6 +124,16 @@ class Solver {
     cell.addEventListener("change", (e) => this.update(e));
     parent.appendChild(cell);
     return cell;
+  }
+
+  /* buttons for the contorl panel */
+  renderButton(text, cb) {
+    const button = document.createElement("button");
+    button.innerText = text;
+    button.addEventListener("click", () => {
+      cb();
+    });
+    document.getElementById("control").appendChild(button);
   }
 }
 
