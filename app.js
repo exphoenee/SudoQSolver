@@ -6,6 +6,8 @@ class Solver {
     this.cellsInSection = this.sectionSize ** 2;
     //HTML element of the board
     this.board = document.getElementById("board");
+    //HTML element of the error message
+    this.errors = document.getElementById("errors");
     //array of cells
     this.cells = [];
 
@@ -97,8 +99,10 @@ class Solver {
   solvePuzzle() {
     const startingPuzzle = this.extractInputs();
 
-    const boardHasIssue = this.boardHasIssue(startingPuzzle);
-    console.log("| boardHasIssue", boardHasIssue);
+    const boardCorrect = this.boardCorrect(startingPuzzle);
+    console.log("| boardCorrect", boardCorrect);
+
+    !boardCorrect && (this.errors.innerHTML = "The puzzle is not correct!");
   }
 
   /***********************************/
@@ -106,29 +110,31 @@ class Solver {
   /***********************************/
 
   /* if everything is fine, that means there is no issue in the rows, columns, and n x n boxes, then the table is correct*/
-  boardHasIssue(puzzle) {
-    return (
-      this.rowsHasIssue(puzzle) &&
-      this.columnsHasIssue(puzzle) &&
-      this.checkBoxes(puzzle)
-    );
+  boardCorrect(puzzle) {
+    const rowsCorrect = this.rowsCorrect(puzzle);
+    const columnsCorrect = this.columnsCorrect(puzzle);
+    const checkBoxes = this.checkBoxes(puzzle);
+    //console.log("| rowsCorrect", rowsCorrect);
+    //console.log("| columnsCorrect", columnsCorrect);
+    //console.log("| checkBoxes", checkBoxes);
+    return rowsCorrect && columnsCorrect && checkBoxes;
   }
 
   /* checking all the values are unique in the rows */
-  rowsHasIssue(puzzle) {
-    return puzzle.every((row) => this.batchHasIssue(row));
+  rowsCorrect(puzzle) {
+    return puzzle.every((row) => this.batchCorrect(row));
   }
 
   /* the method checks that in the given batch is every number is only once present */
-  batchHasIssue(batch) {
+  batchCorrect(batch) {
     const onlyNums = batch.filter((num) => this.validateValue(num) != 0);
-    return new Set(onlyNums).size != onlyNums.length;
+    return new Set(onlyNums).size == onlyNums.length;
   }
 
   /* this method checks all the columns tha numbers are unique */
-  columnsHasIssue(puzzle) {
+  columnsCorrect(puzzle) {
     let cols = this.getColumnsOfPuzzle(puzzle);
-    return cols.every((col) => this.batchHasIssue(col));
+    return cols.every((col) => this.batchCorrect(col));
   }
 
   /* this method transposes the 2D array, to getting the columns */
@@ -168,7 +174,7 @@ class Solver {
   /* check the n x n sized sections, the boxes, there is not replication of numbers present */
   checkBoxes(puzzle) {
     let boxes = this.getColumnsOfPuzzle(puzzle);
-    return boxes.every((box) => this.batchHasIssue(box));
+    return boxes.every((box) => this.batchCorrect(box));
   }
   /**************************/
   /* UI inputs manipulation */
