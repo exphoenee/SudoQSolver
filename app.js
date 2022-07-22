@@ -97,7 +97,7 @@ class Solver {
   solvePuzzle() {
     const startingPuzzle = this.extractInputs();
 
-    console.log(startingPuzzle);
+    //console.log(startingPuzzle);
 
     const boardHasIssue = this.boardHasIssue(startingPuzzle);
 
@@ -106,19 +106,37 @@ class Solver {
 
   /* if everything is fine, that means there is no issue in the rows, columns, and n x n boxes, then the table is correct*/
   boardHasIssue(puzzle) {
-    return this.checkRows(puzzle); //&&
-    // this.checkColumns(puzzle) &&
+    console.log(this.checkRows(puzzle));
+    console.log(this.checkColumns(puzzle));
+    //return this.checkRows(puzzle) && this.checkColumns(puzzle);
     // this.checkBoxes(puzzle)
   }
 
   /* checking all the values are unique in the  */
   checkRows(puzzle) {
-    return puzzle.map((row) => this.checkBatchIsUnique(row));
+    console.log(
+      "| rowChecks",
+      puzzle.map((row) => this.checkBatchIsUnique(row))
+    );
+    return puzzle.every((row) => this.checkBatchIsUnique(row));
   }
 
   checkBatchIsUnique(batch) {
     const onlyNums = batch.filter((num) => this.validateValue(num) != 0);
     return new Set(onlyNums).size == onlyNums.length;
+  }
+
+  checkColumns(puzzle) {
+    let cols = this.getColumnsOfPuzzle(puzzle);
+    console.log(
+      "| colChecks",
+      cols.map((col) => this.checkBatchIsUnique(col))
+    );
+    return cols.every((col) => this.checkBatchIsUnique(col));
+  }
+
+  getColumnsOfPuzzle(puzzle) {
+    return puzzle[0].map((_, colNr) => puzzle.map((row) => row[colNr]));
   }
 
   /**************************/
