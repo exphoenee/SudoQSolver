@@ -46,15 +46,15 @@ class Solver {
         [6, 0, 0, 7, 0, 0, 0, 0, 5],
       ],
       medium: [
-        [6, 0, 0, 8, 4, 9, 0, 0, 2],
-        [0, 0, 0, 3, 0, 2, 0, 0, 0],
-        [0, 2, 3, 0, 0, 0, 0, 9, 6],
-        [1, 4, 0, 0, 0, 0, 0, 8, 3],
-        [5, 0, 0, 0, 0, 0, 0, 0, 9],
-        [9, 3, 0, 0, 0, 0, 0, 2, 5],
-        [0, 5, 6, 0, 0, 0, 3, 1, 0],
-        [0, 0, 0, 6, 0, 5, 0, 0, 0],
-        [2, 0, 0, 7, 8, 3, 0, 0, 6],
+        [0, 8, 0, 0, 4, 0, 5, 7, 0],
+        [4, 0, 0, 1, 0, 7, 0, 0, 0],
+        [5, 0, 0, 0, 9, 0, 0, 0, 0],
+        [0, 5, 0, 0, 0, 1, 0, 8, 0],
+        [9, 0, 3, 0, 0, 0, 6, 0, 5],
+        [0, 6, 0, 5, 0, 0, 0, 9, 0],
+        [0, 0, 0, 0, 8, 0, 0, 0, 3],
+        [0, 0, 0, 4, 0, 6, 0, 0, 8],
+        [0, 1, 2, 0, 3, 0, 0, 6, 0],
       ],
       hard: [
         [0, 0, 0, 0, 7, 0, 0, 0, 6],
@@ -106,8 +106,7 @@ class Solver {
 
   /* if everything is fine, that means there is no issue in the rows, columns, and n x n boxes, then the table is correct*/
   boardHasIssue(puzzle) {
-    console.log(this.checkRows(puzzle));
-    console.log(this.checkColumns(puzzle));
+    console.log(this.checkRows(puzzle) && this.checkColumns(puzzle));
     //return this.checkRows(puzzle) && this.checkColumns(puzzle);
     // this.checkBoxes(puzzle)
   }
