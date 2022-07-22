@@ -85,6 +85,16 @@ class Solver {
     //initialBoard && this.update(initialBoard);
   }
 
+  update(puzzle) {
+    this.cells.forEach((row, rowNr) =>
+      row.forEach((cell, colNr) => (cell.value = puzzle[rowNr][colNr]))
+    );
+  }
+
+  extractInputs() {
+    return this.cells.map((row) => row.map((cell) => +cell.value));
+  }
+
   /* non-React UI */
 
   /* rendering the entire table */
