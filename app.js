@@ -101,6 +101,10 @@ class Solver {
     console.log("| boardHasIssue", boardHasIssue);
   }
 
+  /***********************************/
+  /* methods for checking the puzzle */
+  /***********************************/
+
   /* if everything is fine, that means there is no issue in the rows, columns, and n x n boxes, then the table is correct*/
   boardHasIssue(puzzle) {
     return (
