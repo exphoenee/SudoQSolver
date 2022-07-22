@@ -102,7 +102,7 @@ class Solver {
     const boardCorrect = this.boardCorrect(startingPuzzle);
     console.log("| boardCorrect", boardCorrect);
 
-    !boardCorrect && (this.errors.innerHTML = "The puzzle is not correct!");
+    !boardCorrect && this.userMsg("The puzzle is not correct!");
   }
 
   /***********************************/
@@ -113,11 +113,11 @@ class Solver {
   boardCorrect(puzzle) {
     const rowsCorrect = this.rowsCorrect(puzzle);
     const columnsCorrect = this.columnsCorrect(puzzle);
-    const checkBoxes = this.checkBoxes(puzzle);
+    const boxesCorrect = this.boxesCorrect(puzzle);
     //console.log("| rowsCorrect", rowsCorrect);
     //console.log("| columnsCorrect", columnsCorrect);
-    //console.log("| checkBoxes", checkBoxes);
-    return rowsCorrect && columnsCorrect && checkBoxes;
+    //console.log("| boxesCorrect", boxesCorrect);
+    return rowsCorrect && columnsCorrect && boxesCorrect;
   }
 
   /* checking all the values are unique in the rows */
@@ -172,10 +172,11 @@ class Solver {
   }
 
   /* check the n x n sized sections, the boxes, there is not replication of numbers present */
-  checkBoxes(puzzle) {
+  boxesCorrect(puzzle) {
     let boxes = this.getColumnsOfPuzzle(puzzle);
     return boxes.every((box) => this.batchCorrect(box));
   }
+
   /**************************/
   /* UI inputs manipulation */
   /**************************/
@@ -202,6 +203,12 @@ class Solver {
   /****************/
   /* non-React UI */
   /****************/
+
+  /* throw a message */
+  userMsg(text, textOnly = true) {
+    this.errors.innerHTML = text;
+    textOnly ? console.error(text) : alert(text);
+  }
 
   /* rendering the entire table */
   render() {
