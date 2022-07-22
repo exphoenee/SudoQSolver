@@ -84,6 +84,48 @@ class Solver {
     this.render();
     //initialBoard && this.update(initialBoard);
   }
+
+  /**********************************/
+  /* methods for the puzzle solving */
+  /*     here comes the magic...    */
+  /**********************************/
+
+  /*
+   * first reading out the UI,
+   * checking that is valid filled or not,
+   * start solving  */
+  solvePuzzle() {
+    const startingPuzzle = this.extractInputs();
+
+    console.log(startingPuzzle);
+
+    const boardHasIssue = this.boardHasIssue(startingPuzzle);
+
+    console.log(boardHasIssue);
+  }
+
+  /* if everything is fine, that means there is no issue in the rows, columns, and n x n boxes, then the table is correct*/
+  boardHasIssue(puzzle) {
+    return this.checkRows(puzzle); //&&
+    // this.checkColumns(puzzle) &&
+    // this.checkBoxes(puzzle)
+  }
+
+  /* checking all the values are unique in the  */
+  checkRows(puzzle) {
+    return puzzle.map((row) => this.checkBatchIsUnique(row));
+  }
+
+  checkBatchIsUnique(batch) {
+    const onlyNums = batch.filter((num) => this.validateValue(num) != 0);
+    return new Set(onlyNums).size == onlyNums.length;
+  }
+
+  /**************************/
+  /* UI inputs manipulation */
+  /**************************/
+
+  /* updaing the UI with a puzzle or solution */
   update(puzzle) {
     this.cells.forEach((row, rowNr) =>
       row.forEach(
@@ -92,15 +134,19 @@ class Solver {
     );
   }
 
+  /* getting all values from the UI inputs */
   extractInputs() {
     return this.cells.map((row) => row.map((cell) => +cell.value));
   }
 
+  /* checking and correcting the input values, change the values that are 0 and greater as possible to empty string */
   validateValue(value) {
     return value >= 1 && value <= this.cellsInSection ? value : "";
   }
 
+  /****************/
   /* non-React UI */
+  /****************/
 
   /* rendering the entire table */
   render() {
@@ -110,6 +156,7 @@ class Solver {
     for (let puzzle in this.examples) {
       this.renderButton(puzzle, () => this.update(this.examples[puzzle]));
     }
+    this.renderButton("Solve!", () => this.solvePuzzle());
   }
 
   /* rendering the rows */
