@@ -4,9 +4,10 @@ class Solver {
     this.sectionSize = sectionSize || 3;
     //calculated value of cells in the index form the section size
     this.cellsInSection = this.sectionSize ** 2;
-    //array of issued cells
     //HTML element of the board
     this.board = document.getElementById("board");
+    //array of cells
+    this.cells = [];
 
     //rendering the table
     this.render();
@@ -18,18 +19,20 @@ class Solver {
   /* rendering the entire table */
   render() {
     for (let rowNr = 0; rowNr < this.cellsInSection; rowNr++) {
-      this.renderRow(rowNr);
+      this.cells.push(this.renderRow(rowNr));
     }
   }
 
   /* rendering the rows */
   renderRow(rowNr) {
+    let row = [];
     const rowContainer = document.createElement("div");
     rowContainer.classList.add(`row-${rowNr}`);
     for (let colNr = 0; colNr < this.cellsInSection; colNr++) {
-      this.createInput(colNr, rowNr, rowContainer);
+      row.push(this.createInput(colNr, rowNr, rowContainer));
     }
     this.board.appendChild(rowContainer);
+    return row;
   }
 
   createInput(colNr, rowNr, parent) {
@@ -46,6 +49,7 @@ class Solver {
     cell.dataset.row = rowNr;
     cell.addEventListener("change", (e) => this.update(e));
     parent.appendChild(cell);
+    return cell;
   }
 }
 
