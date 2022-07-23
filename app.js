@@ -1,7 +1,37 @@
 "use strict";
 
 const browser = false;
+/*************************************************************************
+before start using as a module in react clear this row on top,
+and the testing functions bottom
+/*************************************************************************/
 
+/*************************************************************************
+usage of this class:
+make a new object like this: const solver = new Solver(params)
+you can set the params in the constructor
+the params are the followings:
+      * sectionSize - this is only valid for 3x3 sudoku puzzles,
+        because the CSS did not written well
+        later not only square but recatngular puzzles will be
+        available also, but the solver works for other sized
+        puzzles already
+      * the calss can be rendered a basic UI self, that is
+        avalaiable the renderMyself param
+after the class implemented, you can pass a puzzle for him (or her)
+using the solvePuzzle(solverforNode.examples.easy)) method
+athe argument for the method is an 2D array, where every row is an
+subarray e. g.:
+        [
+          [1...n],
+          [1...n]
+          ...
+          m times
+          ...
+          [1..n]
+        ]
+where n and m the x and y dimension of the sudoku, currently the n = m
+*************************************************************************/
 class Solver {
   constructor(params = null) {
     //the size of a section and matrix of sections n x n, but the css isn't made for other sizes only 3 x 3 sudokus...
