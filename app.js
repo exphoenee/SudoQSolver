@@ -1,7 +1,9 @@
 class Solver {
-  constructor(initialBoard = null, sectionSize = null) {
-    //the size of a section and matrix of sections n x n
-    this.sectionSize = sectionSize || 3;
+  constructor(params = null) {
+    //the size of a section and matrix of sections n x n, but the css isn't made for other sizes only 3 x 3 sudokus...
+    this.sectionSize = params.sectionSize || 3;
+    //if it is true the calss rendering himself (...or herself)
+    this.renderMyself = params.renderMyself || false;
     //calculated value of cells in the index form the section size
     this.cellsInSection = this.sectionSize ** 2;
     //HTML element of the board
@@ -83,7 +85,7 @@ class Solver {
     };
 
     //rendering the table
-    this.render();
+    params.renderMyself && this.render();
     //initialBoard && this.update(initialBoard);
   }
 
@@ -273,6 +275,7 @@ class Solver {
 
   /* rendering the entire table */
   render() {
+    this.selfRendering = true;
     for (let rowNr = 0; rowNr < this.cellsInSection; rowNr++) {
       this.cells.push(this.renderRow(rowNr));
     }
@@ -322,4 +325,4 @@ class Solver {
   }
 }
 
-const solver = new Solver();
+const solver = new Solver({ renderMyself: true });
