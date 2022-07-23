@@ -99,10 +99,78 @@ class Solver {
   solvePuzzle() {
     const startingPuzzle = this.extractInputs();
 
-    const boardCorrect = this.boardCorrect(startingPuzzle);
-    console.log("| boardCorrect", boardCorrect);
+    const isPuzzleCorrect = this.isPuzzleCorrect(startingPuzzle);
 
-    !boardCorrect && this.userMsg("The puzzle is not correct!");
+    const result = isPuzzleCorrect
+      ? this.solve(startingPuzzle)
+      : this.userMsg("The puzzle is not correct!");
+
+    console.log(result);
+  }
+
+  /* this method is the entry for making solution possiblities and filtrind out the not valid solution */
+  solve(puzzle) {
+    return this.puzzleIsSolved(puzzle)
+      ? puzzle
+      : this.checkPossiblities(
+          this.validatePosiblities(this.getPosiblities(puzzle))
+        );
+  }
+
+  validatePosiblities(puzzles) {
+    return puzzles.filter((puzzle) => this.isPuzzleCorrect(puzzle));
+  }
+
+  /* generating 9 different puzzles, where the first free cell is filled with all the possible numbenr 1...n */
+  getPosiblities(puzzle) {
+    let possibilities = [];
+    const nextCell = this.getNextCell(puzzle);
+    console.log(nextCell);
+    /* i tryed hard make it with map method, but i am failed... that took almost an hour... :( */
+    if (nextCell) {
+      for (let nr = 1; nr <= this.cellsInSection; nr++) {
+        let possibility = [...puzzle];
+        let row = [...possibility[nextCell.y]];
+        row[nextCell.x] = nr;
+        possibility[nextCell.y] = row;
+        console.log(possibility);
+        possibilities.push(possibility);
+      }
+    }
+    return possibilities;
+  }
+
+  /* find and return back the nexFree cell */
+  getNextCell(puzzle) {
+    for (let rowNr = 0; rowNr < puzzle.length; rowNr++) {
+      const x = puzzle[rowNr].indexOf(0, 0);
+      if (x > -1) return { x, y: rowNr };
+    }
+  }
+
+  /* generates the map of the puzzle */
+  generateMap(puzzle) {
+    return puzzle.map((row, y) => {
+      {
+        return row.map((cell, x) => {
+          return { value: cell, x, y };
+        });
+      }
+    });
+  }
+
+  checkPossiblities(possiblities) {
+    if (possiblities.length > 0) {
+      let possiblity = possiblities.shift();
+      const treeBranch = this.solve(possiblity);
+      return treeBranch ? treeBranch : this.checkPossiblities(possiblities);
+    } else {
+      return false;
+    }
+  }
+
+  puzzleIsSolved(puzzle) {
+    return !puzzle.some((row) => row.some((cell) => cell == 0));
   }
 
   /***********************************/
@@ -110,13 +178,10 @@ class Solver {
   /***********************************/
 
   /* if everything is fine, that means there is no issue in the rows, columns, and n x n boxes, then the table is correct*/
-  boardCorrect(puzzle) {
+  isPuzzleCorrect(puzzle) {
     const rowsCorrect = this.rowsCorrect(puzzle);
     const columnsCorrect = this.columnsCorrect(puzzle);
     const boxesCorrect = this.boxesCorrect(puzzle);
-    //console.log("| rowsCorrect", rowsCorrect);
-    //console.log("| columnsCorrect", columnsCorrect);
-    //console.log("| boxesCorrect", boxesCorrect);
     return rowsCorrect && columnsCorrect && boxesCorrect;
   }
 
