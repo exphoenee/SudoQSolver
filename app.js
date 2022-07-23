@@ -108,9 +108,9 @@ class Solver {
    * first reading out the UI,
    * checking that is valid filled or not,
    * start solving  */
-  solvePuzzle(puzzle = false) {
+  solvePuzzle(puzzle = null) {
     let startingPuzzle =
-      this.renderMyself && puzzle ? this.extractInputs() : puzzle;
+      this.renderMyself && !puzzle ? this.extractInputs() : puzzle;
 
     if (this.isPuzzleCorrect(startingPuzzle)) {
       const result = this.solve(startingPuzzle);
