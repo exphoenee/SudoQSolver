@@ -16,16 +16,27 @@ class Solver {
     //add some example puzzles here
     //source: https://www.sudokuonline.io/
     this.examples = {
+      wrong: [
+        [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [1, 2, 3, 4, 5, 6, 7, 8, 9],
+      ],
       noSolution: [
-        [1, 2, 3, 4, 5, 6, 7, 8, 9],
-        [1, 2, 3, 4, 5, 6, 7, 8, 9],
-        [1, 2, 3, 4, 5, 6, 7, 8, 9],
-        [1, 2, 3, 4, 5, 6, 7, 8, 9],
-        [1, 2, 3, 4, 5, 6, 7, 8, 9],
-        [1, 2, 3, 4, 5, 6, 7, 8, 9],
-        [1, 2, 3, 4, 5, 6, 7, 8, 9],
-        [1, 2, 3, 4, 5, 6, 7, 8, 9],
-        [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [0, 1, 2, 3, 4, 5, 6, 7, 8],
+        [9, 0, 0, 0, 0, 0, 0, 0, 0],
+        [8, 0, 0, 0, 0, 0, 0, 0, 0],
+        [7, 0, 0, 0, 0, 0, 0, 0, 0],
+        [6, 0, 0, 0, 0, 0, 0, 0, 0],
+        [5, 0, 0, 0, 0, 0, 0, 0, 0],
+        [4, 0, 0, 0, 0, 0, 0, 0, 0],
+        [3, 0, 0, 0, 0, 0, 0, 0, 0],
+        [2, 0, 0, 0, 0, 0, 0, 0, 0],
       ],
       clear: [
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -101,13 +112,11 @@ class Solver {
   solvePuzzle() {
     const startingPuzzle = this.extractInputs();
 
-    const isPuzzleCorrect = this.isPuzzleCorrect(startingPuzzle);
-
-    const result = isPuzzleCorrect
+    this.isPuzzleCorrect(startingPuzzle)
       ? this.solve(startingPuzzle)
+        ? this.update(result)
+        : this.userMsg("There is no solution for this puzzle...")
       : this.userMsg("The puzzle is not correct!");
-
-    this.update(result);
   }
 
   /* this method is the entry for making solution possiblities and filtrind out the not valid solution */
