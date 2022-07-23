@@ -1,6 +1,6 @@
 "use strict";
 
-const browser = true;
+const browser = false;
 
 class Solver {
   constructor(params = null) {
@@ -114,13 +114,17 @@ class Solver {
 
     if (this.isPuzzleCorrect(startingPuzzle)) {
       const result = this.solve(startingPuzzle);
-      result
-        ? this.update(result)
-        : this.userMsg("There is no solution for this puzzle...");
-      return result;
+      if (result) {
+        this.update(result);
+        this.userMsg("That was easy!");
+        return result;
+      } else {
+        this.userMsg("There is no solution for this puzzle...");
+      }
     } else {
       this.userMsg("The puzzle is not correct!");
     }
+    return false;
   }
 
   /* this method is the entry for making solution possiblities and filtrind out the not valid solution */
