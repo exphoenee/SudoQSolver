@@ -1,3 +1,7 @@
+"use strict";
+
+const browser = true;
+
 class Solver {
   constructor(params = null) {
     //the size of a section and matrix of sections n x n, but the css isn't made for other sizes only 3 x 3 sudokus...
@@ -6,10 +10,6 @@ class Solver {
     this.renderMyself = params.renderMyself || false;
     //calculated value of cells in the index form the section size
     this.cellsInSection = this.sectionSize ** 2;
-    //HTML element of the board
-    this.board = document.getElementById("board");
-    //HTML element of the error message
-    this.errors = document.getElementById("errors");
     //array of cells
     this.cells = [];
 
@@ -97,7 +97,6 @@ class Solver {
 
     //rendering the table
     params.renderMyself && this.render();
-    //initialBoard && this.update(initialBoard);
   }
 
   /**********************************/
@@ -109,14 +108,19 @@ class Solver {
    * first reading out the UI,
    * checking that is valid filled or not,
    * start solving  */
-  solvePuzzle() {
-    const startingPuzzle = this.extractInputs();
+  solvePuzzle(puzzle = false) {
+    let startingPuzzle =
+      this.renderMyself && puzzle ? this.extractInputs() : puzzle;
 
-    this.isPuzzleCorrect(startingPuzzle)
-      ? this.solve(startingPuzzle)
+    if (this.isPuzzleCorrect(startingPuzzle)) {
+      const result = this.solve(startingPuzzle);
+      result
         ? this.update(result)
-        : this.userMsg("There is no solution for this puzzle...")
-      : this.userMsg("The puzzle is not correct!");
+        : this.userMsg("There is no solution for this puzzle...");
+      return result;
+    } else {
+      this.userMsg("The puzzle is not correct!");
+    }
   }
 
   /* this method is the entry for making solution possiblities and filtrind out the not valid solution */
@@ -257,11 +261,14 @@ class Solver {
 
   /* updaing the UI with a puzzle or solution */
   update(puzzle) {
-    this.cells.forEach((row, rowNr) =>
-      row.forEach(
-        (cell, colNr) => (cell.value = this.validateValue(puzzle[rowNr][colNr]))
-      )
-    );
+    this.renderMyself &&
+      this.cells.forEach((row, rowNr) =>
+        row.forEach(
+          (cell, colNr) =>
+            (cell.value = this.validateValue(puzzle[rowNr][colNr]))
+        )
+      );
+    return puzzle;
   }
 
   /* getting all values from the UI inputs */
@@ -280,12 +287,16 @@ class Solver {
 
   /* throw a message */
   userMsg(text, textOnly = true) {
-    this.errors.innerHTML = text;
+    this.renderMyself && (this.errors.innerHTML = text);
     textOnly ? console.error(text) : alert(text);
   }
 
   /* rendering the entire table */
   render() {
+    //HTML element of the board
+    this.board = document.getElementById("board");
+    //HTML element of the error message
+    this.errors = document.getElementById("errors");
     // if it is once rendered then should be saved to the class
     this.renderMyself = true;
     for (let rowNr = 0; rowNr < this.cellsInSection; rowNr++) {
@@ -337,4 +348,11 @@ class Solver {
   }
 }
 
-const solver = new Solver({ renderMyself: true });
+if (browser) {
+  /* testcase for browser */
+  const solver = new Solver({ renderMyself: true });
+} else {
+  /* node.js test case */
+  const solverforNode = new Solver({ renderMyself: false });
+  console.log(solverforNode.solvePuzzle(solverforNode.examples.easy));
+}
