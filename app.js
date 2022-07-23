@@ -1,6 +1,6 @@
 "use strict";
 
-const browser = false;
+const browser = true;
 /*************************************************************************
 before start using as a module in react clear this row on top,
 and the testing functions bottom
@@ -149,10 +149,10 @@ class Solver {
         this.userMsg("That was easy!");
         return result;
       } else {
-        this.userMsg("There is no solution for this puzzle...");
+        this.userMsg("There is no solution for this puzzle...", "error");
       }
     } else {
-      this.userMsg("The puzzle is not correct!");
+      this.userMsg("The puzzle is not correct!", "alert");
     }
     return false;
   }
@@ -319,10 +319,20 @@ class Solver {
   /* non-React UI */
   /****************/
 
-  /* throw a message */
-  userMsg(text, textOnly = true) {
+  /* throw a message
+   * first argument is the text,
+   * the second object has one properties:
+   ** alert, gives allert as well, and
+   ** the type of the print to console. */
+  userMsg(text, type = "none") {
     this.renderMyself && (this.errors.innerHTML = text);
-    textOnly ? console.error(text) : alert(text);
+    const alerting = {
+      alert: () => alert(text),
+      log: () => console[type](text),
+      error: () => console[type](text),
+      none: () => null,
+    };
+    alerting[type]();
   }
 
   /* rendering the entire table */
