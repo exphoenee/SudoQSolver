@@ -106,6 +106,8 @@ class Solver {
     const result = isPuzzleCorrect
       ? this.solve(startingPuzzle)
       : this.userMsg("The puzzle is not correct!");
+
+    this.update(result);
   }
 
   /* this method is the entry for making solution possiblities and filtrind out the not valid solution */
@@ -275,7 +277,8 @@ class Solver {
 
   /* rendering the entire table */
   render() {
-    this.selfRendering = true;
+    // if it is once rendered then should be saved to the class
+    this.renderMyself = true;
     for (let rowNr = 0; rowNr < this.cellsInSection; rowNr++) {
       this.cells.push(this.renderRow(rowNr));
     }
