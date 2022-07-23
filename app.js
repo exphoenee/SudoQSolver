@@ -134,10 +134,11 @@ class Solver {
   /*     here comes the magic...    */
   /**********************************/
 
-  /*
-   * first reading out the UI,
-   * checking that is valid filled or not,
-   * start solving  */
+  /* this is the entry point of the solver
+    arg:  optionally a puzzle n x n sized 2D array
+    returns:
+      * the solved puzzle n x n sized 2D array
+      * or a boolen which value can be only false what mean there is no solution for this puzzle */
   solvePuzzle(puzzle = null) {
     let startingPuzzle =
       this.renderMyself && !puzzle ? this.extractInputs() : puzzle;
@@ -157,7 +158,9 @@ class Solver {
     return false;
   }
 
-  /* this method is the entry for making solution possiblities and filtrind out the not valid solution */
+  /* this method is the entry for making solution possiblities and filtrind out the not valid solution
+    arg:    puzzle n x n sized 2D array
+    return: boolean that means the puzzle is solved (ture) or not (false) */
   solve(puzzle) {
     return this.puzzleIsSolved(puzzle)
       ? puzzle
@@ -170,7 +173,11 @@ class Solver {
     return puzzles.filter((puzzle) => this.isPuzzleCorrect(puzzle));
   }
 
-  /* generating 9 different puzzles, where the first free cell is filled with all the possible numbenr 1...n */
+  /* generating 9 different puzzles, where the first free cell is filled with all the possible numbenr 1...n
+    arg:    puzzle n x n sized 2D array
+    return: possiblities m x (n x n) sized 3D array
+                  number <┘      └> puzzle
+              of possivilities */
   getPosiblities(puzzle) {
     let possibilities = [];
     const nextCell = this.getNextCell(puzzle);
@@ -187,7 +194,11 @@ class Solver {
     return possibilities;
   }
 
-  /* find and return back the nexFree cell */
+  /* find and return back the nexFree cell
+    arg: puzzle n x n sized 2D array
+    return: an object with the
+      * x (number of column) and
+      * y (number of row) coordinates */
   getNextCell(puzzle) {
     for (let rowNr = 0; rowNr < puzzle.length; rowNr++) {
       const x = puzzle[rowNr].indexOf(0, 0);
@@ -195,7 +206,12 @@ class Solver {
     }
   }
 
-  /* generates the map of the puzzle */
+  /* generates the map of the puzzle
+    arg:    puzzle n x n sized 2D array
+    return: an n x n sized 2D array of objects with the:
+      * value what is in the cell written
+      * x (number of column) and
+      * y (number of row) coordinates */
   generateMap(puzzle) {
     return puzzle.map((row, y) => {
       {
@@ -206,6 +222,13 @@ class Solver {
     });
   }
 
+  /* check the possibilities if there is any:
+      * takes the first, and check that good is (recourevely),
+      * if not generates new possibilities and returns that (recourevely),
+      * returns a puzzle of a flase is there is not any solution
+      arg: possiblities m x (n x n) sized 3D array
+                number <┘      └> puzzle
+          of possivilities */
   checkPossiblities(possiblities) {
     if (possiblities.length > 0) {
       let possiblity = possiblities.shift();
@@ -216,6 +239,9 @@ class Solver {
     }
   }
 
+  /* checks the puzzle is solved already or didn't
+      arg:     puzzle n x n sized 2D array
+      returns: a boolean only ture is puzzle solved */
   puzzleIsSolved(puzzle) {
     return !puzzle.some((row) => row.some((cell) => cell == 0));
   }
@@ -224,37 +250,63 @@ class Solver {
   /* methods for checking the puzzle */
   /***********************************/
 
-  /* if everything is fine, that means there is no issue in the rows, columns, and n x n boxes, then the table is correct*/
+  /* if everything is fine, that means there is no issue in the
+      * rows,
+      * columns, and
+      * n x n boxes, then the table is correct
+    arg:    puzzle n x n sized 2D array
+    return: a boolean true means the puzzle seems to solvable */
   isPuzzleCorrect(puzzle) {
-    const rowsCorrect = this.rowsCorrect(puzzle);
-    const columnsCorrect = this.columnsCorrect(puzzle);
-    const boxesCorrect = this.boxesCorrect(puzzle);
-    return rowsCorrect && columnsCorrect && boxesCorrect;
+    return (
+      this.rowsCorrect(puzzle) &&
+      this.columnsCorrect(puzzle) &&
+      this.boxesCorrect(puzzle)
+    );
   }
 
-  /* checking all the values are unique in the rows */
+  getPossibleNumbers() {}
+
+  /* checking all the values are unique in the rows
+    arg:    puzzle n x n sized 2D array
+    return: a boolean true means the row doesn't has duplicates */
   rowsCorrect(puzzle) {
     return puzzle.every((row) => this.batchCorrect(row));
   }
 
-  /* the method checks that in the given batch is every number is only once present */
+  /* the method checks that in the given batch is every number is only once present
+    arg:    batch n sized 1D array, that represents
+      * a row,
+      * a column or
+      * a flattened box)
+    return: a boolean true means the row doesn't has duplicates */
   batchCorrect(batch) {
     const onlyNums = batch.filter((num) => this.validateValue(num) != 0);
     return new Set(onlyNums).size == onlyNums.length;
   }
 
-  /* this method checks all the columns tha numbers are unique */
+  /* this method checks all the columns has unique numbers
+    arg:    puzzle n x n sized 2D array
+    return: a boolean true means the column doesn't has duplicates */
   columnsCorrect(puzzle) {
-    let cols = this.getColumnsOfPuzzle(puzzle);
-    return cols.every((col) => this.batchCorrect(col));
+    return this.getColumnsOfPuzzle(puzzle).every((col) =>
+      this.batchCorrect(col)
+    );
   }
 
-  /* this method transposes the 2D array, to getting the columns */
+  /* this method transposes the 2D array
+    arg:    puzzle n x n sized 2D array, to getting the columns in order
+    return: puzzle that is transposed */
   getColumnsOfPuzzle(puzzle) {
     return puzzle[0].map((col, colNr) => puzzle.map((row) => row[colNr]));
   }
 
-  /* getting the n x n boxes form the puzzle */
+  /* getting the n x n boxes form the puzzle
+    arg:    n x n sized 2D array
+    return: all sections flattened, seems that are
+      * row or
+      * columns,
+      * but they aren't!!! */
+  /* TODO: mayve that is not enough efficient here I need some help to do it better */
   getBoxes(puzzle) {
     let boxTemplate = [];
 
@@ -283,7 +335,7 @@ class Solver {
     return boxes;
   }
 
-  /* check the n x n sized sections, the boxes, there is not replication of numbers present */
+  /* check the n x n sized sections arg), the boxes, there is not replication of numbers present */
   boxesCorrect(puzzle) {
     let boxes = this.getColumnsOfPuzzle(puzzle);
     return boxes.every((box) => this.batchCorrect(box));
@@ -293,7 +345,9 @@ class Solver {
   /* UI inputs manipulation */
   /**************************/
 
-  /* updaing the UI with a puzzle or solution */
+  /* updateing the UI with a puzzle or solution
+    arg:    puzzle n x n sized 2D array
+    return: a boolean true means the column doesn't has duplicates */
   update(puzzle) {
     this.renderMyself &&
       this.cells.forEach((row, rowNr) =>
@@ -305,12 +359,15 @@ class Solver {
     return puzzle;
   }
 
-  /* getting all values from the UI inputs */
+  /* getting all values from the UI inputs
+    return: a 2D array what is given by the user */
   extractInputs() {
     return this.cells.map((row) => row.map((cell) => +cell.value));
   }
 
-  /* checking and correcting the input values, change the values that are 0 and greater as possible to empty string */
+  /* checking and correcting the input values, change the values that are 0 and greater as possible to empty string
+    arg:    value (integer or string)
+    return: a value (what is allowed for the puzzle) */
   validateValue(value) {
     return value >= 1 && value <= this.cellsInSection ? value : "";
   }
@@ -352,7 +409,7 @@ class Solver {
     this.renderButton("Solve!", () => this.solvePuzzle());
   }
 
-  /* rendering the rows */
+  /* rendering the rows, the only arguments is the row number, that is passed to the inputs returns the DOM element */
   renderRow(rowNr) {
     let row = [];
     const rowContainer = document.createElement("div");
@@ -364,6 +421,11 @@ class Solver {
     return row;
   }
 
+  /* generating the DOM of a cell input, the arguments are the following:
+    colNr  -> the x / horizontal coordinate (in caresian system)
+    rowNr  -> the y / horizontal coordinate (in caresian system)
+    parent -> the DOM element who is the parent of the input (cell)
+    returns the DOM element of cell */
   createInput(colNr, rowNr, parent) {
     const cell = document.createElement("input");
     cell.type = "number";
@@ -381,7 +443,9 @@ class Solver {
     return cell;
   }
 
-  /* buttons for the contorl panel */
+  /* buttons for the contorl panel, the arguments are the following:
+    text  -> text of the button
+    cb -> the callback function what is fired when the button is clicked */
   renderButton(text, cb) {
     const button = document.createElement("button");
     button.innerText = text;
@@ -392,6 +456,10 @@ class Solver {
   }
 }
 
+/**********************************/
+/* THIS IS ONLY FOR TEST PURPOSES */
+/*     PLEASE REMOVE IT LATER     */
+/**********************************/
 if (browser) {
   /* testcase for browser */
   const solver = new Solver({ renderMyself: true });
@@ -400,3 +468,7 @@ if (browser) {
   const solverforNode = new Solver({ renderMyself: false });
   console.log(solverforNode.solvePuzzle(solverforNode.examples.easy));
 }
+/**********************************/
+/* THIS IS ONLY FOR TEST PURPOSES */
+/*     PLEASE REMOVE IT LATER     */
+/**********************************/
