@@ -104,8 +104,6 @@ class Solver {
     const result = isPuzzleCorrect
       ? this.solve(startingPuzzle)
       : this.userMsg("The puzzle is not correct!");
-
-    console.log(result);
   }
 
   /* this method is the entry for making solution possiblities and filtrind out the not valid solution */
@@ -125,7 +123,6 @@ class Solver {
   getPosiblities(puzzle) {
     let possibilities = [];
     const nextCell = this.getNextCell(puzzle);
-    console.log(nextCell);
     /* i tryed hard make it with map method, but i am failed... that took almost an hour... :( */
     if (nextCell) {
       for (let nr = 1; nr <= this.cellsInSection; nr++) {
@@ -133,7 +130,6 @@ class Solver {
         let row = [...possibility[nextCell.y]];
         row[nextCell.x] = nr;
         possibility[nextCell.y] = row;
-        console.log(possibility);
         possibilities.push(possibility);
       }
     }
