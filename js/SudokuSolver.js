@@ -33,15 +33,20 @@ subarray e. g.:
 where n and m the x and y dimension of the sudoku, currently the n = m
 *************************************************************************/
 class Solver {
+  #sectionSize;
+  #renderMyself;
+  #cellsInSection;
+  #cells;
+
   constructor(params = null) {
     //the size of a section and matrix of sections n x n, but the css isn't made for other sizes only 3 x 3 sudokus...
-    this.sectionSize = params.sectionSize || 3;
+    this.#sectionSize = params.sectionSize || 3;
     //if it is true the calss rendering himself (...or herself)
-    this.renderMyself = params.renderMyself || false;
+    this.#renderMyself = params.renderMyself || false;
     //calculated value of cells in the index form the section size
-    this.cellsInSection = this.sectionSize ** 2;
+    this.#cellsInSection = this.#sectionSize ** 2;
     //array of cells
-    this.cells = [];
+    this.#cells = [];
 
     //add some example puzzles here
     //source: https://www.sudokuonline.io/
@@ -141,13 +146,13 @@ class Solver {
       * or a boolen which value can be only false what mean there is no solution for this puzzle */
   solvePuzzle(puzzle = null, format = "default") {
     let startingPuzzle =
-      this.renderMyself && !puzzle ? this.extractInputs() : puzzle;
+      this.#renderMyself && !puzzle ? this.#extractInputs() : puzzle;
 
     if (this.isPuzzleCorrect(startingPuzzle)) {
-      const result = this.solve(startingPuzzle);
+      const result = this.#solve(startingPuzzle);
       if (result) {
-        this.update(result);
-        this.userMsg("That was easy!");
+        this.#update(result);
+        this.#userMsg("That was easy!");
 
         const formatting = {
           string: () => this.toString(result),
@@ -155,10 +160,10 @@ class Solver {
         };
         return formatting[format]();
       } else {
-        this.userMsg("There is no solution for this puzzle...", "error");
+        this.#userMsg("There is no solution for this puzzle...", "error");
       }
     } else {
-      this.userMsg("The puzzle is not correct!", "alert");
+      this.#userMsg("The puzzle is not correct!", "alert");
     }
     return false;
   }
@@ -166,15 +171,15 @@ class Solver {
   /* this method is the entry for making solution possiblities and filtrind out the not valid solution
     arg:    puzzle n x n sized 2D array
     return: boolean that means the puzzle is solved (ture) or not (false) */
-  solve(puzzle) {
+  #solve(puzzle) {
     return this.puzzleIsSolved(puzzle)
       ? puzzle
-      : this.checkPossiblities(
-          this.validatePosiblities(this.getPosiblities(puzzle))
+      : this.#checkPossiblities(
+          this.#validatePosiblities(this.#getPosiblities(puzzle))
         );
   }
 
-  validatePosiblities(puzzles) {
+  #validatePosiblities(puzzles) {
     return puzzles.filter((puzzle) => this.isPuzzleCorrect(puzzle));
   }
 
@@ -183,12 +188,12 @@ class Solver {
     return: possiblities m x (n x n) sized 3D array
                   number <┘      └> puzzle
               of possivilities */
-  getPosiblities(puzzle) {
+  #getPosiblities(puzzle) {
     let possibilities = [];
-    const nextCell = this.getNextCell(puzzle);
+    const nextCell = this.#getNextCell(puzzle);
     /* i tryed hard make it with map method, but i am failed... that took almost an hour... :( */
     if (nextCell) {
-      for (let nr = 1; nr <= this.cellsInSection; nr++) {
+      for (let nr = 1; nr <= this.#cellsInSection; nr++) {
         let possibility = [...puzzle];
         let row = [...possibility[nextCell.y]];
         row[nextCell.x] = nr;
@@ -204,7 +209,7 @@ class Solver {
     return: an object with the
       * x (number of column) and
       * y (number of row) coordinates */
-  getNextCell(puzzle) {
+  #getNextCell(puzzle) {
     for (let rowNr = 0; rowNr < puzzle.length; rowNr++) {
       const x = puzzle[rowNr].indexOf(0, 0);
       if (x > -1) return { x, y: rowNr };
@@ -234,11 +239,11 @@ class Solver {
       arg: possiblities m x (n x n) sized 3D array
                 number <┘      └> puzzle
           of possivilities */
-  checkPossiblities(possiblities) {
+  #checkPossiblities(possiblities) {
     if (possiblities.length > 0) {
       let possiblity = possiblities.shift();
-      const treeBranch = this.solve(possiblity);
-      return treeBranch ? treeBranch : this.checkPossiblities(possiblities);
+      const treeBranch = this.#solve(possiblity);
+      return treeBranch ? treeBranch : this.#checkPossiblities(possiblities);
     } else {
       return false;
     }
@@ -263,19 +268,20 @@ class Solver {
     return: a boolean true means the puzzle seems to solvable */
   isPuzzleCorrect(puzzle) {
     return (
-      this.rowsCorrect(puzzle) &&
-      this.columnsCorrect(puzzle) &&
-      this.boxesCorrect(puzzle)
+      this.#rowsCorrect(puzzle) &&
+      this.#columnsCorrect(puzzle) &&
+      this.#boxesCorrect(puzzle)
     );
   }
 
-  getPossibleNumbers() {}
+  /* TODO: it is not implemented yet */
+  #getPossibleNumbers() {}
 
   /* checking all the values are unique in the rows
     arg:    puzzle n x n sized 2D array
     return: a boolean true means the row doesn't has duplicates */
-  rowsCorrect(puzzle) {
-    return puzzle.every((row) => this.batchCorrect(row));
+  #rowsCorrect(puzzle) {
+    return puzzle.every((row) => this.#batchCorrect(row));
   }
 
   /* the method checks that in the given batch is every number is only once present
@@ -284,17 +290,17 @@ class Solver {
       * a column or
       * a flattened box)
     return: a boolean true means the row doesn't has duplicates */
-  batchCorrect(batch) {
-    const onlyNums = batch.filter((num) => this.validateValue(num) != 0);
+  #batchCorrect(batch) {
+    const onlyNums = batch.filter((num) => this.#validateValue(num) != 0);
     return new Set(onlyNums).size == onlyNums.length;
   }
 
   /* this method checks all the columns has unique numbers
     arg:    puzzle n x n sized 2D array
     return: a boolean true means the column doesn't has duplicates */
-  columnsCorrect(puzzle) {
-    return this.getColumnsOfPuzzle(puzzle).every((col) =>
-      this.batchCorrect(col)
+  #columnsCorrect(puzzle) {
+    return this.#getColumnsOfPuzzle(puzzle).every((col) =>
+      this.#batchCorrect(col)
     );
   }
 
@@ -313,7 +319,7 @@ class Solver {
   /* this method transposes the 2D array
     arg:    puzzle n x n sized 2D array, to getting the columns in order
     return: puzzle that is transposed */
-  getColumnsOfPuzzle(puzzle) {
+  #getColumnsOfPuzzle(puzzle) {
     return puzzle[0].map((col, colNr) => puzzle.map((row) => row[colNr]));
   }
 
@@ -323,15 +329,15 @@ class Solver {
       * row or
       * columns,
       * but they aren't!!! */
-  /* TODO: mayve that is not enough efficient here I need some help to do it better */
-  getBoxes(puzzle) {
+  /* TODO: maybe that is not enough efficient here I need some help to do it better */
+  #getBoxes(puzzle) {
     let boxTemplate = [];
 
-    boxTemplate = this.getColumnsOfPuzzle(
+    boxTemplate = this.#getColumnsOfPuzzle(
       puzzle.map((row) => {
         const boxRows = [];
-        for (let i = 0; i < row.length; i += this.sectionSize) {
-          boxRows.push(row.slice(i, i + this.sectionSize));
+        for (let i = 0; i < row.length; i += this.#sectionSize) {
+          boxRows.push(row.slice(i, i + this.#sectionSize));
         }
         return boxRows;
       })
@@ -340,9 +346,9 @@ class Solver {
     /* I couldn't solve that in the first iteration... */
     let boxes = [];
     boxTemplate.forEach((row) => {
-      for (let j = 0; j < this.cellsInSection; j += this.sectionSize) {
+      for (let j = 0; j < this.#cellsInSection; j += this.#sectionSize) {
         let box = [];
-        for (let i = 0; i < this.sectionSize; i++) {
+        for (let i = 0; i < this.#sectionSize; i++) {
           box = box.concat(row[j + i]);
         }
         boxes.push(box);
@@ -353,9 +359,9 @@ class Solver {
   }
 
   /* check the n x n sized sections arg), the boxes, there is not replication of numbers present */
-  boxesCorrect(puzzle) {
-    let boxes = this.getColumnsOfPuzzle(puzzle);
-    return boxes.every((box) => this.batchCorrect(box));
+  #boxesCorrect(puzzle) {
+    let boxes = this.#getColumnsOfPuzzle(puzzle);
+    return boxes.every((box) => this.#batchCorrect(box));
   }
 
   /* converts a table to string
@@ -372,17 +378,19 @@ class Solver {
   /* updateing the UI with a puzzle or solution
     arg:    puzzle n x n sized 2D array
     return: a boolean true means the column doesn't has duplicates */
-  update(puzzle) {
-    this.renderMyself &&
-      this.cells.forEach((row, rowNr) =>
+  #update(puzzle, setGiven = false) {
+    this.#renderMyself &&
+      this.#cells.forEach((row, rowNr) =>
         row.forEach((cell, colNr) => {
-          cell.value = this.validateValue(puzzle[rowNr][colNr]);
-          if (cell.value > "") {
-            cell.classList.add("given");
-            cell.disabled = true;
-          } else {
-            cell.classList.remove("given");
-            cell.disabled = false;
+          cell.value = this.#validateValue(puzzle[rowNr][colNr]);
+          if (setGiven) {
+            if (cell.value > "") {
+              cell.classList.add("given");
+              cell.disabled = true;
+            } else {
+              cell.classList.remove("given");
+              cell.disabled = false;
+            }
           }
         })
       );
@@ -391,15 +399,15 @@ class Solver {
 
   /* getting all values from the UI inputs
     return: a 2D array what is given by the user */
-  extractInputs() {
-    return this.cells.map((row) => row.map((cell) => +cell.value));
+  #extractInputs() {
+    return this.#cells.map((row) => row.map((cell) => +cell.value));
   }
 
   /* checking and correcting the input values, change the values that are 0 and greater as possible to empty string
     arg:    value (integer or string)
     return: a value (what is allowed for the puzzle) */
-  validateValue(value) {
-    return value >= 1 && value <= this.cellsInSection ? value : "";
+  #validateValue(value) {
+    return value >= 1 && value <= this.#cellsInSection ? value : "";
   }
 
   /****************/
@@ -411,8 +419,8 @@ class Solver {
    * the second object has one properties:
    ** alert, gives allert as well, and
    ** the type of the print to console. */
-  userMsg(text, type = "none") {
-    this.renderMyself && (this.errors.innerHTML = text);
+  #userMsg(text, type = "none") {
+    this.#renderMyself && (this.errors.innerHTML = text);
     const alerting = {
       alert: () => alert(text),
       log: () => console[type](text),
@@ -429,24 +437,26 @@ class Solver {
     //HTML element of the error message
     this.errors = document.getElementById("errors");
     // if it is once rendered then should be saved to the class
-    this.renderMyself = true;
-    for (let rowNr = 0; rowNr < this.cellsInSection; rowNr++) {
-      this.cells.push(this.renderRow(rowNr));
+    this.#renderMyself = true;
+    for (let rowNr = 0; rowNr < this.#cellsInSection; rowNr++) {
+      this.#cells.push(this.#renderRow(rowNr));
     }
     for (let puzzle in this.examples) {
-      this.renderButton(puzzle, () => this.update(this.examples[puzzle]));
+      this.#renderButton(puzzle, () =>
+        this.#update(this.examples[puzzle], true)
+      );
     }
-    this.renderButton("Solve!", () => this.solvePuzzle());
+    this.#renderButton("Solve!", () => this.solvePuzzle());
   }
 
   /* rendering the rows, the only arguments is the row number, that is passed to the inputs returns the DOM element */
-  renderRow(rowNr) {
+  #renderRow(rowNr) {
     let row = [];
     const rowContainer = document.createElement("div");
     rowContainer.classList.add(`row`);
     rowContainer.classList.add(`nr-${rowNr}`);
-    for (let colNr = 0; colNr < this.cellsInSection; colNr++) {
-      row.push(this.createInput(colNr, rowNr, rowContainer));
+    for (let colNr = 0; colNr < this.#cellsInSection; colNr++) {
+      row.push(this.#createInput(colNr, rowNr, rowContainer));
     }
     this.board.appendChild(rowContainer);
     return row;
@@ -457,19 +467,19 @@ class Solver {
     rowNr  -> the y / horizontal coordinate (in caresian system)
     parent -> the DOM element who is the parent of the input (cell)
     returns the DOM element of cell */
-  createInput(colNr, rowNr, parent) {
+  #createInput(colNr, rowNr, parent) {
     const cell = document.createElement("input");
     cell.type = "number";
     cell.step = 1;
     cell.min = 1;
-    cell.max = this.cellsInSection;
+    cell.max = this.#cellsInSection;
     cell.id = `C${Math.floor(Math.random() * 10000000)
       .toString()
       .padStart(8, 0)}`;
     cell.classList.add("tile");
     cell.dataset.col = colNr;
     cell.dataset.row = rowNr;
-    cell.addEventListener("change", (e) => this.update(e));
+    cell.addEventListener("change", (e) => this.#update(e));
     parent.appendChild(cell);
     return cell;
   }
@@ -477,7 +487,7 @@ class Solver {
   /* buttons for the contorl panel, the arguments are the following:
     text  -> text of the button
     cb -> the callback function what is fired when the button is clicked */
-  renderButton(text, cb) {
+  #renderButton(text, cb) {
     const button = document.createElement("button");
     button.innerText = text;
     button.addEventListener("click", () => {
