@@ -298,6 +298,7 @@ class Solver {
     );
   }
 
+  /* TODO: it is not implemented yet */
   /* this method checks a batches and gets the unique numbers
     arg:    batch n sized 1D array, that represents
       * a row,
@@ -306,8 +307,7 @@ class Solver {
     return: an array of objects that contains:
       * */
   getMissingFromBatch(batch) {
-    batch.
-    return missingOnes;
+    return true;
   }
 
   /* this method transposes the 2D array
