@@ -24,12 +24,17 @@ h2 {
 }
 
 #board {
-  width: calc((3rem + 2 * 1px) * 9);
+  width: calc((3rem + 2 * 1px) * 9 + 6px);
   aspect-ratio: 1;
   padding: 2rem;
   margin: 2rem auto;
-  background-color: lightgray;
-  box-shadow: 1px 2px 5px gray;
+  border-radius: 2rem;
+  background-image: linear-gradient(
+    60deg,
+    rgba(50, 50, 50, 0.2),
+    rgba(150, 150, 150, 0.2)
+  );
+  box-shadow: 1px 3px 8px gray, inset 1px 3px 6px lightgray;
 }
 
 .tile {
@@ -41,13 +46,14 @@ h2 {
   font-size: 20px;
   font-weight: bold;
   justify-content: center;
+  border-radius: 0.5rem;
   align-items: center;
   transition: all 0.5s linear;
 }
 
 input {
   text-align: center;
-  box-shadow: inset 1px 2px 5px gray;
+  box-shadow: 1px 2px 5px gray, inset 1px 2px 5px gray;
   outline: none;
   border: 1px gray solid;
 }
@@ -85,4 +91,12 @@ button:active {
 
 .issue {
   background-color: rgba(255, 0, 0, 0.6);
+}
+
+.row:nth-child(3n + 3):not(.tile:last-of-type) {
+  margin-bottom: 3px;
+}
+
+.tile:nth-child(3n + 3):not(.tile:last-of-type) {
+  margin-right: 3px;
 }
