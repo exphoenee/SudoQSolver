@@ -26,9 +26,9 @@ subarray e. g.:
           [1...n],
           [1...n]
           ...
-          m times
+          m times (currently m = n only possible)
           ...
-          [1..n]
+          [1...n]
         ]
 where n and m the x and y dimension of the sudoku, currently the n = m
 *************************************************************************/
@@ -139,7 +139,7 @@ class Solver {
     returns:
       * the solved puzzle n x n sized 2D array
       * or a boolen which value can be only false what mean there is no solution for this puzzle */
-  solvePuzzle(puzzle = null) {
+  solvePuzzle(puzzle = null, format = "default") {
     let startingPuzzle =
       this.renderMyself && !puzzle ? this.extractInputs() : puzzle;
 
@@ -148,7 +148,12 @@ class Solver {
       if (result) {
         this.update(result);
         this.userMsg("That was easy!");
-        return result;
+
+        const formatting = {
+          string: () => this.toString(result),
+          default: () => result,
+        };
+        return formatting[format]();
       } else {
         this.userMsg("There is no solution for this puzzle...", "error");
       }
@@ -293,6 +298,18 @@ class Solver {
     );
   }
 
+  /* this method checks a batches and gets the unique numbers
+    arg:    batch n sized 1D array, that represents
+      * a row,
+      * a column or
+      * a flattened box)
+    return: an array of objects that contains:
+      * */
+  getMissingFromBatch(batch) {
+    batch.
+    return missingOnes;
+  }
+
   /* this method transposes the 2D array
     arg:    puzzle n x n sized 2D array, to getting the columns in order
     return: puzzle that is transposed */
@@ -341,6 +358,13 @@ class Solver {
     return boxes.every((box) => this.batchCorrect(box));
   }
 
+  /* converts a table to string
+    arg:    puzzle a 2D array n x n sized
+    return: a flattened 2D array, what is joined to a String */
+  toString(puzzle) {
+    return puzzle.map((row) => row.join("")).join("");
+  }
+
   /**************************/
   /* UI inputs manipulation */
   /**************************/
@@ -351,10 +375,16 @@ class Solver {
   update(puzzle) {
     this.renderMyself &&
       this.cells.forEach((row, rowNr) =>
-        row.forEach(
-          (cell, colNr) =>
-            (cell.value = this.validateValue(puzzle[rowNr][colNr]))
-        )
+        row.forEach((cell, colNr) => {
+          cell.value = this.validateValue(puzzle[rowNr][colNr]);
+          if (cell.value > "") {
+            cell.classList.add("given");
+            cell.disabled = true;
+          } else {
+            cell.classList.remove("given");
+            cell.disabled = false;
+          }
+        })
       );
     return puzzle;
   }
@@ -413,7 +443,8 @@ class Solver {
   renderRow(rowNr) {
     let row = [];
     const rowContainer = document.createElement("div");
-    rowContainer.classList.add(`row-${rowNr}`);
+    rowContainer.classList.add(`row`);
+    rowContainer.classList.add(`nr-${rowNr}`);
     for (let colNr = 0; colNr < this.cellsInSection; colNr++) {
       row.push(this.createInput(colNr, rowNr, rowContainer));
     }
@@ -466,7 +497,6 @@ if (browser) {
 } else {
   /* node.js test case */
   const solverforNode = new Solver({ renderMyself: false });
-  console.log(solverforNode.solvePuzzle(solverforNode.examples.easy));
 }
 /**********************************/
 /* THIS IS ONLY FOR TEST PURPOSES */
