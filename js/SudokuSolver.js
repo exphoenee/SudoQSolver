@@ -1,6 +1,6 @@
 "use strict";
 
-const browser = true;
+const browser = false;
 /*************************************************************************
 before start using as a module in react clear this row on top,
 and the testing functions bottom
@@ -267,6 +267,10 @@ class Solver {
     arg:    puzzle n x n sized 2D array
     return: a boolean true means the puzzle seems to solvable */
   isPuzzleCorrect(puzzle) {
+    console.log(puzzle);
+    console.log(this.#rowsCorrect(puzzle));
+    console.log(this.#columnsCorrect(puzzle));
+    console.log(this.#boxesCorrect(puzzle));
     return (
       this.#rowsCorrect(puzzle) &&
       this.#columnsCorrect(puzzle) &&
@@ -360,7 +364,7 @@ class Solver {
 
   /* check the n x n sized sections arg), the boxes, there is not replication of numbers present */
   #boxesCorrect(puzzle) {
-    let boxes = this.#getColumnsOfPuzzle(puzzle);
+    let boxes = this.#getBoxes(puzzle);
     return boxes.every((box) => this.#batchCorrect(box));
   }
 
@@ -507,6 +511,8 @@ if (browser) {
 } else {
   /* node.js test case */
   const solverforNode = new Solver({ renderMyself: false });
+  const solution = solverforNode.solvePuzzle(solverforNode.examples.easy);
+  console.log(solution);
 }
 /**********************************/
 /* THIS IS ONLY FOR TEST PURPOSES */
