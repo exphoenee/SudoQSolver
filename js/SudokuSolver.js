@@ -51,6 +51,17 @@ class Solver {
     //add some example puzzles here
     //source: https://www.sudokuonline.io/
     this.examples = {
+      clear: [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      ],
       wrong: [
         [1, 2, 3, 4, 5, 6, 7, 8, 9],
         [1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -73,17 +84,7 @@ class Solver {
         [3, 0, 0, 0, 0, 0, 0, 0, 0],
         [2, 0, 0, 0, 0, 0, 0, 0, 0],
       ],
-      clear: [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      ],
+
       easy: [
         [1, 0, 0, 0, 0, 7, 0, 0, 3],
         [9, 0, 6, 0, 0, 8, 2, 0, 4],
@@ -224,11 +225,9 @@ class Solver {
       * y (number of row) coordinates */
   generateMap(puzzle) {
     return puzzle.map((row, y) => {
-      {
-        return row.map((cell, x) => {
-          return { value: cell, x, y };
-        });
-      }
+      return row.map((cell, x) => {
+        return { value: cell, x, y };
+      });
     });
   }
 
@@ -267,10 +266,6 @@ class Solver {
     arg:    puzzle n x n sized 2D array
     return: a boolean true means the puzzle seems to solvable */
   isPuzzleCorrect(puzzle) {
-    console.log(puzzle);
-    console.log(this.#rowsCorrect(puzzle));
-    console.log(this.#columnsCorrect(puzzle));
-    console.log(this.#boxesCorrect(puzzle));
     return (
       this.#rowsCorrect(puzzle) &&
       this.#columnsCorrect(puzzle) &&
