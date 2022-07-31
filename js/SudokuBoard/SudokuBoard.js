@@ -26,6 +26,7 @@ class SudokuBoard {
   #rows;
   #cols;
   #boxes;
+
   constructor(boxSizeX, boxSizeY) {
     this.#boxSizeX = boxSizeX;
     this.#boxSizeY = boxSizeY;
@@ -145,6 +146,20 @@ class SudokuBoard {
     return this.#rows[rowNr];
   }
 
+  /* gives a column according to the given column number
+  arg:    colNr (Integer)
+  return: array of Cell (Objects) */
+  getCol(colNr) {
+    return this.#cols[colNr];
+  }
+
+  /* gives a section according to the given section number
+  arg:    boxNr (Integer)
+  return: array of Cell (Objects) */
+  getBox(boxNr) {
+    return this.#boxes[boxNr];
+  }
+
   /* gives the missing numbers of a row according to the given row number
   arg:    rowNr (Integer)
   return: array of integers that are the possible values what missing from the row  */
@@ -158,6 +173,37 @@ class SudokuBoard {
   getFilledFromRow(rowNr) {
     return this.getRow(rowNr).getFilledNumbers();
   }
+
+  /* gives the missing numbers of a column according to the given column number
+  arg:    column (Integer)
+  return: array of integers that are the possible values what missing from the column  */
+  getMissingFromCol(colNr) {
+    return this.getCol(colNr).getMissingNumbers();
+  }
+
+  /* gives into the column already written numbers according to the given column number
+  arg:    colNr (Integer)
+  return: array of integers that are the possible values what are in the column already */
+  getFilledFromCol(colNr) {
+    return this.getRow(colNr).getFilledNumbers();
+  }
+
+  /* gives the missing numbers of a section according to the given section number
+  arg:    boxNr (Integer)
+  return: array of integers that are the possible values what missing from the section  */
+  getMissingFromBox(boxNr) {
+    return this.getBox(boxNr).getMissingNumbers();
+  }
+
+  /* gives into the section already written numbers according to the given section number
+  arg:    boxNr (Integer)
+  return: array of integers that are the possible values what are in the section already */
+  getFilledFromSection(boxNr) {
+    return this.getBox(boxNr).getFilledNumbers();
+  }
+
+  /* */
+  getCellPossiblities() {}
 
   /* gives the firs free cell
   arg:    null
@@ -193,7 +239,9 @@ class SudokuBoard {
     }
   }
 
-  /* setBoard method sets all the cells of the table according to the given arguments */
+  /* setBoard method sets all the cells of the table according to the given arguments.
+  arg:    board can be 1D array, 2D array or a string.
+  return: void */
   setBoard(board) {
     if (Array.isArray(board)) {
       if (board.length === this.#dimensionY) {
@@ -252,20 +300,22 @@ class SudokuBoard {
   }
 
   /* gives the values of all the cells in the board
-  arg:    null
-  return: array of integers, the values of the cells in order they are created */
-  getCellValues(params = { type: "1D", unfilledChar: "0" }) {
-    const { type, unfilledChar } = params;
+  arg:    object with following keys:
+          ** type: (string) can be 1D, 2D, or string, the format of the result
+              1D is 1D array, 2D is 2D array, string is string
+          ** unfilledChard
+  return: 1D, 2D array of integers, or string according to format argument, containig the values of the cells in order they are created */
+  getCellValues(params = { format: "1D", unfilledChar: "0" }) {
+    const { format, unfilledChar } = params;
     let res = this.#cells.map((cell) => cell.value);
-    if (type === "1D") {
-      return res;
-    } else if (type === "string") {
+    if (format.toUpperCase() === "STRING") {
       return res.join("").replace(/0/g, unfilledChar);
-    } else if (type === "2D") {
+    } else if (format.toUpperCase() === "2D") {
       const board2D = [];
       while (res.length) board2D.push(res.splice(0, this.#dimensionX));
       return board2D;
     }
+    return res;
   }
 
   /* gives the value of a cells by the given coordinates
@@ -455,6 +505,7 @@ class Cell {
       throw new Error("Set issued must be a boolean (true/false)");
     }
   }
+
   /* gives the values what can the cell accept
   arg:    null
   retrun: Object {min, max, unfilled}
@@ -629,7 +680,7 @@ if (runTests) {
     ],
   });
   assert({
-    check: () => board.getCellValues({ type: "string", unfilledChar: "." }),
+    check: () => board.getCellValues({ format: "string", unfilledChar: "." }),
     excepted:
       "2.....6...5......................................................................",
   });
@@ -646,7 +697,7 @@ if (runTests) {
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
       ]),
-    check: () => board.getCellValues({ type: "string", unfilledChar: "." }),
+    check: () => board.getCellValues({ format: "string", unfilledChar: "." }),
     excepted:
       "213...6...5......................................................................",
   });
@@ -658,7 +709,7 @@ if (runTests) {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0,
       ]),
-    check: () => board.getCellValues({ type: "string", unfilledChar: "." }),
+    check: () => board.getCellValues({ format: "string", unfilledChar: "." }),
     excepted:
       "256...6...5......................................................................",
   });
@@ -667,12 +718,12 @@ if (runTests) {
       board.setBoard(
         "25698761235......................................................................"
       ),
-    check: () => board.getCellValues({ type: "string", unfilledChar: "." }),
+    check: () => board.getCellValues({ format: "string", unfilledChar: "." }),
     excepted:
       "25698761235......................................................................",
   });
   assert({
-    check: () => board.getCellValues({ type: "2D", unfilledChar: "." }),
+    check: () => board.getCellValues({ format: "2D", unfilledChar: "." }),
     excepted: [
       [2, 5, 6, 9, 8, 7, 6, 1, 2],
       [3, 5, 0, 0, 0, 0, 0, 0, 0],
