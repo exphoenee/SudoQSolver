@@ -167,16 +167,20 @@ class SudokuBoard {
     return { x: freeCell.x, y: freeCell.y };
   }
 
+  /* Validating the coordinate, the coord must be in range between 0 and dimension.
+    args:   x, y integers the coords what we would like to validate
+    return: true is the coords are in range */
+  validateCoord(x, y) {
+    return (
+      0 <= x && x <= this.#dimensionX - 1 && 0 <= y && y <= this.#dimensionY - 1
+    );
+  }
+
   /* gives a cells by the given coordinates
   arg:    x (integer) and y (integer) coordinates
   return: Cell (Object) */
   getCellByCoords(x, y) {
-    if (
-      0 <= x &&
-      x <= this.#dimensionX - 1 &&
-      0 <= y &&
-      y <= this.#dimensionY - 1
-    ) {
+    if (this.validateCoord(x, y)) {
       return this.#cells.find((cell) => cell.x == x && cell.y == y);
     } else {
       console.error(
@@ -221,8 +225,18 @@ class SudokuBoard {
           } element.`
         );
       }
-    } else if (typeof board == "string") {
-      if (board.length === this.#maxNumber) {
+    } else if (typeof board === "string") {
+      if (board.length === this.#cellNumber) {
+        board.split("").forEach((cellValue, nr) => {
+          let y = Math.floor(nr / this.#dimensionX);
+          let x = nr % this.#dimensionX;
+          const cell = this.getCellByCoords(x, y);
+          if (cell.validateValue(+cellValue)) {
+            this.getCellByCoords(x, y).setValue(+cellValue);
+          } else {
+            cell.setValue(cell.getAccepted().unfilled);
+          }
+        });
       } else {
         console.error(
           `Input of the setBoard method must be exactly ${
@@ -240,12 +254,18 @@ class SudokuBoard {
   /* gives the values of all the cells in the board
   arg:    null
   return: array of integers, the values of the cells in order they are created */
-  getCellValues() {
-    return this.#cells.map((cell) => cell.value);
-  }
-
-  getCellValuesAsString(unfilledChar = 0) {
-    return this.getCellValues().join("").replace(/0/g, ".");
+  getCellValues(params = { type: "1D", unfilledChar: "0" }) {
+    const { type, unfilledChar } = params;
+    let res = this.#cells.map((cell) => cell.value);
+    if (type === "1D") {
+      return res;
+    } else if (type === "string") {
+      return res.join("").replace(/0/g, unfilledChar);
+    } else if (type === "2D") {
+      const board2D = [];
+      while (res.length) board2D.push(res.splice(0, this.#dimensionX));
+      return board2D;
+    }
   }
 
   /* gives the value of a cells by the given coordinates
@@ -378,15 +398,22 @@ class Cell {
     return this.#value;
   }
 
+  /* Validating the value of a cell
+    arg:    value,
+    return: true if the value is correct */
+  validateValue(value) {
+    return (
+      (value >= this.#accepted.min && value <= this.#accepted.max) ||
+      value === this.#accepted.unfilled
+    );
+  }
+
   /* sets and checks the value of a cell if the values is wrong, sets to unfilled
   arg:    newValue (integer)
   retrun: void (undefined) */
   setValue(newValue) {
     if (typeof newValue == "number") {
-      if (
-        (newValue >= this.#accepted.min && newValue <= this.#accepted.max) ||
-        newValue === this.#accepted.unfilled
-      ) {
+      if (this.validateValue(newValue)) {
         this.#value = newValue;
       } else {
         this.#value = this.#accepted.unfilled;
@@ -602,7 +629,7 @@ if (runTests) {
     ],
   });
   assert({
-    check: () => board.getCellValuesAsString(),
+    check: () => board.getCellValues({ type: "string", unfilledChar: "." }),
     excepted:
       "2.....6...5......................................................................",
   });
@@ -619,7 +646,7 @@ if (runTests) {
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
       ]),
-    check: () => board.getCellValuesAsString(),
+    check: () => board.getCellValues({ type: "string", unfilledChar: "." }),
     excepted:
       "213...6...5......................................................................",
   });
@@ -631,8 +658,31 @@ if (runTests) {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0,
       ]),
-    check: () => board.getCellValuesAsString(),
+    check: () => board.getCellValues({ type: "string", unfilledChar: "." }),
     excepted:
       "256...6...5......................................................................",
+  });
+  assert({
+    first: () =>
+      board.setBoard(
+        "25698761235......................................................................"
+      ),
+    check: () => board.getCellValues({ type: "string", unfilledChar: "." }),
+    excepted:
+      "25698761235......................................................................",
+  });
+  assert({
+    check: () => board.getCellValues({ type: "2D", unfilledChar: "." }),
+    excepted: [
+      [2, 5, 6, 9, 8, 7, 6, 1, 2],
+      [3, 5, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ],
   });
 }
