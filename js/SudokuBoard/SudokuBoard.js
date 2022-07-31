@@ -86,7 +86,7 @@ class SudokuBoard {
 
   /* the method returns all the data of the cells what the board including
    that used only for debugging purpose */
-  listOfCells() {
+  boardProperties() {
     return this.#cells.map((cell) => {
       return {
         x: cell.x,
@@ -165,6 +165,15 @@ class SudokuBoard {
     return { x: freeCell.x, y: freeCell.y };
   }
 
+  /* gives a cells by the given coordinates
+  arg:    x (integer) and y (integer) coordinates
+  return: Cell (Object) */
+  getCellByCoords(x, y) {
+    return this.#cells.find((cell) => cell.x == x && cell.y == y);
+  }
+
+  setBoard() {}
+
   /* gives the values of all the cells in the board
   arg:    null
   return: array of integers, the values of the cells in order they are created */
@@ -172,11 +181,8 @@ class SudokuBoard {
     return this.#cells.map((cell) => cell.value);
   }
 
-  /* gives a cells by the given coordinates
-  arg:    x (integer) and y (integer) coordinates
-  return: Cell (Object) */
-  getCellByCoords(x, y) {
-    return this.#cells.find((cell) => cell.x == x && cell.y == y);
+  getCellValuesAsString(unfilledChar = 0) {
+    return this.getCellValues().join("").replace(/0/g, ".");
   }
 
   /* gives the value of a cells by the given coordinates
@@ -441,7 +447,7 @@ if (runTests) {
     excepted: { x: 1, y: 0 },
   });
   assert({
-    check: () => board.listOfCells(),
+    check: () => board.boardProperties(),
     excepted: [
       { x: 0, y: 0, id: 0, boxId: 0, bx: 0, by: 0, value: 2, given: false },
       { x: 1, y: 0, id: 9, boxId: 0, bx: 0, by: 0, value: 0, given: false },
@@ -525,5 +531,10 @@ if (runTests) {
       { x: 7, y: 8, id: 71, boxId: 8, bx: 2, by: 2, value: 0, given: false },
       { x: 8, y: 8, id: 80, boxId: 8, bx: 2, by: 2, value: 0, given: false },
     ],
+  });
+  assert({
+    check: () => board.getCellValuesAsString(),
+    excepted:
+      "2.....6...5......................................................................",
   });
 }
