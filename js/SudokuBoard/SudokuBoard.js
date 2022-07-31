@@ -198,12 +198,27 @@ class SudokuBoard {
   /* gives into the section already written numbers according to the given section number
   arg:    boxNr (Integer)
   return: array of integers that are the possible values what are in the section already */
-  getFilledFromSection(boxNr) {
+  getFilledFromBox(boxNr) {
     return this.getBox(boxNr).getFilledNumbers();
   }
 
-  /* */
-  getCellPossiblities() {}
+  /* this method gives the numbers what can we write into a cell, the cell couldn't has a walue what is represented in the column, the row and the box thath the cell is contained
+      arg:      x, y (integer)
+      return:   array of integer what is missing form the row, column, and box of the cell */
+  getCellPossiblities(x, y) {
+    const cell = this.getCellByCoords(x, y);
+    const missingFromCol = this.getMissingFromCol(cell.y);
+    const missingFromRow = this.getMissingFromRow(cell.x);
+    const missingFromBox = this.getMissingFromBox(cell.boxId);
+
+    const intersection = (arr1, arr2) =>
+      arr1.filter((value) => arr2.includes(value));
+
+    return intersection(
+      intersection(missingFromCol, missingFromRow),
+      missingFromBox
+    );
+  }
 
   /* gives the firs free cell
   arg:    null
@@ -735,5 +750,17 @@ if (runTests) {
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
     ],
+  });
+  assert({
+    check: () => board.getRow(0),
+    excepted: [2, 5, 6, 9, 8, 7, 6, 1, 2],
+  });
+  assert({
+    check: () => board.getCol(0),
+    excepted: [2, 3, 0, 0, 0, 0, 0, 0, 0],
+  });
+  assert({
+    check: () => board.getBox(0),
+    excepted: [2, 5, 6, 3, 5, 0, 0, 0, 0],
   });
 }
