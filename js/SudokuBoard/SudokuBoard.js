@@ -20,6 +20,7 @@ class SudokuBoard {
   #boxSizeY;
   #dimensionX;
   #dimensionY;
+  #cellNumber;
   #maxNumber;
   #cells;
   #rows;
@@ -30,6 +31,7 @@ class SudokuBoard {
     this.#boxSizeY = boxSizeY;
     this.#dimensionX = boxSizeX ** 2;
     this.#dimensionY = boxSizeY ** 2;
+    this.#cellNumber = this.#dimensionX * this.#dimensionY;
     this.#maxNumber = this.#boxSizeX * this.#boxSizeY;
     this.#cells = [];
     this.#rows = [];
@@ -169,7 +171,17 @@ class SudokuBoard {
   arg:    x (integer) and y (integer) coordinates
   return: Cell (Object) */
   getCellByCoords(x, y) {
-    return this.#cells.find((cell) => cell.x == x && cell.y == y);
+    if (x === this.#dimensionX && y === this.#dimensionY) {
+      return this.#cells.find((cell) => cell.x == x && cell.y == y);
+    } else {
+      console.error(
+        `The x coordinate value must be between 1...${
+          this.#dimensionX
+        }, the y must be betwwen 1...${
+          this.#dimensionY
+        }. You asked x: ${x} and y: ${y}.`
+      );
+    }
   }
 
   /* setBoard method sets all the cells of the table according to the given arguments */
@@ -184,35 +196,36 @@ class SudokuBoard {
               );
             }
           } else {
-            throw new Error(
+            console.error(
               `Input array of the setBoard method in case 2D array ${
                 this.#dimensionY
               } times ${this.#dimensionX} sized.`
             );
           }
         });
-      } else if (board.length === this.#maxNumber) {
+      } else if (board.length === this.#cellNumber) {
         let yCoord = 1;
         let xCoord = 1;
+        console.log(this.getCellByCoords(0, 0));
         this.getCellByCoords(xCoord, yCoord).setValue(cellValue);
       } else {
-        throw new Error(
+        console.error(
           `Input array of the setBoard method in case of 1D array must be exactly ${
-            this.#maxNumber
+            this.#cellNumber
           } element.`
         );
       }
     } else if (typeof board == "string") {
       if (board.length === this.#maxNumber) {
       } else {
-        throw new Error(
+        console.error(
           `Input of the setBoard method must be exactly ${
             this.#maxNumber
           } character long string.`
         );
       }
     } else {
-      throw new Error(
+      console.error(
         "Input of set setBoard method should be an 1D or 2D array or a string."
       );
     }
