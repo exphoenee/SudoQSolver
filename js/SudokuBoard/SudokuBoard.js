@@ -241,6 +241,38 @@ class SudokuBoard {
     );
   }
 
+  /* checking that the column has duplicates
+    arg:    colNr (integers) the column number of the board
+    return: true or false that means there are a duplicates for this column */
+  hasColumnDuplicates(colNr) {
+    return this.getCol(colNr).hasDuplicates();
+  }
+
+  /* checking that the row has duplicates
+    arg:    rowNr (integers) the row number of the board
+    return: true or false that means there are a duplicates for this row */
+  hasRowDuplicates(rowNr) {
+    return this.getRow(rowNr).hasDuplicates();
+  }
+
+  /* checking that the box has duplicates
+    arg:    boxNr (integers) the box number of the board
+    return: true or false that means there are a duplicates for this box */
+  hasBoxDuplicates(boxNr) {
+    return this.getBox(boxNr).hasDuplicates();
+  }
+
+  /* checking that the cell has duplicates its row, column or section arg:    x, y (integers) the coordinates of the cell
+    return: true or false that means there are a duplicates for this cell */
+  hasCellDuplicates(x, y) {
+    const cell = this.getCellByCoords(x, y);
+    return (
+      this.hasColumnDuplicates(cell.y) &&
+      this.hasRowDuplicates(cell.x) &&
+      this.hasBoxDuplicates(cell.boxId)
+    );
+  }
+
   /* gives the firs free cell
   arg:    null
   return: Object {x, y} the two coorinate of the cell */
