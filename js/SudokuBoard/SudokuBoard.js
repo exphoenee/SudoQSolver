@@ -172,7 +172,51 @@ class SudokuBoard {
     return this.#cells.find((cell) => cell.x == x && cell.y == y);
   }
 
-  setBoard() {}
+  /* setBoard method sets all the cells of the table according to the given arguments */
+  setBoard(board) {
+    if (Array.isArray(board)) {
+      if (board.length === this.#dimensionY) {
+        board.forEach((row, y) => {
+          if (board.length === this.#dimensionX) {
+            if (Array.isArray(row, x)) {
+              row.forEach((cellValue) =>
+                this.getCellByCoords(x, y).setValue(cellValue)
+              );
+            }
+          } else {
+            throw new Error(
+              `Input array of the setBoard method in case 2D array ${
+                this.#dimensionY
+              } times ${this.#dimensionX} sized.`
+            );
+          }
+        });
+      } else if (board.length === this.#maxNumber) {
+        let yCoord = 1;
+        let xCoord = 1;
+        this.getCellByCoords(xCoord, yCoord).setValue(cellValue);
+      } else {
+        throw new Error(
+          `Input array of the setBoard method in case of 1D array must be exactly ${
+            this.#maxNumber
+          } element.`
+        );
+      }
+    } else if (typeof board == "string") {
+      if (board.length === this.#maxNumber) {
+      } else {
+        throw new Error(
+          `Input of the setBoard method must be exactly ${
+            this.#maxNumber
+          } character long string.`
+        );
+      }
+    } else {
+      throw new Error(
+        "Input of set setBoard method should be an 1D or 2D array or a string."
+      );
+    }
+  }
 
   /* gives the values of all the cells in the board
   arg:    null
@@ -340,9 +384,11 @@ class Cell {
       throw new Error("Set value must be a number");
     }
   }
+
   get given() {
     return this.#given;
   }
+
   set given(isGiven) {
     if (typeof isGiven == "boolean") {
       this.#given = isGiven;
@@ -536,5 +582,16 @@ if (runTests) {
     check: () => board.getCellValuesAsString(),
     excepted:
       "2.....6...5......................................................................",
+  });
+  assert({
+    first: () =>
+      board.setBoard([
+        2, 0, 0, 0, 0, 0, 6, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0,
+      ]),
+    check: () => board.getMissingFromRow(0),
+    excepted: [1, 3, 4, 5, 6, 7, 8, 9],
   });
 }
