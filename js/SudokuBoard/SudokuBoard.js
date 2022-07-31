@@ -141,23 +141,44 @@ class SudokuBoard {
 
   /* gives a row according to the given row number
   arg:    rowNr (Integer)
-  return: array of Cell (Objects) */
+  return: Batch (Objects) */
   getRow(rowNr) {
     return this.#rows[rowNr];
   }
 
   /* gives a column according to the given column number
   arg:    colNr (Integer)
-  return: array of Cell (Objects) */
+  return: Batch (Objects) */
   getCol(colNr) {
     return this.#cols[colNr];
   }
 
   /* gives a section according to the given section number
   arg:    boxNr (Integer)
-  return: array of Cell (Objects) */
+  return: Batch (Objects) */
   getBox(boxNr) {
     return this.#boxes[boxNr];
+  }
+
+  /* gives a row according to the given row number
+  arg:    rowNr (Integer)
+  return: values of the cells in the Batch (array of integers) */
+  getRowValues(rowNr) {
+    return this.#rows[rowNr].getCells().map((cell) => cell.value);
+  }
+
+  /* gives a column according to the given column number
+  arg:    colNr (Integer)
+  return: values of the cells in the Batch (array of integers) */
+  getColValues(colNr) {
+    return this.#cols[colNr].getCells().map((cell) => cell.value);
+  }
+
+  /* gives a section according to the given section number
+  arg:    boxNr (Integer)
+  return: values of the cells in the Batch (array of integers) */
+  getBoxValues(boxNr) {
+    return this.#boxes[boxNr].getCells().map((cell) => cell.value);
   }
 
   /* gives the missing numbers of a row according to the given row number
@@ -389,6 +410,13 @@ class Batch {
   getFilledNumbers() {
     const cellValues = this.#cells.map((cell) => cell.value);
     return this.#validValues.filter((value) => cellValues.includes(value));
+  }
+
+  hasDuplicates() {
+    const cellValues = this.#cells
+      .map((cell) => cell.value)
+      .filter((cell) => cell !== 0);
+    return cellValues.length !== new Set(cellValues).size;
   }
 
   /* gives a cell according to the given index
@@ -752,15 +780,15 @@ if (runTests) {
     ],
   });
   assert({
-    check: () => board.getRow(0),
+    check: () => board.getRowValues(0),
     excepted: [2, 5, 6, 9, 8, 7, 6, 1, 2],
   });
   assert({
-    check: () => board.getCol(0),
+    check: () => board.getColValues(0),
     excepted: [2, 3, 0, 0, 0, 0, 0, 0, 0],
   });
   assert({
-    check: () => board.getBox(0),
+    check: () => board.getBoxValues(0),
     excepted: [2, 5, 6, 3, 5, 0, 0, 0, 0],
   });
 }
