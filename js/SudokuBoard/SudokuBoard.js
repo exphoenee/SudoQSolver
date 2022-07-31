@@ -171,27 +171,36 @@ class SudokuBoard {
   arg:    x (integer) and y (integer) coordinates
   return: Cell (Object) */
   getCellByCoords(x, y) {
-    if (x === this.#dimensionX && y === this.#dimensionY) {
-      return this.#cells.find((cell) => cell.x == x && cell.y == y);
+    /*
+    if (
+      0 <= x &&
+      x <= this.#dimensionX - 1 &&
+      0 <= y &&
+      y <= this.#dimensionY - 1
+    ) {
     } else {
       console.error(
         `The x coordinate value must be between 1...${
           this.#dimensionX
-        }, the y must be betwwen 1...${
+        }, the y must be between 1...${
           this.#dimensionY
         }. You asked x: ${x} and y: ${y}.`
-      );
-    }
+        );
+      }
+    */
+    return this.#cells.find((cell) => cell.x == x && cell.y == y);
   }
 
   /* setBoard method sets all the cells of the table according to the given arguments */
   setBoard(board) {
+    console.log(board.length, this.#dimensionY, this.#cellNumber);
     if (Array.isArray(board)) {
       if (board.length === this.#dimensionY) {
         board.forEach((row, y) => {
+          console.log(board.length, this.#dimensionX);
           if (board.length === this.#dimensionX) {
-            if (Array.isArray(row, x)) {
-              row.forEach((cellValue) =>
+            if (Array.isArray(row)) {
+              row.forEach((cellValue, x) =>
                 this.getCellByCoords(x, y).setValue(cellValue)
               );
             }
@@ -206,7 +215,6 @@ class SudokuBoard {
       } else if (board.length === this.#cellNumber) {
         let yCoord = 1;
         let xCoord = 1;
-        console.log(this.getCellByCoords(0, 0));
         this.getCellByCoords(xCoord, yCoord).setValue(cellValue);
       } else {
         console.error(
@@ -376,8 +384,12 @@ class Cell {
   arg:    newValue (integer)
   retrun: void (undefined) */
   setValue(newValue) {
+    console.log(newValue);
     if (typeof newValue == "number") {
-      if (newValue >= this.#accepted.min && newValue <= this.#accepted.max) {
+      if (
+        (newValue >= this.#accepted.min && newValue <= this.#accepted.max) ||
+        newValue === this.#accepted.unfilled
+      ) {
         this.#value = newValue;
       } else {
         this.#value = this.#accepted.unfilled;
@@ -386,9 +398,9 @@ class Cell {
             this.#accepted.max
           }, value: ${
             this.#accepted.unfilled
-          } is allowed for unfilled cells.\nYou tried to set value: ${newValue}, for cell(x= ${
+          } is allowed for unfilled cells.\nYou tried to set value: ${newValue}, for cell(x=${
             this.#x
-          },y=${this.y}) but value set to: ${
+          }, y=${this.y}) but value set to: ${
             this.#accepted.unfilled
           }, because of this issue.`
         );
@@ -438,9 +450,6 @@ const board = new SudokuBoard(3, 3);
 
 function assert({ first, check, excepted }) {
   const tooLong = 250;
-  console.log(
-    "--------------------------------TEST STEP--------------------------------"
-  );
   let stepText = "";
   if (first) {
     const firstResult = first();
@@ -462,6 +471,10 @@ function assert({ first, check, excepted }) {
   const decision = `Result:     ${
     resultValue == exceptValue ? `📗ok📗\n` : `📕FAILED📕\n`
   }`;
+
+  console.log(
+    "--------------------------------TEST STEP--------------------------------"
+  );
   console.log(stepText + excepText + resultText + decision);
 }
 
@@ -599,12 +612,30 @@ if (runTests) {
   assert({
     first: () =>
       board.setBoard([
-        2, 0, 0, 0, 0, 0, 6, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        [2, 1, 3, 0, 0, 0, 6, 0, 0],
+        [0, 5, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      ]),
+    check: () => board.getCellValuesAsString(),
+    excepted:
+      "213...6...5......................................................................",
+  });
+  assert({
+    first: () =>
+      board.setBoard([
+        2, 5, 6, 0, 0, 0, 6, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0,
       ]),
-    check: () => board.getMissingFromRow(0),
-    excepted: [1, 3, 4, 5, 6, 7, 8, 9],
+    check: () => board.getCellValuesAsString(),
+    excepted:
+      "256...6...5......................................................................",
   });
 }
