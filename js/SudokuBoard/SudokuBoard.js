@@ -171,13 +171,13 @@ class SudokuBoard {
   arg:    x (integer) and y (integer) coordinates
   return: Cell (Object) */
   getCellByCoords(x, y) {
-    /*
     if (
       0 <= x &&
       x <= this.#dimensionX - 1 &&
       0 <= y &&
       y <= this.#dimensionY - 1
     ) {
+      return this.#cells.find((cell) => cell.x == x && cell.y == y);
     } else {
       console.error(
         `The x coordinate value must be between 1...${
@@ -185,19 +185,15 @@ class SudokuBoard {
         }, the y must be between 1...${
           this.#dimensionY
         }. You asked x: ${x} and y: ${y}.`
-        );
-      }
-    */
-    return this.#cells.find((cell) => cell.x == x && cell.y == y);
+      );
+    }
   }
 
   /* setBoard method sets all the cells of the table according to the given arguments */
   setBoard(board) {
-    console.log(board.length, this.#dimensionY, this.#cellNumber);
     if (Array.isArray(board)) {
       if (board.length === this.#dimensionY) {
         board.forEach((row, y) => {
-          console.log(board.length, this.#dimensionX);
           if (board.length === this.#dimensionX) {
             if (Array.isArray(row)) {
               row.forEach((cellValue, x) =>
@@ -213,9 +209,11 @@ class SudokuBoard {
           }
         });
       } else if (board.length === this.#cellNumber) {
-        let yCoord = 1;
-        let xCoord = 1;
-        this.getCellByCoords(xCoord, yCoord).setValue(cellValue);
+        board.forEach((cellValue, nr) => {
+          let y = Math.floor(nr / this.#dimensionX);
+          let x = nr % this.#dimensionX;
+          this.getCellByCoords(x, y).setValue(cellValue);
+        });
       } else {
         console.error(
           `Input array of the setBoard method in case of 1D array must be exactly ${
@@ -384,7 +382,6 @@ class Cell {
   arg:    newValue (integer)
   retrun: void (undefined) */
   setValue(newValue) {
-    console.log(newValue);
     if (typeof newValue == "number") {
       if (
         (newValue >= this.#accepted.min && newValue <= this.#accepted.max) ||
@@ -472,10 +469,10 @@ function assert({ first, check, excepted }) {
     resultValue == exceptValue ? `📗ok📗\n` : `📕FAILED📕\n`
   }`;
 
-  console.log(
+  console.warn(
     "--------------------------------TEST STEP--------------------------------"
   );
-  console.log(stepText + excepText + resultText + decision);
+  console.warn(stepText + excepText + resultText + decision);
 }
 
 if (runTests) {
