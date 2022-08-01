@@ -206,7 +206,7 @@ class SudokuBoard {
   arg:    colNr (Integer)
   return: array of integers that are the possible values what are in the column already */
   getFilledFromCol(colNr) {
-    return this.getRow(colNr).getFilledNumbers();
+    return this.getCol(colNr).getFilledNumbers();
   }
 
   /* gives the missing numbers of a section according to the given section number
