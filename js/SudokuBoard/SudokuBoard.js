@@ -442,27 +442,36 @@ class Batch {
     }
   }
 
+  /* gives all the values of cell they ar in the batch
+  arg:   null,
+  return arraf of integers, that contains the values of the cells in order the cells are added */
+  getCellValues() {
+    return this.#cells.map((cell) => cell.value);
+  }
+
   /* gives the missing numbers of the batch
   arg:    null
   return: array of integers that are the possible values what missing from the Batch  */
   getMissingNumbers() {
-    const cellValues = this.#cells.map((cell) => cell.value);
-    return this.#validValues.filter((value) => !cellValues.includes(value));
+    return this.#validValues.filter(
+      (value) => !this.getCellValues().includes(value)
+    );
   }
 
   /* gives already written of the batch
   arg:    rowNr (Integer)
   return: array of integers that are alerady in the Batch written */
   getFilledNumbers() {
-    const cellValues = this.#cells.map((cell) => cell.value);
-    return this.#validValues.filter((value) => cellValues.includes(value));
+    return this.#validValues.filter((value) =>
+      this.getCellValues().includes(value)
+    );
   }
 
   /* checks that the batch has alread a duplicates */
   hasDuplicates() {
-    const cellValues = this.#cells
-      .filter((cell) => cell.value !== 0)
-      .map((cell) => cell.value);
+    const cellValues = this.getCellValues().filter(
+      (cell) => cell !== this.#unfilledValue
+    );
     return cellValues.length !== new Set(cellValues).size;
   }
 
@@ -470,11 +479,11 @@ class Batch {
   arg:    null,
   return: array of cells with the same values */
   getDuplicates() {
-    const cellValues = this.#cells
-      .map((cell) => cell.value)
-      .filter((cell) => cell !== 0);
-    return cellValues.length !== new Set(cellValues).size;
+    this.getFilledNumbers();
+    this.#validValues.map();
   }
+
+  getCellByValue() {}
 
   /* gives a cell according to the given index
   arg:    i (integer) the index of the cell
@@ -664,13 +673,11 @@ if (runTests) {
     check: () => board.getCellValue(1, 1),
     excepted: 0,
   });
-
   assert({
     first: () => board.setCellValue(1, 1, 100),
     check: () => board.getCellValue(1, 1),
     excepted: 0,
   });
-
   assert({
     first: () => board.setCellValue(1, 1, 5),
     check: () => board.getCellValue(1, 1),
@@ -885,5 +892,3 @@ if (runTests) {
     excepted: false,
   });
 }
-/* TODO: TEST REQUIRED FOR CHECKING THE DUPLICATES AND MISSING AND FILLED NUMBERS!!!
- */
