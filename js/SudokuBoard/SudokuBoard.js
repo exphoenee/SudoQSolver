@@ -483,7 +483,12 @@ class Batch {
     this.#validValues.map();
   }
 
-  getCellByValue() {}
+  /* gives all the cells with the given value
+  arg:    value (integer),
+  return: array of Cells (object) */
+  getCellByValue(value) {
+    return this.#cells.filter((cell) => cell.value === value);
+  }
 
   /* gives a cell according to the given index
   arg:    i (integer) the index of the cell
