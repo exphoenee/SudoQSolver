@@ -1,7 +1,7 @@
 "use strict";
 
 const SudokuBoard = require("../SudokuBoard");
-
+console.log();
 const board = new SudokuBoard(3, 3);
 
 /******************************************/
@@ -43,7 +43,7 @@ function assert({ first, check, excepted }) {
   console.warn(stepText + excepText + resultText + decision);
 }
 
-if (runTests) {
+if (true) {
   assert({
     check: () => board.getCellValue(1, 1),
     excepted: 0,
