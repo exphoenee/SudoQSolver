@@ -664,3 +664,5 @@ class Cell {
     return this.#accepted;
   }
 }
+
+module.exports = SudokuBoard;
