@@ -823,6 +823,26 @@ if (runTests) {
     check: () => board.getBoxValues(0),
     excepted: [2, 5, 6, 3, 5, 0, 0, 0, 0],
   });
+  assert({
+    first: () => board.getRowValues(0),
+    check: () => board.hasRowDuplicates(0),
+    excepted: true,
+  });
+  assert({
+    first: () => board.getRowValues(1),
+    check: () => board.hasRowDuplicates(1),
+    excepted: false,
+  });
+  assert({
+    first: () => board.getColValues(0),
+    check: () => board.hasColumnDuplicates(0),
+    excepted: false,
+  });
+  assert({
+    first: () => board.getColValues(1),
+    check: () => board.hasColumnDuplicates(1),
+    excepted: true,
+  });
 }
 /* TODO: TEST REQUIRED FOR CHECKING THE DUPLICATES AND MISSING AND FILLED NUMBERS!!!
  */
