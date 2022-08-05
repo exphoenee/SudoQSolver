@@ -94,7 +94,7 @@ class SudokuBoard {
   }
 
   clearIssued() {
-    this.#cells.forEach((cell) => (cell.issued = false));
+    this.#cells.forEach((cell) => cell.setUnIssued());
   }
 
   /* filtering out the cells, that are in the same column, putting into a Batch, that handle the columns */
@@ -479,12 +479,12 @@ class Batch {
   arg:    null,
   return: null. */
   setIssued() {
-    this.getDuplicateValuedCells().forEach((cell) => (cell.issued = true));
+    this.getDuplicateValuedCells().forEach((cell) => cell.setIssued());
   }
 
   /* removing the issued tag form the all the cells of the batch */
   clearIssued() {
-    this.#cells.forEach((cell) => (cell.issued = false));
+    this.#cells.forEach((cell) => cell.setUnIssued());
   }
 
   /* gives the values, what is the duplicated in the batch
@@ -541,6 +541,7 @@ class Cell {
   #id;
   #boxId;
   #accepted;
+
   constructor({ x, y, bx, by, id, boxId, value, accepted, given, issued }) {
     this.#x = x;
     this.#y = y;
@@ -640,16 +641,20 @@ class Cell {
       throw new Error("Set given must be a boolean (true/false)");
     }
   }
+
+  /* gives back the cell issued state */
   get isIssued() {
     return this.#issued;
   }
 
-  set given(isIssued) {
-    if (typeof isIssued == "boolean") {
-      this.#issued = isIssued;
-    } else {
-      throw new Error("Set issued must be a boolean (true/false)");
-    }
+  /* sets the cell to issued state */
+  setIssued() {
+    this.#issued = true;
+  }
+
+  /* sets the cell to unissued state */
+  setUnIssued() {
+    this.#issued = false;
   }
 
   /* gives the values what can the cell accept
@@ -1846,7 +1851,7 @@ if (runTests) {
         .getRow(0)
         .getDuplicateValuedCells()
         .map((cell) => {
-          return { id: cell.id, value: cell.value, issued: cell.issued };
+          return { id: cell.id, value: cell.value, issued: cell.isIssued };
         }),
     excepted: [
       { id: 0, value: 2, issued: true },
@@ -1862,7 +1867,7 @@ if (runTests) {
         .getRow(0)
         .getDuplicateValuedCells()
         .map((cell) => {
-          return { id: cell.id, value: cell.value, issued: cell.issued };
+          return { id: cell.id, value: cell.value, issued: cell.isIssued };
         }),
     excepted: [
       { id: 0, value: 2, issued: false },
@@ -1881,7 +1886,7 @@ if (runTests) {
         .getRow(0)
         .getDuplicateValuedCells()
         .map((cell) => {
-          return { id: cell.id, value: cell.value, issued: cell.issued };
+          return { id: cell.id, value: cell.value, issued: cell.isIssued };
         }),
     excepted: [
       { id: 0, value: 2, issued: false },
