@@ -408,24 +408,38 @@ class Batch {
   #cells = [];
   #validValues = [];
   #unfilledValue;
+  #minValue;
+  #maxValue;
 
   constructor(id) {
     this.#id = id;
   }
 
-  /* adds a cell into the batch
+  /* adds a cell into the batch if there is no cell in the batch according to the first cell's acepted property is the valid values array and unfilled value added to the batch
   arg:    Cell (Object)
   return: void (undefined) */
   addCell(cell) {
     if (this.#cells.length == 0) {
       const accepted = cell.getAccepted();
       this.#unfilledValue = accepted.unfilled;
+      this.#minValue = accepted.min;
+      this.#maxValue = accepted.max;
       this.#validValues = Array.from(
         { length: accepted.max },
         (_, i) => i + accepted.min
       );
     }
-    this.#cells.push(cell);
+    if (
+      this.#unfilledValue === accepted.unfilled &&
+      this.#minValue === accepted.min &&
+      this.#maxValue === accepted.max
+    ) {
+      this.#cells.push(cell);
+    } else {
+      throw new Error(
+        "The current cell that would be added has not same value acceptance compared to the cells they are already in the batch."
+      );
+    }
   }
 
   /* gives the missing numbers of the batch
@@ -573,6 +587,7 @@ class Cell {
   get isIssued() {
     return this.#issued;
   }
+
   set given(isIssued) {
     if (typeof isIssued == "boolean") {
       this.#issued = isIssued;
