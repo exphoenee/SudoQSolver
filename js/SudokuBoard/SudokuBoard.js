@@ -475,7 +475,7 @@ class Batch {
   arg:    null,
   return: null. */
   setIssued() {
-    this.getDuplicateValuedCells().forEach((cell) => (cell.issued = false));
+    this.getDuplicateValuedCells().forEach((cell) => (cell.issued = true));
   }
 
   /* removing the issued tag form the all the cells of the batch */
@@ -1833,6 +1833,38 @@ if (runTests) {
       { id: 18, value: 6 },
       { id: 54, value: 6 },
       { id: 72, value: 2 },
+    ],
+  });
+  assert({
+    first: () => board.getRow(0).setIssued(),
+    check: () =>
+      board
+        .getRow(0)
+        .getDuplicateValuedCells()
+        .map((cell) => {
+          return { id: cell.id, value: cell.value, issued: cell.issued };
+        }),
+    excepted: [
+      { id: 0, value: 2, issued: true },
+      { id: 18, value: 6, issued: true },
+      { id: 54, value: 6, issued: true },
+      { id: 72, value: 2, issued: true },
+    ],
+  });
+  assert({
+    first: () => board.getRow(0).clearIssued(),
+    check: () =>
+      board
+        .getRow(0)
+        .getDuplicateValuedCells()
+        .map((cell) => {
+          return { id: cell.id, value: cell.value, issued: cell.issued };
+        }),
+    excepted: [
+      { id: 0, value: 2, issued: false },
+      { id: 18, value: 6, issued: false },
+      { id: 54, value: 6, issued: false },
+      { id: 72, value: 2, issued: false },
     ],
   });
 }
