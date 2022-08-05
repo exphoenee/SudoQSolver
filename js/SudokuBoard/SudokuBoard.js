@@ -93,6 +93,10 @@ class SudokuBoard {
     return this.#cells.map((cell) => cell.getInfo());
   }
 
+  clearIssued() {
+    this.#cells.forEach((cell) => (cell.issued = false));
+  }
+
   /* filtering out the cells, that are in the same column, putting into a Batch, that handle the columns */
   createCols() {
     for (let x = 0; x < this.#dimensionX; x++) {
@@ -1853,6 +1857,25 @@ if (runTests) {
   });
   assert({
     first: () => board.getRow(0).clearIssued(),
+    check: () =>
+      board
+        .getRow(0)
+        .getDuplicateValuedCells()
+        .map((cell) => {
+          return { id: cell.id, value: cell.value, issued: cell.issued };
+        }),
+    excepted: [
+      { id: 0, value: 2, issued: false },
+      { id: 18, value: 6, issued: false },
+      { id: 54, value: 6, issued: false },
+      { id: 72, value: 2, issued: false },
+    ],
+  });
+  assert({
+    first: () => {
+      board.getRow(0).setIssued();
+      board.clearIssued();
+    },
     check: () =>
       board
         .getRow(0)
