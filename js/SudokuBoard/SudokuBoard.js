@@ -419,8 +419,8 @@ class Batch {
   arg:    Cell (Object)
   return: void (undefined) */
   addCell(cell) {
+    const accepted = cell.getAccepted();
     if (this.#cells.length == 0) {
-      const accepted = cell.getAccepted();
       this.#unfilledValue = accepted.unfilled;
       this.#minValue = accepted.min;
       this.#maxValue = accepted.max;
@@ -436,8 +436,8 @@ class Batch {
     ) {
       this.#cells.push(cell);
     } else {
-      throw new Error(
-        "The current cell that would be added has not same value acceptance compared to the cells they are already in the batch."
+      console.error(
+        "The current cell that would be added has not the same value acceptance as the cells that are already in the batch."
       );
     }
   }
@@ -458,7 +458,18 @@ class Batch {
     return this.#validValues.filter((value) => cellValues.includes(value));
   }
 
+  /* checks that the batch has alread a duplicates */
   hasDuplicates() {
+    const cellValues = this.#cells
+      .filter((cell) => cell.value !== 0)
+      .map((cell) => cell.value);
+    return cellValues.length !== new Set(cellValues).size;
+  }
+
+  /* gives the cells, where is the same value written
+  arg:    null,
+  return: array of cells with the same values */
+  getDuplicates() {
     const cellValues = this.#cells
       .map((cell) => cell.value)
       .filter((cell) => cell !== 0);
@@ -612,8 +623,10 @@ const board = new SudokuBoard(3, 3);
 /******************************************/
 /*                 tests                  */
 /******************************************/
-
+let tests = 0;
+let failed = 0;
 function assert({ first, check, excepted }) {
+  tests++;
   const tooLong = 250;
   let stepText = "";
   if (first) {
@@ -633,12 +646,15 @@ function assert({ first, check, excepted }) {
     resultValue.length > tooLong ? "...too long..." : resultValue
   }\n`;
 
+  const testResult = resultValue == exceptValue;
+
   const decision = `Result:     ${
     resultValue == exceptValue ? `📗ok📗\n` : `📕FAILED📕\n`
   }`;
+  !testResult && failed++;
 
   console.warn(
-    "--------------------------------TEST STEP--------------------------------"
+    `----------------------TEST STEP: ${tests} Failed: ${failed}----------------`
   );
   console.warn(stepText + excepText + resultText + decision);
 }
