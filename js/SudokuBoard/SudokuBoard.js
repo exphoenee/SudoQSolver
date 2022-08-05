@@ -843,6 +843,16 @@ if (runTests) {
     check: () => board.hasColumnDuplicates(1),
     excepted: true,
   });
+  assert({
+    first: () => board.getBoxValues(0),
+    check: () => board.hasBoxDuplicates(0),
+    excepted: true,
+  });
+  assert({
+    first: () => board.getBoxValues(1),
+    check: () => board.hasBoxDuplicates(1),
+    excepted: false,
+  });
 }
 /* TODO: TEST REQUIRED FOR CHECKING THE DUPLICATES AND MISSING AND FILLED NUMBERS!!!
  */
