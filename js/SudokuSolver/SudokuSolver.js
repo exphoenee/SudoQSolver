@@ -142,15 +142,15 @@ class SudokuSolver {
       * the solved puzzle n x n sized 2D array
       * or a boolen which value can be only false what mean there is no solution for this puzzle */
   solvePuzzle(puzzle = null, format = "default") {
-    this.#renderMyself && !puzzle ? this.#extractInputs() : puzzle;
+    if (puzzle) {
+      this.#sudokuboard.setBoard(puzzle);
+    } else if (this.#renderMyself) {
+      this.#sudokuboard.setBoard(this.#extractInputs());
+      this.#update();
+    }
 
-    const startingPuzzle = this.#sudokuboard.getCellValues({
-      format: "2D",
-      unfilledChar: "0",
-    });
-
-    if (this.isPuzzleCorrect(startingPuzzle)) {
-      const result = this.#solve(startingPuzzle);
+    if (this.isPuzzleCorrect()) {
+      const result = this.#solve();
       if (result) {
         this.#update(result);
         this.#userMsg("That was easy!");
@@ -173,11 +173,11 @@ class SudokuSolver {
   /* this method is the entry for making solution possiblities and filtrind out the not valid solution
     arg:    puzzle n x n sized 2D array
     return: boolean that means the puzzle is solved (ture) or not (false) */
-  #solve(puzzle) {
-    return this.puzzleIsSolved(puzzle)
-      ? puzzle
+  #solve() {
+    return this.puzzleIsSolved()
+      ? this.#getValuesFormBoard()
       : this.#checkPossiblities(
-          this.#validatePosiblities(this.#getPosiblities(puzzle))
+          this.#validatePosiblities(this.#getPosiblities())
         );
   }
 
@@ -190,7 +190,8 @@ class SudokuSolver {
     return: possiblities m x (n x n) sized 3D array
                   number <┘      └> puzzle
               of possivilities */
-  #getPosiblities(puzzle) {
+  #getPosiblities() {
+    const puzzle = this.#getValuesFormBoard();
     let possibilities = [];
     const nextCell = this.#getNextCell(puzzle);
     /* i tryed hard make it with map method, but i am failed... that took almost an hour... :( */
@@ -249,11 +250,23 @@ class SudokuSolver {
     }
   }
 
-  /* creates a tempoaray sudokuboard, and fills it with a puzzle */
-  createTemporaryBoard(puzzle) {
+  /* creates a tempoaray sudokuboard, and fills it with a puzzle:
+  arg:    a puzzle (1D or 2D array or String)
+  retrun: the temporary board (SudokuBoard class) */
+  #createTemporaryBoard(puzzle) {
     return new SudokuBoard(this.#sectionSize, this.#sectionSize).setBoard(
       puzzle
     );
+  }
+
+  /* extracts teh cell values form the SudokuBoardClass
+  arg:    null,
+  return: 2D array of integer  */
+  #getValuesFormBoard() {
+    return this.#sudokuboard.getCellValues({
+      format: "2D",
+      unfilledChar: "0",
+    });
   }
 
   /***********************************/
@@ -263,8 +276,8 @@ class SudokuSolver {
   /* checks the puzzle is solved already or didn't
       arg:     puzzle n x n sized 2D array
       returns: a boolean only ture is puzzle solved */
-  puzzleIsSolved(puzzle) {
-    return !puzzle.some((row) => row.some((cell) => cell == 0));
+  puzzleIsSolved() {
+    return !this.#sudokuboard.coordsOfFirstFreeCell();
   }
 
   /* if everything is fine, that means there is no issue in the
@@ -273,8 +286,8 @@ class SudokuSolver {
       * n x n boxes, then the table is correct
     arg:    puzzle n x n sized 2D array
     return: a boolean true means the puzzle seems to solvable */
-  isPuzzleCorrect(puzzle) {
-    return this.createTemporaryBoard(puzzle).puzzleIsCorrect();
+  isPuzzleCorrect() {
+    return this.#getValuesFormBoard(puzzle).puzzleIsCorrect();
   }
 
   /* TODO: it is not implemented yet */
@@ -384,31 +397,20 @@ class SudokuSolver {
   /* updateing the UI with a puzzle or solution
     arg:    puzzle n x n sized 2D array
     return: a boolean true means the column doesn't has duplicates */
-  #update(puzzle, setGiven = false) {
+  #update(setGiven = false) {
     this.#renderMyself &&
-      this.#cells.forEach((row, rowNr) =>
-        row.forEach((cell, colNr) => {
-          cell.value = this.#validateValue(puzzle[rowNr][colNr]);
-          if (setGiven) {
-            if (cell.value > "") {
-              cell.classList.add("given");
-              cell.disabled = true;
-            } else {
-              cell.classList.remove("given");
-              cell.disabled = false;
-            }
-          }
-        })
-      );
+      this.#sudokuboard.cells().forEach((cell) => {
+        this.cell.id();
+      });
     return puzzle;
   }
 
   /* getting all values from the UI inputs
     return: a 2D array what is given by the user */
   #extractInputs() {
-    const cellValues = this.#cells.map((row) => row.map((cell) => +cell.value));
-    this.#sudokuboard.setBoard(cellValues);
-    return cellValues;
+    this.#sudokuboard.setBoard(
+      this.#cells.map((row) => row.map((cell) => +cell.value))
+    );
   }
 
   /* checking and correcting the input values, change the values that are 0 and greater as possible to empty string
@@ -440,15 +442,18 @@ class SudokuSolver {
 
   /* rendering the entire table */
   render() {
+    // if it is once rendered then should be saved to the class
+    this.#renderMyself = true;
+
     //HTML element of the board
     this.board = document.getElementById("board");
     //HTML element of the error message
     this.errors = document.getElementById("errors");
-    // if it is once rendered then should be saved to the class
-    this.#renderMyself = true;
+
     for (let rowNr = 0; rowNr < this.#cellsInSection; rowNr++) {
       this.#cells.push(this.#renderRow(rowNr));
     }
+
     for (let puzzle in this.examples) {
       this.#renderButton(puzzle, () =>
         this.#update(this.examples[puzzle], true)
