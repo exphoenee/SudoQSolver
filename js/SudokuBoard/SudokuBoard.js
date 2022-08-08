@@ -377,6 +377,16 @@ class SudokuBoard {
               1D is 1D array, 2D is 2D array, string is string
           ** unfilledChard
   return: 1D, 2D array of integers, or string according to format argument, containig the values of the cells in order they are created */
+  get cells() {
+    return this.#cells;
+  }
+
+  /* gives the values of all the cells in the board
+  arg:    object with following keys:
+          ** type: (string) can be 1D, 2D, or string, the format of the result
+              1D is 1D array, 2D is 2D array, string is string
+          ** unfilledChard
+  return: 1D, 2D array of integers, or string according to format argument, containig the values of the cells in order they are created */
   getCellValues(params = { format: "1D", unfilledChar: "0" }) {
     const { format, unfilledChar } = params;
     let res = this.#cells.map((cell) => cell.value);
