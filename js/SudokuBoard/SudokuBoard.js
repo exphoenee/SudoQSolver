@@ -316,10 +316,8 @@ class SudokuBoard {
   setBoard(board) {
     if (Array.isArray(board)) {
       if (board.length === this.#dimensionY) {
-        console.log(this.#dimensionY);
         board.forEach((row, y) => {
           if (board.length === this.#dimensionX) {
-            console.log(this.#dimensionY);
             if (Array.isArray(row)) {
               row.forEach((cellValue, x) =>
                 this.getCellByCoords(x, y).setValue(cellValue)
