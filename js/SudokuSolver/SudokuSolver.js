@@ -43,7 +43,7 @@ class SudokuSolver {
     //array of cells
     this.#cells = [];
     //using the SudokuBoard calss for handling the sudoku board
-    this.#sudokuboard = new SudokuBoard(params.sectionSize, params.sectionSize);
+    this.#sudokuboard = new SudokuBoard(this.#sectionSize, this.#sectionSize);
 
     //add some example puzzles here
     //source: https://www.sudokuonline.io/
@@ -149,8 +149,6 @@ class SudokuSolver {
       unfilledChar: "0",
     });
 
-    console.log(startingPuzzle, puzzle);
-
     if (this.isPuzzleCorrect(startingPuzzle)) {
       const result = this.#solve(startingPuzzle);
       if (result) {
@@ -252,7 +250,6 @@ class SudokuSolver {
 
   /* creates a tempoaray sudokuboard, and fills it with a puzzle */
   createTemporaryBoard(puzzle) {
-    console.log(puzzle);
     return new SudokuBoard(this.#sectionSize, this.#sectionSize).setBoard(
       puzzle
     );
@@ -276,7 +273,6 @@ class SudokuSolver {
     arg:    puzzle n x n sized 2D array
     return: a boolean true means the puzzle seems to solvable */
   isPuzzleCorrect(puzzle) {
-    console.log(puzzle);
     return this.createTemporaryBoard(puzzle).puzzleIsCorrect();
   }
 
@@ -407,7 +403,6 @@ class SudokuSolver {
     return: a 2D array what is given by the user */
   #extractInputs() {
     const cellValues = this.#cells.map((row) => row.map((cell) => +cell.value));
-    console.log(cellValues);
     this.#sudokuboard.setBoard(cellValues);
   }
 
