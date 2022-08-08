@@ -159,6 +159,7 @@ class SudokuSolver {
           string: () => this.toString(result),
           default: () => result,
         };
+
         return formatting[format]();
       } else {
         this.#userMsg("There is no solution for this puzzle...", "error");
@@ -370,7 +371,10 @@ class SudokuSolver {
     arg:    puzzle a 2D array n x n sized
     return: a flattened 2D array, what is joined to a String */
   toString(puzzle) {
-    return puzzle.map((row) => row.join("")).join("");
+    return this.createTemporaryBoard(puzzle).getCellValues({
+      format: "string",
+      unfilledChar: ".",
+    });
   }
 
   /**************************/
@@ -404,6 +408,7 @@ class SudokuSolver {
   #extractInputs() {
     const cellValues = this.#cells.map((row) => row.map((cell) => +cell.value));
     this.#sudokuboard.setBoard(cellValues);
+    return cellValues;
   }
 
   /* checking and correcting the input values, change the values that are 0 and greater as possible to empty string
