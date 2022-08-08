@@ -398,10 +398,13 @@ class SudokuSolver {
     arg:    puzzle n x n sized 2D array
     return: a boolean true means the column doesn't has duplicates */
   #update(setGiven = false) {
-    this.#renderMyself &&
-      this.#sudokuboard.cells().forEach((cell) => {
-        this.cell.id();
-      });
+    this.#sudokuboard.cells.forEach((cell) => {
+      const rendering = this.#cells.find((row) =>
+        row.find((dom) => dom.id === cell.id)
+      );
+
+      console.log(rendering);
+    });
     return puzzle;
   }
 
@@ -486,9 +489,7 @@ class SudokuSolver {
     cell.step = 1;
     cell.min = 1;
     cell.max = this.#cellsInSection;
-    cell.id = `C${Math.floor(Math.random() * 10000000)
-      .toString()
-      .padStart(8, 0)}`;
+    cell.id = rowNr * this.#cellsInSection + colNr;
     cell.classList.add("tile");
     cell.dataset.col = colNr;
     cell.dataset.row = rowNr;
