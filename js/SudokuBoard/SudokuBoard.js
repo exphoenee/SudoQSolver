@@ -564,8 +564,21 @@ class Cell {
   #id;
   #boxId;
   #accepted;
+  #ref;
 
-  constructor({ x, y, bx, by, id, boxId, value, accepted, given, issued }) {
+  constructor({
+    x,
+    y,
+    bx,
+    by,
+    id,
+    boxId,
+    value,
+    accepted,
+    given,
+    issued,
+    ref,
+  }) {
     this.#x = x;
     this.#y = y;
     this.#bx = bx;
@@ -576,6 +589,7 @@ class Cell {
     this.#value = accepted.unfilled;
     this.#given = given || false;
     this.#issued = issued || false;
+    this.#ref = ref || null;
   }
 
   get x() {
@@ -688,5 +702,12 @@ class Cell {
     ** unfilled value is that value what means the cell is unfilled */
   getAccepted() {
     return this.#accepted;
+  }
+
+  get ref() {
+    return this.#ref;
+  }
+  set ref(ref) {
+    this.#ref = ref;
   }
 }
