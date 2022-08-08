@@ -142,8 +142,14 @@ class SudokuSolver {
       * the solved puzzle n x n sized 2D array
       * or a boolen which value can be only false what mean there is no solution for this puzzle */
   solvePuzzle(puzzle = null, format = "default") {
-    let startingPuzzle =
-      this.#renderMyself && !puzzle ? this.#extractInputs() : puzzle;
+    this.#renderMyself && !puzzle ? this.#extractInputs() : puzzle;
+
+    const startingPuzzle = this.#sudokuboard.getCellValues({
+      format: "2D",
+      unfilledChar: "0",
+    });
+
+    console.log(startingPuzzle, puzzle);
 
     if (this.isPuzzleCorrect(startingPuzzle)) {
       const result = this.#solve(startingPuzzle);
@@ -246,6 +252,7 @@ class SudokuSolver {
 
   /* creates a tempoaray sudokuboard, and fills it with a puzzle */
   createTemporaryBoard(puzzle) {
+    console.log(puzzle);
     return new SudokuBoard(this.#sectionSize, this.#sectionSize).setBoard(
       puzzle
     );
@@ -269,6 +276,7 @@ class SudokuSolver {
     arg:    puzzle n x n sized 2D array
     return: a boolean true means the puzzle seems to solvable */
   isPuzzleCorrect(puzzle) {
+    console.log(puzzle);
     return this.createTemporaryBoard(puzzle).puzzleIsCorrect();
   }
 
@@ -398,7 +406,9 @@ class SudokuSolver {
   /* getting all values from the UI inputs
     return: a 2D array what is given by the user */
   #extractInputs() {
-    return this.sudokuboard.getCellValues({ format: "2D", unfilledChar: "0" });
+    this.#sudokuboard.setBoard(
+      this.#cells.map((row) => row.map((cell) => +cell.value))
+    );
   }
 
   /* checking and correcting the input values, change the values that are 0 and greater as possible to empty string
