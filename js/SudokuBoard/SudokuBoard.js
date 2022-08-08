@@ -25,7 +25,7 @@ class SudokuBoard {
   #cols;
   #boxes;
 
-  constructor(boxSizeX, boxSizeY) {
+  constructor(boxSizeX, boxSizeY, puzzle = null) {
     this.#boxSizeX = boxSizeX;
     this.#boxSizeY = boxSizeY;
     this.#dimensionX = boxSizeX ** 2;
@@ -37,6 +37,8 @@ class SudokuBoard {
     this.#cols = [];
     this.#boxes = [];
     this.generateBoard();
+    puzzle && this.setBoard(puzzle);
+    return this;
   }
 
   /* This method organizing the cells into rows, columns, and boxes.
@@ -153,21 +155,27 @@ class SudokuBoard {
   arg:    rowNr (Integer)
   return: values of the cells in the Batch (array of integers) */
   getRowValues(rowNr) {
-    return this.#rows[rowNr].getCells().map((cell) => cell.value);
+    return this.getRow(rowNr)
+      .getCells()
+      .map((cell) => cell.value);
   }
 
   /* gives a column according to the given column number
   arg:    colNr (Integer)
   return: values of the cells in the Batch (array of integers) */
   getColValues(colNr) {
-    return this.#cols[colNr].getCells().map((cell) => cell.value);
+    return this.getCol(colNr)
+      .getCells()
+      .map((cell) => cell.value);
   }
 
   /* gives a section according to the given section number
   arg:    boxNr (Integer)
   return: values of the cells in the Batch (array of integers) */
   getBoxValues(boxNr) {
-    return this.#boxes[boxNr].getCells().map((cell) => cell.value);
+    return this.getBox(boxNr)
+      .getCells()
+      .map((cell) => cell.value);
   }
 
   /* gives the missing numbers of a row according to the given row number
@@ -262,6 +270,12 @@ class SudokuBoard {
     );
   }
 
+  puzzleIsCorrect() {
+    [...this.#rows, ...this.#cols, ...this.#boxes].forEach((row) => {
+      if (row.hasDuplicates()) return false;
+    });
+  }
+
   /* gives the firs free cell
   arg:    null
   return: Object {x, y} the two coorinate of the cell */
@@ -354,6 +368,7 @@ class SudokuBoard {
         "Input of set setBoard method should be an 1D or 2D array or a string."
       );
     }
+    return this;
   }
 
   /* gives the values of all the cells in the board
