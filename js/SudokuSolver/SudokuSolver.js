@@ -406,9 +406,9 @@ class SudokuSolver {
   /* getting all values from the UI inputs
     return: a 2D array what is given by the user */
   #extractInputs() {
-    this.#sudokuboard.setBoard(
-      this.#cells.map((row) => row.map((cell) => +cell.value))
-    );
+    const cellValues = this.#cells.map((row) => row.map((cell) => +cell.value));
+    console.log(cellValues);
+    this.#sudokuboard.setBoard(cellValues);
   }
 
   /* checking and correcting the input values, change the values that are 0 and greater as possible to empty string
