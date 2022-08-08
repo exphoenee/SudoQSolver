@@ -31,6 +31,7 @@ class SudokuSolver {
   #renderMyself;
   #cellsInSection;
   #cells;
+  #sudokuboard;
 
   constructor(params = null) {
     //the size of a section and matrix of sections n x n, but the css isn't made for other sizes only 3 x 3 sudokus...
@@ -41,6 +42,8 @@ class SudokuSolver {
     this.#cellsInSection = this.#sectionSize ** 2;
     //array of cells
     this.#cells = [];
+    //using the SudokuBoard calss for handling the sudoku board
+    this.#sudokuboard = new SudokuBoard(params.sectionSize, params.sectionSize);
 
     //add some example puzzles here
     //source: https://www.sudokuonline.io/
@@ -241,16 +244,23 @@ class SudokuSolver {
     }
   }
 
+  /* creates a tempoaray sudokuboard, and fills it with a puzzle */
+  createTemporaryBoard(puzzle) {
+    return new SudokuBoard(this.#sectionSize, this.#sectionSize).setBoard(
+      puzzle
+    );
+  }
+
+  /***********************************/
+  /* methods for checking the puzzle */
+  /***********************************/
+
   /* checks the puzzle is solved already or didn't
       arg:     puzzle n x n sized 2D array
       returns: a boolean only ture is puzzle solved */
   puzzleIsSolved(puzzle) {
     return !puzzle.some((row) => row.some((cell) => cell == 0));
   }
-
-  /***********************************/
-  /* methods for checking the puzzle */
-  /***********************************/
 
   /* if everything is fine, that means there is no issue in the
       * rows,
@@ -259,11 +269,7 @@ class SudokuSolver {
     arg:    puzzle n x n sized 2D array
     return: a boolean true means the puzzle seems to solvable */
   isPuzzleCorrect(puzzle) {
-    return (
-      this.#rowsCorrect(puzzle) &&
-      this.#columnsCorrect(puzzle) &&
-      this.#boxesCorrect(puzzle)
-    );
+    return this.createTemporaryBoard(puzzle).puzzleIsCorrect();
   }
 
   /* TODO: it is not implemented yet */
@@ -392,7 +398,7 @@ class SudokuSolver {
   /* getting all values from the UI inputs
     return: a 2D array what is given by the user */
   #extractInputs() {
-    return this.#cells.map((row) => row.map((cell) => +cell.value));
+    return this.sudokuboard.getCellValues({ format: "2D", unfilledChar: "0" });
   }
 
   /* checking and correcting the input values, change the values that are 0 and greater as possible to empty string
