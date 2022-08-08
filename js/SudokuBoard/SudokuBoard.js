@@ -1,11 +1,12 @@
 "use strict";
-
 /* this is the new solver */
+/*
 class Solver {
   constructor(boxSizeX, boxSizeY) {
     this.board = new board(boxSizeX, boxSizeY);
   }
 }
+*/
 
 /* this the class of the sudoku board
   the constructor only gets 2 argument, the x and y size of a box in the board
@@ -664,5 +665,3 @@ class Cell {
     return this.#accepted;
   }
 }
-
-module.exports = SudokuBoard;
