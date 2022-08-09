@@ -405,10 +405,9 @@ class SudokuSolver {
 
   #updateCell(e) {
     e.preventDefault();
-    const targetCell = this.#sudokuboard.cells.find(
-      (cell) => cell.id === e.target.id
-    );
-    targetCell.setValue(e.target.value);
+    this.#sudokuboard.cells
+      .find((cell) => cell.id === +e.target.id)
+      .setValue(+e.target.value);
   }
 
   /* getting all values from the UI inputs
