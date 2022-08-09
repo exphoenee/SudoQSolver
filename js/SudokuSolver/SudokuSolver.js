@@ -453,9 +453,14 @@ class SudokuSolver {
     //HTML element of the error message
     this.errors = document.getElementById("errors");
 
+    this.#sudokuboard
+      .getCellValues({ format: "2D" })
+      .forEach((row) => this.#renderRow(row));
+    /*
     for (let rowNr = 0; rowNr < this.#cellsInSection; rowNr++) {
       this.#cells.push(this.#renderRow(rowNr));
     }
+    */
 
     for (let puzzle in this.examples) {
       this.#renderButton(puzzle, () =>
@@ -466,16 +471,14 @@ class SudokuSolver {
   }
 
   /* rendering the rows, the only arguments is the row number, that is passed to the inputs returns the DOM element */
-  #renderRow(rowNr) {
-    let row = [];
-    const rowContainer = document.createElement("div");
+  #renderRow(row) {
     rowContainer.classList.add(`row`);
     rowContainer.classList.add(`nr-${rowNr}`);
-    for (let colNr = 0; colNr < this.#cellsInSection; colNr++) {
-      row.push(this.#createInput(colNr, rowNr, rowContainer));
-    }
     this.board.appendChild(rowContainer);
-    return row;
+
+    row.forEach((cell) => {
+      this.#createInput(colNr, rowNr, rowContainer);
+    });
   }
 
   /* generating the DOM of a cell input, the arguments are the following:
