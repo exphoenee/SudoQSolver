@@ -399,8 +399,15 @@ class SudokuSolver {
       cell.getRef().value = puzzle
         ? puzzle.flat()[index] || ""
         : cell.value || "";
+
+      if (setGiven && cell.isFilled()) {
+        cell.getRef().classList.add("given");
+        cell.getRef().disabled = true;
+      }
     });
-    setGiven && cell.getRef().classList.add("given");
+
+    this.#extractInputs;
+    console.log(this.#sudokuboard.getCellValues());
   }
 
   /* the method updating the SudokuBoard according to the UI input value
