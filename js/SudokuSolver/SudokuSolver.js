@@ -477,10 +477,9 @@ class SudokuSolver {
   }
 
   /* generating the DOM of a cell input, the arguments are the following:
-    colNr  -> the x / horizontal coordinate (in caresian system)
-    rowNr  -> the y / horizontal coordinate (in caresian system)
-    parent -> the DOM element who is the parent of the input (cell)
-    returns the DOM element of cell */
+      arg:    cellInfo Cell (object)
+              parent: the DOM element who is the parent of the input (cell)
+      return: undefined */
   #createInput(cellInfo, parent) {
     const cellDOM = document.createElement("input");
     cellDOM.type = "number";
