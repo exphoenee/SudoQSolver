@@ -719,6 +719,15 @@ class Cell {
     return this.#accepted;
   }
 
+  isFilled() {
+    console.log(this.value, this.getAccepted().unfilled);
+    return this.value !== this.getAccepted().unfilled;
+  }
+
+  isUnfilled() {
+    return this.#value === this.#accepted.unfilled;
+  }
+
   getRef() {
     return this.#ref;
   }
