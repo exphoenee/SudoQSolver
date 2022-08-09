@@ -403,6 +403,9 @@ class SudokuSolver {
     setGiven && cell.getRef().classList.add("given");
   }
 
+  /* the method updating the SudokuBoard according to the UI input value
+      arg:    e Event,
+      return: undefined */
   #updateCell(e) {
     e.preventDefault();
     this.#sudokuboard.cells
