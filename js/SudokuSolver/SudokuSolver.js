@@ -396,18 +396,20 @@ class SudokuSolver {
     return: a boolean true means the column doesn't has duplicates */
   #updateAllCells({ puzzle, setGiven }) {
     this.#sudokuboard.cells.forEach((cell, index) => {
-      cell.getRef().value = puzzle
-        ? puzzle.flat()[index] || ""
-        : cell.value || "";
+      const value = puzzle ? +puzzle.flat()[index] : +cell.value;
+      cell.getRef().value = value || "";
+      cell.setValue(value);
 
       if (setGiven && cell.isFilled()) {
         cell.getRef().classList.add("given");
         cell.getRef().disabled = true;
+        cell.setGiven(true);
+      } else {
+        cell.getRef().classList.remove("given");
+        cell.getRef().disabled = false;
+        cell.setGiven(false);
       }
     });
-
-    this.#extractInputs;
-    console.log(this.#sudokuboard.getCellValues());
   }
 
   /* the method updating the SudokuBoard according to the UI input value
@@ -424,9 +426,7 @@ class SudokuSolver {
     return: a 2D array what is given by the user */
   #extractInputs() {
     this.#sudokuboard.setBoard(
-      this.#sudokuboard.cells.map((row) =>
-        row.map((cell) => +cell.getRef().value)
-      )
+      this.#sudokuboard.cells.map((cell) => +cell.getRef().value)
     );
   }
 
