@@ -67,7 +67,7 @@ class SudokuBoard {
         const bx = Math.floor(x / this.#boxSizeX);
         const by = Math.floor(y / this.#boxSizeY);
         const cell = new Cell({
-          id: x * this.#dimensionX + y,
+          id: y * this.#dimensionX + x,
           x,
           y,
           boxId: this.#boxSizeX * by + bx,
@@ -135,6 +135,13 @@ class SudokuBoard {
   return: Batch (Objects) */
   getRow(rowNr) {
     return this.#rows[rowNr];
+  }
+
+  /* gives all rows in a 2D array
+  arg:    rowNr (Integer)
+  return: 1D array of Batch (Objects) */
+  getAllRows() {
+    return this.#rows;
   }
 
   /* gives a column according to the given column number
@@ -429,6 +436,14 @@ class Batch {
     this.#id = id;
   }
 
+  set id(id) {
+    this.#id = id;
+  }
+
+  get id() {
+    return this.#id;
+  }
+
   /* adds a cell into the batch if there is no cell in the batch according to the first cell's acepted property is the valid values array and unfilled value added to the batch
   arg:    Cell (Object)
   return: void (undefined) */
@@ -704,10 +719,10 @@ class Cell {
     return this.#accepted;
   }
 
-  get ref() {
+  getRef() {
     return this.#ref;
   }
-  set ref(ref) {
+  setRef(ref) {
     this.#ref = ref;
   }
 }
