@@ -453,14 +453,7 @@ class SudokuSolver {
     //HTML element of the error message
     this.errors = document.getElementById("errors");
 
-    this.#sudokuboard
-      .getCellValues({ format: "2D" })
-      .forEach((row) => this.#renderRow(row));
-    /*
-    for (let rowNr = 0; rowNr < this.#cellsInSection; rowNr++) {
-      this.#cells.push(this.#renderRow(rowNr));
-    }
-    */
+    this.#sudokuboard.getAllRows().forEach((row) => this.#renderRow(row));
 
     for (let puzzle in this.examples) {
       this.#renderButton(puzzle, () =>
@@ -472,12 +465,14 @@ class SudokuSolver {
 
   /* rendering the rows, the only arguments is the row number, that is passed to the inputs returns the DOM element */
   #renderRow(row) {
+    const rowContainer = document.createElement("div");
     rowContainer.classList.add(`row`);
-    rowContainer.classList.add(`nr-${rowNr}`);
+    rowContainer.classList.add(`nr-${row.id}`);
     this.board.appendChild(rowContainer);
+    console.log(row);
 
-    row.forEach((cell) => {
-      this.#createInput(colNr, rowNr, rowContainer);
+    row.getCells().forEach((cellInfo) => {
+      this.#createInput(cellInfo, rowContainer);
     });
   }
 
@@ -486,19 +481,20 @@ class SudokuSolver {
     rowNr  -> the y / horizontal coordinate (in caresian system)
     parent -> the DOM element who is the parent of the input (cell)
     returns the DOM element of cell */
-  #createInput(colNr, rowNr, parent) {
-    const cell = document.createElement("input");
-    cell.type = "number";
-    cell.step = 1;
-    cell.min = 1;
-    cell.max = this.#cellsInSection;
-    cell.id = rowNr * this.#cellsInSection + colNr;
-    cell.classList.add("tile");
-    cell.dataset.col = colNr;
-    cell.dataset.row = rowNr;
-    cell.addEventListener("change", (e) => this.#update(e));
-    parent.appendChild(cell);
-    return cell;
+  #createInput(cellInfo, parent) {
+    const cellDOM = document.createElement("input");
+    cellDOM.type = "number";
+    cellDOM.step = 1;
+    cellDOM.min = cellInfo.getAccepted().min;
+    cellDOM.max = cellInfo.getAccepted().max;
+    cellDOM.id = cellInfo.id;
+    cellDOM.classList.add("tile");
+    cellDOM.dataset.row = cellInfo.x;
+    cellDOM.dataset.col = cellInfo.y;
+    cellDOM.dataset.box = cellInfo.boxId;
+    cellDOM.addEventListener("change", (e) => this.#update(e));
+    parent.appendChild(cellDOM);
+    cellInfo.setRef(cellDOM);
   }
 
   /* buttons for the contorl panel, the arguments are the following:
