@@ -686,6 +686,9 @@ class Cell {
     return this.#given;
   }
 
+  /* sets a cell to given state, that means it coouldn't be changed by the user
+      arg:     boolean
+      returns: undefined */
   setGiven(isGiven) {
     if (typeof isGiven == "boolean") {
       this.#given = isGiven;
