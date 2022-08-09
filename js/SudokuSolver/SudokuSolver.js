@@ -463,7 +463,9 @@ class SudokuSolver {
     this.#renderButton("Solve!", () => this.solvePuzzle());
   }
 
-  /* rendering the rows, the only arguments is the row number, that is passed to the inputs returns the DOM element */
+  /* rendering the rows, the only div and iterating throught the cells of each
+      arg:    Batch (object)
+      return: undefined */
   #renderRow(row) {
     const rowContainer = document.createElement("div");
     rowContainer.classList.add(`row`);
