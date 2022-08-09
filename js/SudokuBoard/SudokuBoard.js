@@ -686,7 +686,7 @@ class Cell {
     return this.#given;
   }
 
-  set given(isGiven) {
+  setGiven(isGiven) {
     if (typeof isGiven == "boolean") {
       this.#given = isGiven;
     } else {
