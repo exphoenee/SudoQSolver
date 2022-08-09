@@ -30,7 +30,6 @@ class SudokuSolver {
   #sectionSize;
   #renderMyself;
   #cellsInSection;
-  #cells;
   #sudokuboard;
 
   constructor(params = null) {
@@ -40,8 +39,6 @@ class SudokuSolver {
     this.#renderMyself = params.renderMyself || false;
     //calculated value of cells in the index form the section size
     this.#cellsInSection = this.#sectionSize ** 2;
-    //array of cells
-    this.#cells = [];
     //using the SudokuBoard calss for handling the sudoku board
     this.#sudokuboard = new SudokuBoard(this.#sectionSize, this.#sectionSize);
 
@@ -145,14 +142,14 @@ class SudokuSolver {
     if (puzzle) {
       this.#sudokuboard.setBoard(puzzle);
     } else if (this.#renderMyself) {
-      this.#sudokuboard.setBoard(this.#extractInputs());
-      this.#update();
+      this.#extractInputs();
     }
+    this.#updateAllCells();
 
     if (this.isPuzzleCorrect()) {
       const result = this.#solve();
       if (result) {
-        this.#update(result);
+        this.#updateAllCells({ puzzle: result });
         this.#userMsg("That was easy!");
 
         const formatting = {
@@ -397,22 +394,30 @@ class SudokuSolver {
   /* updateing the UI with a puzzle or solution
     arg:    puzzle n x n sized 2D array
     return: a boolean true means the column doesn't has duplicates */
-  #update(setGiven = false) {
-    this.#sudokuboard.cells.forEach((cell) => {
-      const rendering = this.#cells.find((row) =>
-        row.find((dom) => dom.id === cell.id)
-      );
-
-      console.log(rendering);
+  #updateAllCells({ puzzle, setGiven }) {
+    this.#sudokuboard.cells.forEach((cell, index) => {
+      cell.getRef().value = puzzle
+        ? puzzle.flat()[index] || ""
+        : cell.value || "";
     });
-    return puzzle;
+    setGiven && cell.getRef().classList.add("given");
+  }
+
+  #updateCell(e) {
+    e.preventDefault();
+    const targetCell = this.#sudokuboard.cells.find(
+      (cell) => cell.id === e.target.id
+    );
+    targetCell.setValue(e.target.value);
   }
 
   /* getting all values from the UI inputs
     return: a 2D array what is given by the user */
   #extractInputs() {
     this.#sudokuboard.setBoard(
-      this.#cells.map((row) => row.map((cell) => +cell.value))
+      this.#sudokuboard.cells.map((row) =>
+        row.map((cell) => +cell.getRef().value)
+      )
     );
   }
 
@@ -443,7 +448,7 @@ class SudokuSolver {
     alerting[type]();
   }
 
-  /* rendering the entire table */
+  /* rendering the entire table from the SudokuBoard */
   render() {
     // if it is once rendered then should be saved to the class
     this.#renderMyself = true;
@@ -457,7 +462,7 @@ class SudokuSolver {
 
     for (let puzzle in this.examples) {
       this.#renderButton(puzzle, () =>
-        this.#update(this.examples[puzzle], true)
+        this.#updateAllCells({ puzzle: this.examples[puzzle], setGiven: true })
       );
     }
     this.#renderButton("Solve!", () => this.solvePuzzle());
@@ -471,8 +476,6 @@ class SudokuSolver {
     rowContainer.classList.add(`row`);
     rowContainer.classList.add(`nr-${row.id}`);
     this.board.appendChild(rowContainer);
-    console.log(row);
-
     row.getCells().forEach((cellInfo) => {
       this.#createInput(cellInfo, rowContainer);
     });
@@ -493,7 +496,7 @@ class SudokuSolver {
     cellDOM.dataset.row = cellInfo.x;
     cellDOM.dataset.col = cellInfo.y;
     cellDOM.dataset.box = cellInfo.boxId;
-    cellDOM.addEventListener("change", (e) => this.#update(e));
+    cellDOM.addEventListener("change", (e) => this.#updateCell(e));
     parent.appendChild(cellDOM);
     cellInfo.setRef(cellDOM);
   }
