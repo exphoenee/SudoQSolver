@@ -230,8 +230,8 @@ class SudokuBoard {
   /* this method gives the numbers what can we write into a cell, the cell couldn't has a walue what is represented in the column, the row and the box thath the cell is contained
       arg:      x, y (integer)
       return:   array of integer what is missing form the row, column, and box of the cell */
-  getCellPossiblities(x, y) {
-    const cell = this.getCellByCoords(x, y);
+  getCellPossiblities({ x, y, cell }) {
+    if (!cell) cell = this.getCellByCoords(x, y);
     const missingFromCol = this.getMissingFromCol(cell.y);
     const missingFromRow = this.getMissingFromRow(cell.x);
     const missingFromBox = this.getMissingFromBox(cell.boxId);
@@ -688,8 +688,8 @@ class Cell {
   }
 
   /* sets a cell to given state, that means it coouldn't be changed by the user
-      arg:     boolean
-      returns: undefined */
+    arg:     boolean
+    returns: undefined */
   setGiven(isGiven) {
     if (typeof isGiven == "boolean") {
       this.#given = isGiven;
