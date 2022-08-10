@@ -287,7 +287,7 @@ class SudokuBoard {
   /* gives the first free cell
     arg:    null
     return: Cell (Object) */
-  getFirsrtFeeCell() {
+  getFirstFeeCell() {
     const freeCell = this.#cells.find((cell) => cell.value == 0);
     if (freeCell) return freeCell;
     return false;
@@ -297,7 +297,7 @@ class SudokuBoard {
     arg:    null
     return: Object {x, y} the two coorinate of the cell */
   coordsOfFirstFreeCell() {
-    const freeCell = this.getFirsrtFeeCell();
+    const freeCell = this.getFirsrFeeCell();
     if (freeCell) return { x: freeCell.x, y: freeCell.y };
     return false;
   }
@@ -390,11 +390,8 @@ class SudokuBoard {
   }
 
   /* gives the values of all the cells in the board
-  arg:    object with following keys:
-          ** type: (string) can be 1D, 2D, or string, the format of the result
-              1D is 1D array, 2D is 2D array, string is string
-          ** unfilledChard
-  return: 1D, 2D array of integers, or string according to format argument, containig the values of the cells in order they are created */
+  arg:    null
+  return: 1D of Cells (Object) */
   get cells() {
     return this.#cells;
   }
