@@ -284,7 +284,7 @@ class SudokuSolver {
     arg:    puzzle n x n sized 2D array
     return: a boolean true means the puzzle seems to solvable */
   isPuzzleCorrect() {
-    return this.#getValuesFormBoard(puzzle).puzzleIsCorrect();
+    return this.#sudokuboard.puzzleIsCorrect();
   }
 
   /* TODO: it is not implemented yet */
@@ -396,10 +396,8 @@ class SudokuSolver {
     return: a boolean true means the column doesn't has duplicates */
   #updateAllCells(params = { puzzle: null, setGiven: false }) {
     const { puzzle, setGiven } = params;
-    console.log(puzzle);
     this.#sudokuboard.cells.forEach((cell, index) => {
       const value = puzzle ? +puzzle.flat()[index] : +cell.value;
-      console.log(value);
       cell.getRef().value = value || "";
       cell.setValue(value);
 
