@@ -106,6 +106,7 @@ class SudokuBoard {
   }
 
   /* filtering out the cells, that are in the same column, putting into a Batch, that handle the columns */
+  /* TODO: itt egymás után a három method tök egyforma, ezt valahogy egyetlen methoddal kellene leírni, talán a closure a megoldás(?), fell egy core function ami leírja az azonos logikát, de kívülről kapja a tömbök referenciáját, amit tölt pushal, és a méretet, amit átad a Batch constuctorának, valamint ellenőriz vele. Ennek utána kell nézni, így biztosan nem maradhat, ha válzotik valami 3x kell átírni, és ha csak egyszer elmarad, reszeltek a mutatávnynak!!! */
   createCols() {
     for (let x = 0; x < this.#dimensionX; x++) {
       const col = new Batch(x, this.#dimensionX);
@@ -155,6 +156,7 @@ class SudokuBoard {
         }).`
       );
   }
+  /* TODO: A fenti három method ugyanazt csinálja csak más tömbbel! Emergency Refactoring required ASAP (amint rájövök mit kéne csinálni)  */
 
   /* gives a row according to the given row number
   arg:    rowNr (Integer)
@@ -187,6 +189,7 @@ class SudokuBoard {
   /* gives a row according to the given row number
   arg:    rowNr (Integer)
   return: values of the cells in the Batch (array of integers) */
+  /* TODO: a következő három method is tök ugyanaz */
   getRowValues(rowNr) {
     return this.getRow(rowNr)
       .getCells()
@@ -210,7 +213,9 @@ class SudokuBoard {
       .getCells()
       .map((cell) => cell.value);
   }
+  /* TODO: A fenti három method ugyanazt csinálja csak más tömbbel! Emergency Refactoring required ASAP (amint rájövök mit kéne csinálni)  */
 
+  /* TODO: meg a következő három pár method is tök ugyanaz (páronként) */
   /* gives the missing numbers of a row according to the given row number
   arg:    rowNr (Integer)
   return: array of integers that are the possible values what missing from the row  */
@@ -252,6 +257,7 @@ class SudokuBoard {
   getFilledFromBox(boxNr) {
     return this.getBox(boxNr).getFilledNumbers();
   }
+  /* TODO: A fenti három method ugyanazt csinálja csak más tömbbel! Emergency Refactoring required ASAP (amint rájövök mit kéne csinálni)  */
 
   /* this method gives the numbers what can we write into a cell, the cell couldn't has a walue what is represented in the column, the row and the box thath the cell is contained
       arg:      x, y (integer)
@@ -274,6 +280,7 @@ class SudokuBoard {
   /* checking that the column has duplicates
     arg:    colNr (integers) the column number of the board
     return: true or false that means there are a duplicates for this column */
+  /* TODO: ez már megint full azonos */
   hasColumnDuplicates(colNr) {
     return this.getCol(colNr).hasDuplicates();
   }
@@ -291,6 +298,7 @@ class SudokuBoard {
   hasBoxDuplicates(boxNr) {
     return this.getBox(boxNr).hasDuplicates();
   }
+  /* TODO: A fenti három method ugyanazt csinálja csak más tömbbel! Emergency Refactoring required ASAP (amint rájövök mit kéne csinálni)  */
 
   /* checking that the cell has duplicates its row, column or section arg:    x, y (integers) the coordinates of the cell
     return: true or false that means there are a duplicates for this cell */
