@@ -331,7 +331,7 @@ class SudokuBoard {
     arg:    null
     return: Object {x, y} the two coorinate of the cell */
   coordsOfFirstFreeCell() {
-    const freeCell = this.getFirsrFeeCell();
+    const freeCell = this.getFirstFeeCell();
     if (freeCell) return { x: freeCell.x, y: freeCell.y };
     return false;
   }
@@ -352,7 +352,7 @@ class SudokuBoard {
     if (this.validateCoord(x, y)) {
       return this.#cells.find((cell) => cell.x == x && cell.y == y);
     } else {
-      console.error(
+      throw new Error(
         `The x coordinate value must be between 1...${
           this.#dimensionX
         }, the y must be between 1...${
@@ -379,7 +379,7 @@ class SudokuBoard {
               );
             }
           } else {
-            console.error(
+            throw new Error(
               `Input array of the setBoard method in case 2D array ${
                 this.#dimensionY
               } times ${this.#dimensionX} sized.`
@@ -393,7 +393,7 @@ class SudokuBoard {
           this.getCellByCoords(x, y).setValue(cellValue);
         });
       } else {
-        console.error(
+        throw new Error(
           `Input array of the setBoard method in case of 1D array must be exactly ${
             this.#cellNumber
           } element.`
@@ -412,14 +412,14 @@ class SudokuBoard {
           }
         });
       } else {
-        console.error(
+        throw new Error(
           `Input of the setBoard method must be exactly ${
             this.#maxNumber
           } character long string.`
         );
       }
     } else {
-      console.error(
+      throw new Error(
         "Input of set setBoard method should be an 1D or 2D array or a string."
       );
     }
@@ -514,12 +514,12 @@ class Batch {
     ) {
       this.#cells.push(cell);
     } else {
-      console.error(
+      throw new Error(
         "The current cell that would be added has not the same value acceptance as the cells that are already in the batch."
       );
     }
 
-    if (this.#cells.length >= this.#cellNumber)
+    if (this.#cells.length > this.#cellNumber)
       throw new Error(
         `There is more cells in this batch (${
           this.#cells.length
@@ -721,7 +721,7 @@ class Cell {
         this.#value = newValue;
       } else {
         this.#value = this.#accepted.unfilled;
-        console.error(
+        throw new Error(
           `Valid cell value is between: ${this.#accepted.min} - ${
             this.#accepted.max
           }, value: ${
