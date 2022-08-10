@@ -170,6 +170,7 @@ class SudokuSolver {
   /* this method is the entry for making solution possiblities and filtrind out the not valid solution
     arg:    puzzle n x n sized 2D array
     return: boolean that means the puzzle is solved (ture) or not (false) */
+  /* TODO: something here is wrong... :( check the input output of these methods below... */
   #solve() {
     return this.puzzleIsSolved()
       ? this.#getValuesFormBoard()
@@ -178,8 +179,11 @@ class SudokuSolver {
         );
   }
 
+  /* this method gets a SudokuBoard Class, and checks that is correct or not
+    arg:    puzzles array of SudokuBoards (Object)
+    return: boolean that means puzzle is correct or not */
   #validatePosiblities(puzzles) {
-    return puzzles.filter((puzzle) => this.isPuzzleCorrect(puzzle));
+    return puzzles.filter((puzzle) => puzzle.puzzleIsCorrect());
   }
 
   /* generating 9 different puzzles, where the first free cell is filled with all the possible numbenr 1...n
@@ -213,6 +217,7 @@ class SudokuSolver {
     return: an object with the
       * x (number of column) and
       * y (number of row) coordinates */
+  /* TODO: this method can be removed? */
   #getNextCell(puzzle) {
     for (let rowNr = 0; rowNr < puzzle.length; rowNr++) {
       const x = puzzle[rowNr].indexOf(0, 0);
@@ -254,6 +259,7 @@ class SudokuSolver {
   /* creates a tempoaray sudokuboard, and fills it with a puzzle:
   arg:    a puzzle (1D or 2D array or String)
   retrun: the temporary board (SudokuBoard class) */
+  /* TODO: It is used or not? If not remove it!!! */
   #createTemporaryBoard(puzzle) {
     return new SudokuBoard(this.#sectionSize, this.#sectionSize).setBoard(
       puzzle
