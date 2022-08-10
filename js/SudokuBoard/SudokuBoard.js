@@ -62,28 +62,36 @@ class SudokuBoard {
    * given, the cell has an initial value or not
    * issued, the cell has an issue or not */
   createCells() {
-    for (let y = 0; y < this.#dimensionY; y++) {
-      for (let x = 0; x < this.#dimensionX; x++) {
-        const bx = Math.floor(x / this.#boxSizeX);
-        const by = Math.floor(y / this.#boxSizeY);
-        const cell = new Cell({
-          id: y * this.#dimensionX + x,
-          x,
-          y,
-          boxId: this.#boxSizeX * by + bx,
-          bx,
-          by,
-          accepted: {
-            unfilled: 0,
-            min: 1,
-            max: this.#maxNumber,
-          },
-          given: false,
-          issued: false,
-        });
+    if (this.#cells.length <= this.#cellNumber) {
+      for (let y = 0; y < this.#dimensionY; y++) {
+        for (let x = 0; x < this.#dimensionX; x++) {
+          const bx = Math.floor(x / this.#boxSizeX);
+          const by = Math.floor(y / this.#boxSizeY);
+          const cell = new Cell({
+            id: y * this.#dimensionX + x,
+            x,
+            y,
+            boxId: this.#boxSizeX * by + bx,
+            bx,
+            by,
+            accepted: {
+              unfilled: 0,
+              min: 1,
+              max: this.#maxNumber,
+            },
+            given: false,
+            issued: false,
+          });
 
-        this.#cells.push(cell);
+          this.#cells.push(cell);
+        }
       }
+    } else {
+      throw new Error(
+        `Something went wrong, only number of ${
+          this.#cellNumber
+        } cells allowed you tried to create the +1.`
+      );
     }
   }
 
@@ -100,18 +108,24 @@ class SudokuBoard {
   /* filtering out the cells, that are in the same column, putting into a Batch, that handle the columns */
   createCols() {
     for (let x = 0; x < this.#dimensionX; x++) {
-      const col = new Batch(x);
+      const col = new Batch(x, this.#dimensionX);
       this.#cells
         .filter((cell) => cell.x == x)
         .forEach((cell) => col.addCell(cell));
       this.#cols.push(col);
     }
+    if (this.#cols.length !== this.#dimensionY)
+      throw new Error(
+        `There is more rows (${this.#cols.length}) then allowed (${
+          this.#dimensionY
+        }).`
+      );
   }
 
   /* filtering out the cells, that are in the same rows, putting into a Batch, that handle the rows */
   createRows() {
     for (let y = 0; y < this.#dimensionY; y++) {
-      const row = new Batch(y);
+      const row = new Batch(y, this.#dimensionY);
       this.#cells
         .filter((cell) => cell.y == y)
         .forEach((cell) => row.addCell(cell));
@@ -122,7 +136,7 @@ class SudokuBoard {
   /* filtering out the cells, that are in the same boxes, putting into a Batch, that handle the boxes */
   createBoxes() {
     for (let boxId = 0; boxId < this.#maxNumber; boxId++) {
-      const box = new Batch(boxId);
+      const box = new Batch(boxId, this.#maxNumber);
       this.#cells
         .filter((cell) => cell.boxId == boxId)
         .forEach((cell) => box.addCell(cell));
@@ -439,9 +453,11 @@ class Batch {
   #unfilledValue;
   #minValue;
   #maxValue;
+  #cellNumber;
 
-  constructor(id) {
+  constructor(id, cellNumber) {
     this.#id = id;
+    this.#cellNumber = cellNumber;
   }
 
   set id(id) {
@@ -461,11 +477,13 @@ class Batch {
       this.#unfilledValue = accepted.unfilled;
       this.#minValue = accepted.min;
       this.#maxValue = accepted.max;
+
       this.#validValues = Array.from(
         { length: accepted.max },
         (_, i) => i + accepted.min
       );
     }
+
     if (
       this.#unfilledValue === accepted.unfilled &&
       this.#minValue === accepted.min &&
@@ -477,6 +495,13 @@ class Batch {
         "The current cell that would be added has not the same value acceptance as the cells that are already in the batch."
       );
     }
+
+    if (this.#cells.length >= this.#cellNumber)
+      throw new Error(
+        `There is more cells in this batch (${
+          this.#cells.length
+        }) then allowed (${this.#cellNumber}).`
+      );
   }
 
   /* gives all the values of cell they ar in the batch
