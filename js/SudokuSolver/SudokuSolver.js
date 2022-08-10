@@ -188,19 +188,24 @@ class SudokuSolver {
                   number <┘     └> puzzle
               of possivilities */
   #getPosiblities() {
-    let possibilities = [];
-    const nextCell = this.#sudokuboard.getFirsrtFeeCell();
+    const nextCell = this.#sudokuboard.getFirstFeeCell();
 
     if (nextCell) {
       const posNums = this.#sudokuboard.getCellPossiblities(nextCell);
 
       console.log(nextCell, posNums);
 
-      posNums.map((nr) => {
-        return new SudokuBoard();
+      return posNums.map((nr) => {
+        this.#sudokuboard.getCellValues({ format: "2D", unfilledChar: "0" });
+        const temporaryBoard = new SudokuBoard(
+          this.#sectionSize,
+          this.#sectionSize
+        );
+        temporaryBoard.setCellValue(nextCell.x, nextCell.y, nr);
+        return temporaryBoard;
       });
     }
-    return possibilities;
+    return false;
   }
 
   /* find and return back the nexFree cell
