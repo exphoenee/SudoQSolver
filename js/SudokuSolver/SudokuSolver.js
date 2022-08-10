@@ -185,7 +185,7 @@ class SudokuSolver {
   /* generating 9 different puzzles, where the first free cell is filled with all the possible numbenr 1...n
     arg:    puzzle n x n sized 2D array
     return: possiblities m x (n x n) sized 3D array
-                  number <┘      └> puzzle
+                  number <┘     └> puzzle
               of possivilities */
   #getPosiblities() {
     const puzzle = this.#getValuesFormBoard();
@@ -193,13 +193,15 @@ class SudokuSolver {
     const nextCell = this.#getNextCell(puzzle);
     /* i tryed hard make it with map method, but i am failed... that took almost an hour... :( */
     if (nextCell) {
-      for (let nr = 1; nr <= this.#cellsInSection; nr++) {
+      const posNums = this.#sudokuboard.getCellPossiblities(nextCell);
+      console.log(nextCell, posNums);
+      posNums.forEach((nr) => {
         let possibility = [...puzzle];
         let row = [...possibility[nextCell.y]];
         row[nextCell.x] = nr;
         possibility[nextCell.y] = row;
         possibilities.push(possibility);
-      }
+      });
     }
     return possibilities;
   }
