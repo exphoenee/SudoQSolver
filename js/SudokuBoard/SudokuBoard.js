@@ -365,6 +365,9 @@ class SudokuBoard {
   /* setBoard method sets all the cells of the table according to the given arguments.
   arg:    board can be 1D array, 2D array or a string.
   return: void */
+  /* TODO: Ez kurva ronda, olvashatatlan, így már most senki sem tudja hogyan működik. Leszel szíves refaktorálni, mert ez valami rettenetesre sikerült szegény!!!
+  ***********
+  Javaslat: első step check és parse, második értékek átadása, beállítása */
   setBoard(board) {
     if (Array.isArray(board)) {
       if (board.length === this.#dimensionY) {
