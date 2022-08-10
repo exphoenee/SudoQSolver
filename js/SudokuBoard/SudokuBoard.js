@@ -284,12 +284,22 @@ class SudokuBoard {
     return true;
   }
 
-  /* gives the firs free cell
-  arg:    null
-  return: Object {x, y} the two coorinate of the cell */
-  coordsOfFirstFreeCell() {
+  /* gives the first free cell
+    arg:    null
+    return: Cell (Object) */
+  getFirsrtFeeCell() {
     const freeCell = this.#cells.find((cell) => cell.value == 0);
-    return { x: freeCell.x, y: freeCell.y };
+    if (freeCell) return freeCell;
+    return false;
+  }
+
+  /* gives the coords of the first free cell
+    arg:    null
+    return: Object {x, y} the two coorinate of the cell */
+  coordsOfFirstFreeCell() {
+    const freeCell = this.getFirsrtFeeCell();
+    if (freeCell) return { x: freeCell.x, y: freeCell.y };
+    return false;
   }
 
   /* Validating the coordinate, the coord must be in range between 0 and dimension.
