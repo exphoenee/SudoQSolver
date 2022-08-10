@@ -114,10 +114,10 @@ class SudokuBoard {
         .forEach((cell) => col.addCell(cell));
       this.#cols.push(col);
     }
-    if (this.#cols.length !== this.#dimensionY)
+    if (this.#cols.length !== this.#dimensionX)
       throw new Error(
-        `There is more rows (${this.#cols.length}) then allowed (${
-          this.#dimensionY
+        `There is more columns (${this.#cols.length}) then allowed (${
+          this.#dimensionX
         }).`
       );
   }
@@ -131,6 +131,12 @@ class SudokuBoard {
         .forEach((cell) => row.addCell(cell));
       this.#rows.push(row);
     }
+    if (this.#rows.length !== this.#dimensionY)
+      throw new Error(
+        `There is more rows (${this.#rows.length}) then allowed (${
+          this.#dimensionY
+        }).`
+      );
   }
 
   /* filtering out the cells, that are in the same boxes, putting into a Batch, that handle the boxes */
@@ -142,6 +148,12 @@ class SudokuBoard {
         .forEach((cell) => box.addCell(cell));
       this.#boxes.push(box);
     }
+    if (this.#boxes.length !== this.#maxNumber)
+      throw new Error(
+        `There is more boxes (${this.#boxes.length}) then allowed (${
+          this.#maxNumber
+        }).`
+      );
   }
 
   /* gives a row according to the given row number
