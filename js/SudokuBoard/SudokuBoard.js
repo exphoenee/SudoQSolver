@@ -278,9 +278,10 @@ class SudokuBoard {
   }
 
   puzzleIsCorrect() {
-    [...this.#rows, ...this.#cols, ...this.#boxes].forEach((row) => {
-      if (row.hasDuplicates()) return false;
+    [...this.#rows, ...this.#cols, ...this.#boxes].forEach((batch) => {
+      if (batch.hasDuplicates()) return false;
     });
+    return true;
   }
 
   /* gives the firs free cell
@@ -723,7 +724,6 @@ class Cell {
   }
 
   isFilled() {
-    console.log(this.value, this.getAccepted().unfilled);
     return this.value !== this.getAccepted().unfilled;
   }
 
