@@ -734,7 +734,7 @@ class Cell {
         );
       }
     } else {
-      throw new Error("Set value must be a number");
+      throw new Error("Set value must be a number!");
     }
   }
 
