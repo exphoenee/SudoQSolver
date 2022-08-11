@@ -264,9 +264,23 @@ class SudokuSolver {
       return: undefined */
   #updateCell(e) {
     e.preventDefault();
-    this.#sudokuboard.cells
-      .find((cell) => cell.id === +e.target.id)
-      .setValue(+e.target.value);
+
+    const cell = this.#sudokuboard.cells.find(
+      (cell) => cell.id === +e.target.id
+    );
+
+    const unfilled = cell.getAccepted().unfilled;
+    const value = +e.target.value;
+    let newValue = "";
+
+    try {
+      cell.setValue(value || unfilled);
+      newValue = value;
+    } catch {
+      cell.setValue(unfilled);
+      console.warn("The Given value is not allowed.");
+    }
+    e.target.value = newValue || "";
 
     this.#upadateIssuedCells();
   }
@@ -274,7 +288,7 @@ class SudokuSolver {
   /* all the issued cells gets the issued class and style */
   #upadateIssuedCells() {
     this.#clearAllIssued();
-    console.log(this.#sudokuboard.getIssuedCells());
+
     this.#sudokuboard
       .getIssuedCells()
       .forEach((cell) => cell.getRef().classList.add("issue"));
@@ -284,6 +298,7 @@ class SudokuSolver {
   #clearAllIssued() {
     this.#sudokuboard.cells.forEach((cell) => {
       cell.getRef().classList.remove("issue");
+      cell.setUnIssued();
     });
   }
 
