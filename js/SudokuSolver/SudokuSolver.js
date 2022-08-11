@@ -168,12 +168,12 @@ class SudokuSolver {
   }
 
   /* this method is the entry for making solution possiblities and filtrind out the not valid solution
-    arg:    puzzle n x n sized 2D array
+    arg:    null
     return: boolean that means the puzzle is solved (ture) or not (false) */
   /* TODO: something here is wrong... :( check the input output of these methods below... */
   #solve() {
     return this.puzzleIsSolved()
-      ? this.#getValuesFormBoard()
+      ? this.#sudokuboard
       : this.#checkPossiblities(
           this.#validatePosiblities(this.#getPosiblities())
         );
@@ -197,46 +197,20 @@ class SudokuSolver {
     if (nextCell) {
       const posNums = this.#sudokuboard.getCellPossiblities(nextCell);
 
-      console.log(nextCell, posNums);
+      console.log(posNums);
 
       return posNums.map((nr) => {
-        this.#sudokuboard.getCellValues({ format: "2D", unfilledChar: "0" });
         const temporaryBoard = new SudokuBoard(
           this.#sectionSize,
           this.#sectionSize
         );
+        temporaryBoard.setBoard(this.#sudokuboard.getCellValues());
         temporaryBoard.setCellValue(nextCell.x, nextCell.y, nr);
+        console.log(temporaryBoard.getCellValues({ format: "2D" }));
         return temporaryBoard;
       });
     }
     return false;
-  }
-
-  /* find and return back the nexFree cell
-    arg: puzzle n x n sized 2D array
-    return: an object with the
-      * x (number of column) and
-      * y (number of row) coordinates */
-  /* TODO: this method can be removed? */
-  #getNextCell(puzzle) {
-    for (let rowNr = 0; rowNr < puzzle.length; rowNr++) {
-      const x = puzzle[rowNr].indexOf(0, 0);
-      if (x > -1) return { x, y: rowNr };
-    }
-  }
-
-  /* generates the map of the puzzle
-    arg:    puzzle n x n sized 2D array
-    return: an n x n sized 2D array of objects with the:
-      * value what is in the cell written
-      * x (number of column) and
-      * y (number of row) coordinates */
-  generateMap(puzzle) {
-    return puzzle.map((row, y) => {
-      return row.map((cell, x) => {
-        return { value: cell, x, y };
-      });
-    });
   }
 
   /* check the possibilities if there is any:
@@ -254,26 +228,6 @@ class SudokuSolver {
     } else {
       return false;
     }
-  }
-
-  /* creates a tempoaray sudokuboard, and fills it with a puzzle:
-  arg:    a puzzle (1D or 2D array or String)
-  retrun: the temporary board (SudokuBoard class) */
-  /* TODO: It is used or not? If not remove it!!! */
-  #createTemporaryBoard(puzzle) {
-    return new SudokuBoard(this.#sectionSize, this.#sectionSize).setBoard(
-      puzzle
-    );
-  }
-
-  /* extracts teh cell values form the SudokuBoardClass
-  arg:    null,
-  return: 2D array of integer  */
-  #getValuesFormBoard() {
-    return this.#sudokuboard.getCellValues({
-      format: "2D",
-      unfilledChar: "0",
-    });
   }
 
   /***********************************/
