@@ -404,22 +404,18 @@ class SudokuSolver {
   /* updateing the UI with a puzzle or solution
     arg:    puzzle n x n sized 2D array
     return: a boolean true means the column doesn't has duplicates */
-  #updateAllCells(params = { puzzle: null, setGiven: false }) {
-    const { puzzle, setGiven } = params;
+  #updateAllCells({ puzzle, setGiven } = { puzzle: null, setGiven: false }) {
     this.#sudokuboard.cells.forEach((cell, index) => {
       const value = puzzle ? +puzzle.flat()[index] : +cell.value;
       cell.getRef().value = value || "";
       cell.setValue(value);
 
-      if (setGiven && cell.isFilled()) {
-        cell.getRef().classList.add("given");
-        cell.getRef().disabled = true;
-        cell.setGiven(true);
-      } else {
-        cell.getRef().classList.remove("given");
-        cell.getRef().disabled = false;
-        cell.setGiven(false);
-      }
+      const isGiven = setGiven && cell.isFilled();
+      cell.setGiven(isGiven);
+      cell.getRef().disabled = isGiven;
+      isGiven
+        ? cell.getRef().classList.add("given")
+        : cell.getRef().classList.remove("given");
     });
   }
 
