@@ -558,20 +558,22 @@ class Batch {
   arg:    null,
   return: array of cells (object) with the same values */
   getDuplicateValuedCells() {
-    return this.#cells.filter((cell) => {
-      return this.getDuplicateValues().includes(cell.value);
-    });
+    return this.#cells.filter((cell) =>
+      this.getDuplicateValues().includes(cell.value)
+    );
   }
 
   /* gives the values, what is the duplicated in the batch
   arg:    null,
   return: array of (integers)  */
   getDuplicateValues() {
-    return [
-      ...new Set(
-        this.#cells.filter((cell) => cell.isFilled()).map((cell) => cell.value)
-      ),
-    ];
+    return Array.from(
+      { length: this.#maxValue - this.#minValue + 1 },
+      (_, i) => i + 1
+    ).filter(
+      (validNum) =>
+        this.#cells.filter((cell) => cell.value === validNum).length > 1
+    );
   }
 
   /* gives all the cells with the given value
