@@ -146,7 +146,7 @@ class SudokuSolver {
     }
     this.#updateAllCells({ setGiven: null });
 
-    if (this.isPuzzleCorrect()) {
+    if (this.#sudokuboard.puzzleIsCorrect()) {
       const result = this.#solve();
       if (result) {
         this.#updateAllCells({ puzzle: result, setGiven: null });
@@ -170,9 +170,8 @@ class SudokuSolver {
   /* this method is the entry for making solution possiblities and filtrind out the not valid solution
     arg:    null
     return: boolean that means the puzzle is solved (ture) or not (false) */
-  /* TODO: something here is wrong... :( check the input output of these methods below... */
   #solve() {
-    return this.puzzleIsSolved()
+    return !this.#sudokuboard.coordsOfFirstFreeCell()
       ? this.#sudokuboard.getCellValues({ format: "2D" })
       : this.#checkPossiblities(this.#getPosiblities());
   }
@@ -224,110 +223,6 @@ class SudokuSolver {
   /* methods for checking the puzzle */
   /***********************************/
 
-  /* checks the puzzle is solved already or didn't
-      arg:     puzzle n x n sized 2D array
-      returns: a boolean only ture is puzzle solved */
-  puzzleIsSolved() {
-    return !this.#sudokuboard.coordsOfFirstFreeCell();
-  }
-
-  /* if everything is fine, that means there is no issue in the
-      * rows,
-      * columns, and
-      * n x n boxes, then the table is correct
-    arg:    puzzle n x n sized 2D array
-    return: a boolean true means the puzzle seems to solvable */
-  isPuzzleCorrect() {
-    return this.#sudokuboard.puzzleIsCorrect();
-  }
-
-  /* checking all the values are unique in the rows
-    arg:    puzzle n x n sized 2D array
-    return: a boolean true means the row doesn't has duplicates */
-  #rowsCorrect(puzzle) {
-    return puzzle.every((row) => this.#batchCorrect(row));
-  }
-
-  /* the method checks that in the given batch is every number is only once present
-    arg:    batch n sized 1D array, that represents
-      * a row,
-      * a column or
-      * a flattened box)
-    return: a boolean true means the row doesn't has duplicates */
-  #batchCorrect(batch) {
-    const onlyNums = batch.filter((num) => this.#validateValue(num) != 0);
-    return new Set(onlyNums).size == onlyNums.length;
-  }
-
-  /* this method checks all the columns has unique numbers
-    arg:    puzzle n x n sized 2D array
-    return: a boolean true means the column doesn't has duplicates */
-  #columnsCorrect(puzzle) {
-    return this.#getColumnsOfPuzzle(puzzle).every((col) =>
-      this.#batchCorrect(col)
-    );
-  }
-
-  /* TODO: it is not implemented yet */
-  /* this method checks a batches and gets the unique numbers
-    arg:    batch n sized 1D array, that represents
-      * a row,
-      * a column or
-      * a flattened box)
-    return: an array of objects that contains:
-      * */
-  getMissingFromBatch(batch) {
-    return true;
-  }
-
-  /* this method transposes the 2D array
-    arg:    puzzle n x n sized 2D array, to getting the columns in order
-    return: puzzle that is transposed */
-  #getColumnsOfPuzzle(puzzle) {
-    return puzzle[0].map((col, colNr) => puzzle.map((row) => row[colNr]));
-  }
-
-  /* getting the n x n boxes form the puzzle
-    arg:    n x n sized 2D array
-    return: all sections flattened, seems that are
-      * row or
-      * columns,
-      * but they aren't!!! */
-  /* TODO: maybe that is not enough efficient here I need some help to do it better */
-  #getBoxes(puzzle) {
-    let boxTemplate = [];
-
-    boxTemplate = this.#getColumnsOfPuzzle(
-      puzzle.map((row) => {
-        const boxRows = [];
-        for (let i = 0; i < row.length; i += this.#sectionSize) {
-          boxRows.push(row.slice(i, i + this.#sectionSize));
-        }
-        return boxRows;
-      })
-    );
-
-    /* I couldn't solve that in the first iteration... */
-    let boxes = [];
-    boxTemplate.forEach((row) => {
-      for (let j = 0; j < this.#cellsInSection; j += this.#sectionSize) {
-        let box = [];
-        for (let i = 0; i < this.#sectionSize; i++) {
-          box = box.concat(row[j + i]);
-        }
-        boxes.push(box);
-      }
-    });
-
-    return boxes;
-  }
-
-  /* check the n x n sized sections arg), the boxes, there is not replication of numbers present */
-  #boxesCorrect(puzzle) {
-    let boxes = this.#getBoxes(puzzle);
-    return boxes.every((box) => this.#batchCorrect(box));
-  }
-
   /* converts a table to string
     arg:    puzzle a 2D array n x n sized
     return: a flattened 2D array, what is joined to a String */
@@ -370,6 +265,7 @@ class SudokuSolver {
     this.#sudokuboard.cells
       .find((cell) => cell.id === +e.target.id)
       .setValue(+e.target.value);
+    console.log(this.#sudokuboard.getIssuedCells());
   }
 
   /* getting all values from the UI inputs
