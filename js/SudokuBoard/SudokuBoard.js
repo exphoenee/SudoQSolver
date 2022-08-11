@@ -296,9 +296,13 @@ class SudokuBoard {
   arg:    null,
   return: array of cells (object) */
   getIssuedCells() {
-    return [...this.#rows, ...this.#cols, ...this.#boxes].filter((batch) => {
-      return batch.getDuplicateValuedCells();
-    });
+    return [
+      ...new Set(
+        [...this.#rows, ...this.#cols, ...this.#boxes]
+          .map((batch) => batch.getDuplicateValuedCells())
+          .flat()
+      ),
+    ];
   }
 
   /* the method is checking the puzzle does or not any duplicates in the rows, columns or boxes
@@ -555,9 +559,7 @@ class Batch {
   return: array of cells (object) with the same values */
   getDuplicateValuedCells() {
     return this.#cells.filter((cell) => {
-      const dups = this.getDuplicateValues();
-      console.log("dups", dups);
-      return dups ? dups.includes(cell.value) : false;
+      return this.getDuplicateValues().includes(cell.value);
     });
   }
 
