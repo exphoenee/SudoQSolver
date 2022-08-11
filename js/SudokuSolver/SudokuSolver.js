@@ -144,12 +144,12 @@ class SudokuSolver {
     } else if (this.#renderMyself) {
       this.#extractInputs();
     }
-    this.#updateAllCells();
+    this.#updateAllCells({ setGiven: null });
 
     if (this.isPuzzleCorrect()) {
       const result = this.#solve();
       if (result) {
-        this.#updateAllCells({ puzzle: result });
+        this.#updateAllCells({ puzzle: result, setGiven: null });
         this.#userMsg("That was easy!");
 
         const formatting = {
@@ -173,7 +173,7 @@ class SudokuSolver {
   /* TODO: something here is wrong... :( check the input output of these methods below... */
   #solve() {
     return this.puzzleIsSolved()
-      ? this.#sudokuboard
+      ? this.#sudokuboard.getCellValues({ format: "2D" })
       : this.#checkPossiblities(this.#getPosiblities());
   }
 
@@ -216,6 +216,7 @@ class SudokuSolver {
   #checkPossiblities(possiblities) {
     if (possiblities.length > 0) {
       let possiblity = possiblities.shift();
+      this.#sudokuboard.setBoard(possiblity.getCellValues({ format: "2D" }));
       const treeBranch = this.#solve(possiblity);
       return treeBranch ? treeBranch : this.#checkPossiblities(possiblities);
     } else {
@@ -357,12 +358,14 @@ class SudokuSolver {
       cell.getRef().value = value || "";
       cell.setValue(value);
 
-      const isGiven = setGiven && cell.isFilled();
-      cell.setGiven(isGiven);
-      cell.getRef().disabled = isGiven;
-      isGiven
-        ? cell.getRef().classList.add("given")
-        : cell.getRef().classList.remove("given");
+      if (setGiven !== null) {
+        const isGiven = setGiven && cell.isFilled();
+        cell.setGiven(isGiven);
+        cell.getRef().disabled = isGiven;
+        isGiven
+          ? cell.getRef().classList.add("given")
+          : cell.getRef().classList.remove("given");
+      }
     });
   }
 
