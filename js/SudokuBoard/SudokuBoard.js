@@ -292,6 +292,15 @@ class SudokuBoard {
     );
   }
 
+  /* the method gives the issued cells in an array
+  arg:    null,
+  return: array of cells (object) */
+  getIssuedCells() {
+    return [...this.#rows, ...this.#cols, ...this.#boxes].filter((batch) => {
+      return batch.getDuplicateValuedCells();
+    });
+  }
+
   /* the method is checking the puzzle does or not any duplicates in the rows, columns or boxes
   arg:    null,
   return: boolen the puzzle is correct, true, that means there aren't any duplicates */
@@ -538,29 +547,29 @@ class Batch {
 
   /* checks that the batch has alread a duplicates */
   hasDuplicates() {
-    const cellValues = this.getCellValues().filter(
-      (cell) => cell !== this.#unfilledValue
-    );
-    return cellValues.length !== new Set(cellValues).size;
+    return this.getDuplicateValues().length > 0;
   }
 
   /* gives the cells, where is the same value written
   arg:    null,
   return: array of cells (object) with the same values */
   getDuplicateValuedCells() {
-    return this.#cells.filter((cell) =>
-      this.getDuplicateValues().includes(cell.value)
-    );
+    return this.#cells.filter((cell) => {
+      const dups = this.getDuplicateValues();
+      console.log("dups", dups);
+      return dups ? dups.includes(cell.value) : false;
+    });
   }
 
   /* gives the values, what is the duplicated in the batch
   arg:    null,
   return: array of (integers)  */
   getDuplicateValues() {
-    if (this.hasDuplicates()) {
-      const nums = this.getCellValues();
-      return nums.filter((item, index) => nums.indexOf(item) !== index);
-    }
+    return [
+      ...new Set(
+        this.#cells.filter((cell) => cell.isFilled()).map((cell) => cell.value)
+      ),
+    ];
   }
 
   /* gives all the cells with the given value
