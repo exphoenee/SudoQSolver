@@ -13,7 +13,6 @@ class Solver {
   therefrom is calculated everything
   this class is only responsible for tha handling, oranazing, setting and getting the status of the cells contained the board.*/
 class SudokuBoard {
-  /* i used in this case private methods and porperties already */
   #boxSizeX;
   #boxSizeY;
   #dimensionX;
@@ -101,62 +100,45 @@ class SudokuBoard {
     return this.#cells.map((cell) => cell.getInfo());
   }
 
+  /* clearing all the issued property of the cells */
   clearIssued() {
     this.#cells.forEach((cell) => cell.setUnIssued());
   }
 
-  /* filtering out the cells, that are in the same column, putting into a Batch, that handle the columns */
-  /* TODO: itt egymás után a három method tök egyforma, ezt valahogy egyetlen methoddal kellene leírni, talán a closure a megoldás(?), fell egy core function ami leírja az azonos logikát, de kívülről kapja a tömbök referenciáját, amit tölt pushal, és a méretet, amit átad a Batch constuctorának, valamint ellenőriz vele. Ennek utána kell nézni, így biztosan nem maradhat, ha válzotik valami 3x kell átírni, és ha csak egyszer elmarad, reszeltek a mutatávnynak!!! */
-  createCols() {
-    for (let x = 0; x < this.#dimensionX; x++) {
-      const col = new Batch(x, this.#dimensionX);
+  /* filtering a cells of batch with same batch id
+  arg:    * dimension (integer) the length of the batch
+          * id (integer) the id of the Batch that should filtered
+  return: an array of cells */
+  #filterSameBatchID(dimension, id) {
+    const collector = [];
+    for (let i = 0; i < dimension; i++) {
+      const batch = new Batch(i, dimension);
       this.#cells
-        .filter((cell) => cell.x == x)
-        .forEach((cell) => col.addCell(cell));
-      this.#cols.push(col);
+        .filter((cell) => cell[id] == i)
+        .forEach((cell) => batch.addCell(cell));
+      collector.push(batch);
     }
-    if (this.#cols.length !== this.#dimensionX)
+    if (collector.length !== dimension)
       throw new Error(
-        `There is more columns (${this.#cols.length}) then allowed (${
-          this.#dimensionX
-        }).`
+        `There is more columns (${collector.length}) then allowed (${dimension}).`
       );
+    return collector;
+  }
+
+  /* filtering out the cells, that are in the same column, putting into a Batch, that handle the columns */
+  createCols() {
+    this.#cols = this.#filterSameBatchID(this.#dimensionX, "x");
   }
 
   /* filtering out the cells, that are in the same rows, putting into a Batch, that handle the rows */
   createRows() {
-    for (let y = 0; y < this.#dimensionY; y++) {
-      const row = new Batch(y, this.#dimensionY);
-      this.#cells
-        .filter((cell) => cell.y == y)
-        .forEach((cell) => row.addCell(cell));
-      this.#rows.push(row);
-    }
-    if (this.#rows.length !== this.#dimensionY)
-      throw new Error(
-        `There is more rows (${this.#rows.length}) then allowed (${
-          this.#dimensionY
-        }).`
-      );
+    this.#rows = this.#filterSameBatchID(this.#dimensionY, "y");
   }
 
   /* filtering out the cells, that are in the same boxes, putting into a Batch, that handle the boxes */
   createBoxes() {
-    for (let boxId = 0; boxId < this.#maxNumber; boxId++) {
-      const box = new Batch(boxId, this.#maxNumber);
-      this.#cells
-        .filter((cell) => cell.boxId == boxId)
-        .forEach((cell) => box.addCell(cell));
-      this.#boxes.push(box);
-    }
-    if (this.#boxes.length !== this.#maxNumber)
-      throw new Error(
-        `There is more boxes (${this.#boxes.length}) then allowed (${
-          this.#maxNumber
-        }).`
-      );
+    this.#boxes = this.#filterSameBatchID(this.#cellNumber, "boxId");
   }
-  /* TODO: A fenti három method ugyanazt csinálja csak más tömbbel! Emergency Refactoring required ASAP (amint rájövök mit kéne csinálni)  */
 
   /* gives a row according to the given row number
   arg:    rowNr (Integer)
@@ -186,36 +168,34 @@ class SudokuBoard {
     return this.#boxes[boxNr];
   }
 
+  /* this method gives form the cells of the batch only the array of values back
+    arg:    batch
+    return: array of integers the values in the batch */
+  #filterValuesFromBatch(batch) {
+    return batch.getCells().map((cell) => cell.value);
+  }
+
   /* gives a row according to the given row number
   arg:    rowNr (Integer)
   return: values of the cells in the Batch (array of integers) */
-  /* TODO: a következő három method is tök ugyanaz */
   getRowValues(rowNr) {
-    return this.getRow(rowNr)
-      .getCells()
-      .map((cell) => cell.value);
+    return this.#filterValuesFromBatch(this.getRow(rowNr));
   }
 
   /* gives a column according to the given column number
   arg:    colNr (Integer)
   return: values of the cells in the Batch (array of integers) */
   getColValues(colNr) {
-    return this.getCol(colNr)
-      .getCells()
-      .map((cell) => cell.value);
+    return this.#filterValuesFromBatch(this.getCol(colNr));
   }
 
   /* gives a section according to the given section number
   arg:    boxNr (Integer)
   return: values of the cells in the Batch (array of integers) */
   getBoxValues(boxNr) {
-    return this.getBox(boxNr)
-      .getCells()
-      .map((cell) => cell.value);
+    return this.#filterValuesFromBatch(this.getBox(boxNr));
   }
-  /* TODO: A fenti három method ugyanazt csinálja csak más tömbbel! Emergency Refactoring required ASAP (amint rájövök mit kéne csinálni)  */
 
-  /* TODO: meg a következő három pár method is tök ugyanaz (páronként) */
   /* gives the missing numbers of a row according to the given row number
   arg:    rowNr (Integer)
   return: array of integers that are the possible values what missing from the row  */
@@ -257,10 +237,13 @@ class SudokuBoard {
   getFilledFromBox(boxNr) {
     return this.getBox(boxNr).getFilledNumbers();
   }
-  /* TODO: A fenti három method ugyanazt csinálja csak más tömbbel! Emergency Refactoring required ASAP (amint rájövök mit kéne csinálni)  */
 
-  /* this method gives the numbers what can we write into a cell, the cell couldn't has a walue what is represented in the column, the row and the box thath the cell is contained
-      arg:      x, y (integer)
+  /* this method gives the numbers what can we write into a cell, the cell couldn't has a value what is represented in the column, the row and the box thath the cell is contained,
+    the method is capable for get result according to x and y coordinates, or easely giving a Cell (Object) to its argument
+      arg:      Object literal with following keys:
+                  * x (integer),
+                  * y (integer),
+                  * cell (integer),
       return:   array of integer what is missing form the row, column, and box of the cell */
   getCellPossiblities({ x, y, cell }) {
     if (!cell) cell = this.getCellByCoords(x, y);
@@ -280,7 +263,6 @@ class SudokuBoard {
   /* checking that the column has duplicates
     arg:    colNr (integers) the column number of the board
     return: true or false that means there are a duplicates for this column */
-  /* TODO: ez már megint full azonos */
   hasColumnDuplicates(colNr) {
     return this.getCol(colNr).hasDuplicates();
   }
@@ -298,7 +280,6 @@ class SudokuBoard {
   hasBoxDuplicates(boxNr) {
     return this.getBox(boxNr).hasDuplicates();
   }
-  /* TODO: A fenti három method ugyanazt csinálja csak más tömbbel! Emergency Refactoring required ASAP (amint rájövök mit kéne csinálni)  */
 
   /* checking that the cell has duplicates its row, column or section arg:    x, y (integers) the coordinates of the cell
     return: true or false that means there are a duplicates for this cell */
@@ -311,6 +292,9 @@ class SudokuBoard {
     );
   }
 
+  /* the method is checking the puzzle does or not any duplicates in the rows, columns or boxes
+  arg:    null,
+  return: boolen the puzzle is correct, true, that means there aren't any duplicates */
   puzzleIsCorrect() {
     [...this.#rows, ...this.#cols, ...this.#boxes].forEach((batch) => {
       if (batch.hasDuplicates()) return false;
@@ -778,14 +762,21 @@ class Cell {
     return this.#accepted;
   }
 
+  /* gives info about that the cell is filled
+  arg:    null
+  return: boolean true if the cell has other values as an unfilled */
   isFilled() {
     return this.value !== this.getAccepted().unfilled;
   }
 
+  /* gives info about that the cell is free
+  arg:    null
+  return: boolean true if the cell has same values as an unfilled */
   isUnfilled() {
-    return this.#value === this.#accepted.unfilled;
+    return this.#value === this.getAccepted().unfilled;
   }
 
+  /* the cell can store an external reference also */
   getRef() {
     return this.#ref;
   }
