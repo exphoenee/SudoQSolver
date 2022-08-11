@@ -255,6 +255,8 @@ class SudokuSolver {
           : cell.getRef().classList.remove("given");
       }
     });
+
+    this.#upadateIssuedCells();
   }
 
   /* the method updating the SudokuBoard according to the UI input value
@@ -265,7 +267,24 @@ class SudokuSolver {
     this.#sudokuboard.cells
       .find((cell) => cell.id === +e.target.id)
       .setValue(+e.target.value);
+
+    this.#upadateIssuedCells();
+  }
+
+  /* all the issued cells gets the issued class and style */
+  #upadateIssuedCells() {
+    this.#clearAllIssued();
     console.log(this.#sudokuboard.getIssuedCells());
+    this.#sudokuboard
+      .getIssuedCells()
+      .forEach((cell) => cell.getRef().classList.add("issue"));
+  }
+
+  /* removeing all the issue calss from inputs */
+  #clearAllIssued() {
+    this.#sudokuboard.cells.forEach((cell) => {
+      cell.getRef().classList.remove("issue");
+    });
   }
 
   /* getting all values from the UI inputs
