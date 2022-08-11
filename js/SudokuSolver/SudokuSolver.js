@@ -187,9 +187,6 @@ class SudokuSolver {
 
     if (nextCell) {
       const posNums = this.#sudokuboard.getCellPossiblities(nextCell);
-
-      console.log(posNums);
-
       return posNums
         .map((nr) => {
           const temporaryBoard = new SudokuBoard(
@@ -198,7 +195,6 @@ class SudokuSolver {
           );
           temporaryBoard.setBoard(this.#sudokuboard.getCellValues());
           temporaryBoard.setCellValue(nextCell.x, nextCell.y, nr);
-          console.log(temporaryBoard.getCellValues({ format: "2D" }));
           return temporaryBoard;
         })
         .filter((puzzle) => puzzle.puzzleIsCorrect());
@@ -244,9 +240,6 @@ class SudokuSolver {
   isPuzzleCorrect() {
     return this.#sudokuboard.puzzleIsCorrect();
   }
-
-  /* TODO: it is not implemented yet */
-  #getPossibleNumbers() {}
 
   /* checking all the values are unique in the rows
     arg:    puzzle n x n sized 2D array
