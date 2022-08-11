@@ -174,16 +174,7 @@ class SudokuSolver {
   #solve() {
     return this.puzzleIsSolved()
       ? this.#sudokuboard
-      : this.#checkPossiblities(
-          this.#validatePosiblities(this.#getPosiblities())
-        );
-  }
-
-  /* this method gets a SudokuBoard Class, and checks that is correct or not
-    arg:    puzzles array of SudokuBoards (Object)
-    return: boolean that means puzzle is correct or not */
-  #validatePosiblities(puzzles) {
-    return puzzles.filter((puzzle) => puzzle.puzzleIsCorrect());
+      : this.#checkPossiblities(this.#getPosiblities());
   }
 
   /* generating 9 different puzzles, where the first free cell is filled with all the possible numbenr 1...n
@@ -199,16 +190,18 @@ class SudokuSolver {
 
       console.log(posNums);
 
-      return posNums.map((nr) => {
-        const temporaryBoard = new SudokuBoard(
-          this.#sectionSize,
-          this.#sectionSize
-        );
-        temporaryBoard.setBoard(this.#sudokuboard.getCellValues());
-        temporaryBoard.setCellValue(nextCell.x, nextCell.y, nr);
-        console.log(temporaryBoard.getCellValues({ format: "2D" }));
-        return temporaryBoard;
-      });
+      return posNums
+        .map((nr) => {
+          const temporaryBoard = new SudokuBoard(
+            this.#sectionSize,
+            this.#sectionSize
+          );
+          temporaryBoard.setBoard(this.#sudokuboard.getCellValues());
+          temporaryBoard.setCellValue(nextCell.x, nextCell.y, nr);
+          console.log(temporaryBoard.getCellValues({ format: "2D" }));
+          return temporaryBoard;
+        })
+        .filter((puzzle) => puzzle.puzzleIsCorrect());
     }
     return false;
   }
