@@ -264,8 +264,8 @@ class SudokuBoard {
       return:   array of integer what is missing form the row, column, and box of the cell */
   getCellPossiblities({ x, y, cell }) {
     if (!cell) cell = this.getCellByCoords(x, y);
-    const missingFromCol = this.getMissingFromCol(cell.y);
-    const missingFromRow = this.getMissingFromRow(cell.x);
+    const missingFromCol = this.getMissingFromCol(cell.x);
+    const missingFromRow = this.getMissingFromRow(cell.y);
     const missingFromBox = this.getMissingFromBox(cell.boxId);
 
     const intersection = (arr1, arr2) =>
@@ -569,18 +569,6 @@ class Batch {
     );
   }
 
-  /* sets the duplicate valued cells to issued
-  arg:    null,
-  return: null. */
-  setIssued() {
-    this.getDuplicateValuedCells().forEach((cell) => cell.setIssued());
-  }
-
-  /* removing the issued tag form the all the cells of the batch */
-  clearIssued() {
-    this.#cells.forEach((cell) => cell.setUnIssued());
-  }
-
   /* gives the values, what is the duplicated in the batch
   arg:    null,
   return: array of (integers)  */
@@ -610,6 +598,18 @@ class Batch {
   return: array of Cell (Object) */
   getCells() {
     return this.#cells;
+  }
+
+  /* sets the duplicate valued cells to issued
+  arg:    null,
+  return: null. */
+  setIssued() {
+    this.getDuplicateValuedCells().forEach((cell) => cell.setIssued());
+  }
+
+  /* removing the issued tag form the all the cells of the batch */
+  clearIssued() {
+    this.#cells.forEach((cell) => cell.setUnIssued());
   }
 }
 
