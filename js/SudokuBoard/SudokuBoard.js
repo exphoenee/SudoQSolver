@@ -424,6 +424,7 @@ class SudokuBoard {
         if (setGiven) cell.isFilled() ? cell.setGiven() : cell.unsetGiven();
       })
     );
+    this.#setAllIssuedCells();
   }
 
   /* gives the values of all the cells in the board
@@ -479,10 +480,13 @@ class SudokuBoard {
 
     if (selectedCell) {
       selectedCell.setValue(value);
-
-      this.clearIssued();
-      this.getIssuedCells().forEach((issuedCell) => issuedCell.setIssued());
+      this.#setAllIssuedCells();
     }
+  }
+
+  #setAllIssuedCells() {
+    this.clearIssued();
+    this.getIssuedCells().forEach((issuedCell) => issuedCell.setIssued());
   }
 }
 
