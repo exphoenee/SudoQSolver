@@ -124,6 +124,15 @@ class SudokuSolver {
       ],
     };
 
+    /* TEST */
+    //this.#sudokuboard.setBoard(this.examples["Reset"].flat());
+    //this.#sudokuboard.setBoard(this.examples["Reset"]);
+    //this.#sudokuboard.setBoard(this.examples["Reset"].flat().join(""));
+    //this.#sudokuboard.setBoard(this.examples["Reset"].flat().splice(0, 1));
+    //this.#sudokuboard.setBoard(this.examples["Reset"].splice(0, 1));
+    //this.#sudokuboard.setBoard(this.examples["Reset"].flat().join("").concat("0"));
+    /* TEST */
+
     //rendering the table
     params.renderMyself && this.render();
   }
@@ -144,12 +153,12 @@ class SudokuSolver {
     } else if (this.#renderMyself) {
       this.#extractInputs();
     }
-    this.#updateAllCells({ setGiven: null });
+    this.#updateUICells();
 
     if (this.#sudokuboard.puzzleIsCorrect()) {
       const result = this.#solve();
       if (result) {
-        this.#updateAllCells({ puzzle: result, setGiven: null });
+        this.#updateUICells();
         this.#userMsg("That was easy!");
 
         const formatting = {
@@ -238,29 +247,18 @@ class SudokuSolver {
   /* updateing the UI with a puzzle or solution
     arg:    puzzle n x n sized 2D array
     return: a boolean true means the column doesn't has duplicates */
-  #updateAllCells({ puzzle, setGiven } = { puzzle: null, setGiven: false }) {
-    this.#sudokuboard.cells.forEach((cell, index) => {
-      const value = puzzle ? +puzzle.flat()[index] : +cell.value;
-      cell.getRef().value = value || "";
-      cell.setValue(value);
+  #updateUICells() {
+    this.#sudokuboard.cells.forEach(
+      (cell) => (cell.getRef().value = +cell.value || "")
+    );
 
-      if (setGiven !== null) {
-        const isGiven = setGiven && cell.isFilled();
-        cell.setGiven(isGiven);
-        cell.getRef().disabled = isGiven;
-        isGiven
-          ? cell.getRef().classList.add("given")
-          : cell.getRef().classList.remove("given");
-      }
-    });
-
-    this.#upadateIssuedCells();
+    this.#upadateCells();
   }
 
   /* the method updating the SudokuBoard according to the UI input value
       arg:    e Event,
       return: undefined */
-  #updateCell(e) {
+  #updateUICell(e) {
     e.preventDefault();
 
     const [x, y, value] = [
@@ -269,27 +267,33 @@ class SudokuSolver {
       +e.target.value,
     ];
     const cell = this.#sudokuboard.getCellByCoords(x, y);
-    const unfilled = cell.getAccepted().unfilled;
-
-    this.#sudokuboard.setCellValue({ x, y }, value || unfilled);
+    const { min, max, unfilled } = cell.getAccepted();
+    try {
+      this.#sudokuboard.setCellValue({ x, y }, value || unfilled);
+    } catch {
+      this.#userMsgTemporary(
+        `Wrong value! You gave ${value}, but it must be between ${min}...${max}!`,
+        3000
+      );
+    }
     e.target.value = cell.value !== unfilled ? cell.value : "";
 
-    this.#upadateIssuedCells();
+    this.#upadateCells();
   }
 
   /* all the issued cells gets the issued class and style */
-  #upadateIssuedCells() {
-    this.#clearAllIssued();
-    this.#sudokuboard.cells
-      .filter((cell) => cell.issued)
-      .forEach((cell) => cell.getRef().classList.add("issue"));
+  #upadateCells() {
+    this.#sudokuboard.cells.forEach((cell) => this.#setCellStyle(cell));
   }
 
-  /* removeing all the issue class from inputs */
-  #clearAllIssued() {
-    this.#sudokuboard.cells.forEach((cell) =>
-      cell.getRef().classList.remove("issue")
-    );
+  #setCellStyle(cell) {
+    cell.issued
+      ? cell.getRef().classList.add("issue")
+      : cell.getRef().classList.remove("issue");
+    cell.given
+      ? cell.getRef().classList.add("given")
+      : cell.getRef().classList.remove("given");
+    cell.getRef().disabled = cell.given;
   }
 
   /* getting all values from the UI inputs
@@ -298,13 +302,6 @@ class SudokuSolver {
     this.#sudokuboard.setBoard(
       this.#sudokuboard.cells.map((cell) => +cell.getRef().value)
     );
-  }
-
-  /* checking and correcting the input values, change the values that are 0 and greater as possible to empty string
-    arg:    value (integer or string)
-    return: a value (what is allowed for the puzzle) */
-  #validateValue(value) {
-    return value >= 1 && value <= this.#cellsInSection ? value : "";
   }
 
   /****************/
@@ -326,6 +323,16 @@ class SudokuSolver {
     };
     alerting[type]();
   }
+  /* throw a message
+   * first argument is the text,
+   * the second object has one properties:
+   ** alert, gives allert as well, and
+   ** the type of the print to console. */
+  #userMsgTemporary(text, delay = 1500, type = "none") {
+    const prevMsg = this.errors.innerHTML;
+    this.#userMsg(text);
+    setTimeout(() => this.#userMsg(prevMsg), delay);
+  }
 
   /* rendering the entire table from the SudokuBoard */
   render() {
@@ -340,9 +347,10 @@ class SudokuSolver {
     this.#sudokuboard.getAllRows().forEach((row) => this.#renderRow(row));
 
     for (let puzzle in this.examples) {
-      this.#renderButton(puzzle, () =>
-        this.#updateAllCells({ puzzle: this.examples[puzzle], setGiven: true })
-      );
+      this.#renderButton(puzzle, () => {
+        this.#sudokuboard.setBoard(this.examples[puzzle], true);
+        this.#updateUICells();
+      });
     }
     this.#renderButton("Solve!", () => this.solvePuzzle());
   }
@@ -375,7 +383,7 @@ class SudokuSolver {
     cellDOM.dataset.row = cellInfo.y;
     cellDOM.dataset.col = cellInfo.x;
     cellDOM.dataset.box = cellInfo.boxId;
-    cellDOM.addEventListener("change", (e) => this.#updateCell(e));
+    cellDOM.addEventListener("change", (e) => this.#updateUICell(e));
     parent.appendChild(cellDOM);
     cellInfo.setRef(cellDOM);
   }
