@@ -1,6 +1,7 @@
 "use strict";
 
-const SudokuBoard = require("../SudokuBoard");
+const SudokuBoard = require("../SudokuBoard.js");
+console.log(SudokuBoard);
 const board = new SudokuBoard(3, 3);
 
 /******************************************/
