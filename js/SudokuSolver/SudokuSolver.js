@@ -190,11 +190,11 @@ class SudokuSolver {
           this.#sectionSize
         );
         temporaryBoard.setBoard(this.#sudokuboard.getCellValues());
-        temporaryBoard.setCellValue(nextCell.x, nextCell.y, nr);
+        temporaryBoard.setCellValue({ x: nextCell.x, y: nextCell.y }, nr);
         return temporaryBoard;
       });
       //.filter((puzzle) => puzzle.puzzleIsCorrect());
-      /* lehet hogy ez a lépés teljesen felesleges, át kell gondolnom...hiszan ha már levizsgáltk, mit lehet egy adott cellába írni, akkor után már nem okozhat problémát */
+      /* TODO: lehet hogy ez a lépés teljesen felesleges, át kell gondolnom...hiszan ha már levizsgáltk, mit lehet egy adott cellába írni, akkor után már nem okozhat problémát */
     }
     return false;
   }
@@ -268,15 +268,20 @@ class SudokuSolver {
       (cell) => cell.id === +e.target.id
     );
 
+    const [x, y, value] = [
+      +e.target.dataset.col,
+      +e.target.dataset.row,
+      +e.target.value,
+    ];
+    console.log(x, y, value);
     const unfilled = cell.getAccepted().unfilled;
-    const value = +e.target.value;
     let newValue = "";
 
     try {
-      cell.setValue(value || unfilled);
+      this.#sudokuboard.setCellValue({ x, y }, value || unfilled);
       newValue = value;
     } catch {
-      cell.setValue(unfilled);
+      this.#sudokuboard.setCellValue({ x, y }, unfilled);
       console.warn("The Given value is not allowed.");
     }
     e.target.value = newValue || "";
@@ -381,8 +386,8 @@ class SudokuSolver {
     cellDOM.max = cellInfo.getAccepted().max;
     cellDOM.id = cellInfo.id;
     cellDOM.classList.add("tile");
-    cellDOM.dataset.row = cellInfo.x;
-    cellDOM.dataset.col = cellInfo.y;
+    cellDOM.dataset.row = cellInfo.y;
+    cellDOM.dataset.col = cellInfo.x;
     cellDOM.dataset.box = cellInfo.boxId;
     cellDOM.addEventListener("change", (e) => this.#updateCell(e));
     parent.appendChild(cellDOM);
