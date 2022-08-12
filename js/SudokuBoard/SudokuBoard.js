@@ -460,22 +460,26 @@ class SudokuBoard {
   /* sets the value of a cells by the given coordinates
   arg:    x (integer) and y (integer) coordinates
   return: void (undefined) */
-  setCellValue({ x, y, cell }, value) {
+  setCellValue({ x, y, cell, id }, value) {
     let selectedCell;
-    if (!cell) {
-      selectedCell = this.getCellByCoords(x, y);
-    } else if (x === undefined && y === undefined) {
+    if (cell) {
       selectedCell = cell;
+    } else if (x !== undefined && y !== undefined) {
+      selectedCell = this.getCellByCoords(x, y);
+    } else if (id !== undefined) {
+      selectedCell = this.#cells.find((cell) => cell.id === id);
     } else {
       throw new Error(
-        `The setCellValue arguments must be x (${x}), y (${y}), or a Cell (${cell}) object!`
+        `The setCellValue arguments must be x (${x}), y (${y}), or a Cell (${cell}) object, or an id (${id})! There is no such cell that meets the requirements.`
       );
     }
 
-    selectedCell.setValue(value);
+    if (selectedCell) {
+      selectedCell.setValue(value);
 
-    this.clearIssued();
-    this.getIssuedCells().forEach((issuedCell) => issuedCell.setIssued());
+      this.clearIssued();
+      this.getIssuedCells().forEach((issuedCell) => issuedCell.setIssued());
+    }
   }
 }
 
