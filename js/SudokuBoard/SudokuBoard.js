@@ -283,8 +283,8 @@ class SudokuBoard {
 
   /* checking that the cell has duplicates its row, column or section arg:    x, y (integers) the coordinates of the cell
     return: true or false that means there are a duplicates for this cell */
-  hasCellDuplicates(x, y) {
-    const cell = this.getCellByCoords(x, y);
+  hasCellDuplicates({ x, y, cell }) {
+    if (!cell) cell = this.getCellByCoords(x, y);
     return (
       this.hasColumnDuplicates(cell.y) &&
       this.hasRowDuplicates(cell.x) &&
@@ -460,7 +460,9 @@ class SudokuBoard {
   arg:    x (integer) and y (integer) coordinates
   return: void (undefined) */
   setCellValue(x, y, value) {
-    this.getCellByCoords(x, y).setValue(value);
+    const cell = this.getCellByCoords(x, y);
+    cell.setValue(value);
+    this.getIssuedCells().forEach((issuedCell) => issuedCell.setIssued());
   }
 }
 
