@@ -263,6 +263,7 @@ class SudokuSolver {
   #updateCell(e) {
     e.preventDefault();
 
+    /* Ezt az ellenőrzés elvégezhetné a SudokuBoard minden egyes cellaérték változtatáskor, így itt már csk ki kellene filterelni a cellákat, amik issued=true propertyvel bírnak, és kész! */
     const cell = this.#sudokuboard.cells.find(
       (cell) => cell.id === +e.target.id
     );
