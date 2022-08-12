@@ -1,12 +1,4 @@
 "use strict";
-/* this is the new solver */
-/*
-class Solver {
-  constructor(boxSizeX, boxSizeY) {
-    this.board = new board(boxSizeX, boxSizeY);
-  }
-}
-*/
 
 /* this the class of the sudoku board
   the constructor only gets 2 argument, the x and y size of a box in the board
@@ -366,68 +358,72 @@ class SudokuBoard {
     }
   }
 
+  /* the method check the incoming format of the board what will be set
+  arg:    board it acn be 2D array, 1D array or a string
+  return: array, where the frist element is the type of the incoming argument, the second is the message in case of error */
+  #boardFormat(board) {
+    return Array.isArray(board)
+      ? board.length === this.#dimensionY
+        ? board.every(
+            (row) => row.length === this.#dimensionX && Array.isArray(row)
+          )
+          ? ["2D"]
+          : [
+              "err",
+              `Input array of the setBoard method in case 2D array ${
+                this.#dimensionY
+              } times ${this.#dimensionX} sized.`,
+            ]
+        : board.length === this.#cellNumber
+        ? ["1D"]
+        : [
+            "err",
+            `Input array of the setBoard method in case of 1D array must be exactly ${
+              this.#cellNumber
+            } element.`,
+          ]
+      : typeof board === "string"
+      ? board.length === this.#cellNumber
+        ? ["string"]
+        : [
+            "err",
+            `Input of the setBoard method must be exactly ${
+              this.#cellNumber
+            } character long string this string is ${board.length}.`,
+          ]
+      : ["err", `The board format is invalid!`];
+  }
+
   /* setBoard method sets all the cells of the table according to the given arguments.
   arg:    board can be 1D array, 2D array or a string.
   return: void */
-  /* TODO: Ez olvashatatlan, így már most senki sem tudja hogyan működik.
-  ***********
-  Javaslat: első step check és parse, második értékek átadása, beállítása */
-  setBoard(board) {
-    if (Array.isArray(board)) {
-      if (board.length === this.#dimensionY) {
-        board.forEach((row, y) => {
-          if (board.length === this.#dimensionX) {
-            if (Array.isArray(row)) {
-              row.forEach((cellValue, x) =>
-                this.getCellByCoords(x, y).setValue(cellValue)
-              );
-            }
-          } else {
-            throw new Error(
-              `Input array of the setBoard method in case 2D array ${
-                this.#dimensionY
-              } times ${this.#dimensionX} sized.`
-            );
-          }
-        });
-      } else if (board.length === this.#cellNumber) {
-        board.forEach((cellValue, nr) => {
-          let y = Math.floor(nr / this.#dimensionX);
-          let x = nr % this.#dimensionX;
-          this.getCellByCoords(x, y).setValue(cellValue);
-        });
-      } else {
-        throw new Error(
-          `Input array of the setBoard method in case of 1D array must be exactly ${
-            this.#cellNumber
-          } element.`
-        );
-      }
-    } else if (typeof board === "string") {
-      if (board.length === this.#cellNumber) {
-        board.split("").forEach((cellValue, nr) => {
-          let y = Math.floor(nr / this.#dimensionX);
-          let x = nr % this.#dimensionX;
-          const cell = this.getCellByCoords(x, y);
-          if (cell.validateValue(+cellValue)) {
-            this.getCellByCoords(x, y).setValue(+cellValue);
-          } else {
-            cell.setValue(cell.getAccepted().unfilled);
-          }
-        });
-      } else {
-        throw new Error(
-          `Input of the setBoard method must be exactly ${
-            this.#maxNumber
-          } character long string.`
-        );
-      }
-    } else {
-      throw new Error(
-        "Input of set setBoard method should be an 1D or 2D array or a string."
-      );
-    }
-    return this;
+  setBoard(board, setGiven = false) {
+    const [format, msg] = this.#boardFormat(board);
+
+    const convertFormat = {
+      "2D": () => {
+        return board;
+      },
+      "1D": () => {
+        const board2D = [];
+        while (board.length) board2D.push(board.splice(0, this.#dimensionX));
+        return board2D;
+      },
+      string: () => {
+        return this.setBoard(board.split(""), setGiven);
+      },
+      err: () => {
+        throw new Error(msg);
+      },
+    };
+
+    convertFormat[format]().forEach((row, y) =>
+      row.forEach((cellValue, x) => {
+        const cell = this.getCellByCoords(x, y);
+        cell.setValue(cellValue);
+        if (cell.isFilled() && setGiven) cell.setGiven();
+      })
+    );
   }
 
   /* gives the values of all the cells in the board
@@ -766,14 +762,17 @@ class Cell {
   }
 
   /* sets a cell to given state, that means it coouldn't be changed by the user
-    arg:     boolean
+    arg:     null
     returns: undefined */
-  setGiven(isGiven) {
-    if (typeof isGiven == "boolean") {
-      this.#given = isGiven;
-    } else {
-      throw new Error("Set given must be a boolean (true/false)");
-    }
+  setGiven() {
+    this.#given = true;
+  }
+
+  /* sets a cell to given state, that means it coouldn't be changed by the user
+    arg:     null
+    returns: undefined */
+  unsetGiven() {
+    this.#given = false;
   }
 
   /* gives back the cell issued state */
