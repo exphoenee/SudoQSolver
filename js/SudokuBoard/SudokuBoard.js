@@ -94,6 +94,13 @@ class SudokuBoard {
     }
   }
 
+  /* gives the values of all the cells in the board
+  arg:    null
+  return: 1D of Cells (Object) */
+  get cells() {
+    return this.#cells;
+  }
+
   /* the method returns all the data of the cells what the board including
    that used only for debugging purpose */
   boardProperties() {
@@ -619,7 +626,7 @@ class Batch {
   /* sets the duplicate valued cells to issued
   arg:    null,
   return: null. */
-  setIssued() {
+  findAndSetIssued() {
     this.getDuplicateValuedCells().forEach((cell) => cell.setIssued());
   }
 
@@ -770,7 +777,7 @@ class Cell {
   }
 
   /* gives back the cell issued state */
-  get isIssued() {
+  get issued() {
     return this.#issued;
   }
 
