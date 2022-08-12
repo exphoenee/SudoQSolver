@@ -124,15 +124,6 @@ class SudokuSolver {
       ],
     };
 
-    /* TEST */
-    //this.#sudokuboard.setBoard(this.examples["Reset"].flat());
-    //this.#sudokuboard.setBoard(this.examples["Reset"]);
-    //this.#sudokuboard.setBoard(this.examples["Reset"].flat().join(""));
-    //this.#sudokuboard.setBoard(this.examples["Reset"].flat().splice(0, 1));
-    //this.#sudokuboard.setBoard(this.examples["Reset"].splice(0, 1));
-    //this.#sudokuboard.setBoard(this.examples["Reset"].flat().join("").concat("0"));
-    /* TEST */
-
     //rendering the table
     params.renderMyself && this.render();
   }
@@ -153,14 +144,11 @@ class SudokuSolver {
     } else if (this.#renderMyself) {
       this.#extractInputs();
     }
-    this.#updateUICells();
 
     if (this.#sudokuboard.puzzleIsCorrect()) {
       const result = this.#solve();
       if (result) {
         this.#updateUICells();
-        this.#userMsg("That was easy!");
-
         const formatting = {
           string: () => this.toString(result),
           default: () => result,
@@ -271,10 +259,10 @@ class SudokuSolver {
     try {
       this.#sudokuboard.setCellValue({ x, y }, value || unfilled);
     } catch {
-      this.#userMsgTemporary(
-        `Wrong value! You gave ${value}, but it must be between ${min}...${max}!`,
-        3000
-      );
+      this.#userMsgTemporary({
+        text: `Wrong value! You gave ${value}, but it must be between ${min}...${max}!`,
+        delay: 2000,
+      });
     }
     e.target.value = cell.value !== unfilled ? cell.value : "";
 
@@ -328,10 +316,20 @@ class SudokuSolver {
    * the second object has one properties:
    ** alert, gives allert as well, and
    ** the type of the print to console. */
-  #userMsgTemporary(text, delay = 1500, type = "none") {
-    const prevMsg = this.errors.innerHTML;
+  #userMsgTemporary(
+    { text, prevMsg, delay, type } = {
+      delay: 1500,
+      type: "none",
+    }
+  ) {
+    if (this.userMessageTimeout) {
+      clearTimeout(this.userMessageTimeout);
+    } else if (!prevMsg) this.prevMsg = this.errors.innerHTML;
     this.#userMsg(text);
-    setTimeout(() => this.#userMsg(prevMsg), delay);
+    this.userMessageTimeout = setTimeout(
+      () => this.#userMsg(this.prevMsg, type),
+      delay
+    );
   }
 
   /* rendering the entire table from the SudokuBoard */
@@ -350,9 +348,15 @@ class SudokuSolver {
       this.#renderButton(puzzle, () => {
         this.#sudokuboard.setBoard(this.examples[puzzle], true);
         this.#updateUICells();
+        this.#userMsgTemporary({
+          text: `Puzzle changed to ${puzzle}!`,
+          delay: 2000,
+        });
       });
     }
-    this.#renderButton("Solve!", () => this.solvePuzzle());
+    this.#renderButton("Solve!", () => {
+      this.solvePuzzle();
+    });
   }
 
   /* rendering the rows, the only div and iterating throught the cells of each
