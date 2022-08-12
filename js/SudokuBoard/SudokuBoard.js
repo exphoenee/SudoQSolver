@@ -421,7 +421,7 @@ class SudokuBoard {
       row.forEach((cellValue, x) => {
         const cell = this.getCellByCoords(x, y);
         cell.setValue(cellValue);
-        if (cell.isFilled() && setGiven) cell.setGiven();
+        cell.isFilled() && setGiven ? cell.setGiven() : cell.unsetGiven();
       })
     );
   }
