@@ -263,28 +263,20 @@ class SudokuSolver {
   #updateCell(e) {
     e.preventDefault();
 
-    /* Ezt az ellenőrzés elvégezhetné a SudokuBoard minden egyes cellaérték változtatáskor, így itt már csak ki kellene filterelni a cellákat, amik issued=true propertyvel bírnak, és kész! */
-    const cell = this.#sudokuboard.cells.find(
-      (cell) => cell.id === +e.target.id
-    );
-
     const [x, y, value] = [
       +e.target.dataset.col,
       +e.target.dataset.row,
       +e.target.value,
     ];
-    console.log(x, y, value);
+    const cell = this.#sudokuboard.getCellByCoords(x, y);
     const unfilled = cell.getAccepted().unfilled;
-    let newValue = "";
 
     try {
       this.#sudokuboard.setCellValue({ x, y }, value || unfilled);
-      newValue = value;
     } catch {
-      this.#sudokuboard.setCellValue({ x, y }, unfilled);
       console.warn("The Given value is not allowed.");
     }
-    e.target.value = newValue || "";
+    e.target.value = cell.value !== unfilled ? cell.value : "";
 
     this.#upadateIssuedCells();
   }
