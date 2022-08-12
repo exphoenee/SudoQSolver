@@ -362,7 +362,7 @@ class SudokuBoard {
   /* setBoard method sets all the cells of the table according to the given arguments.
   arg:    board can be 1D array, 2D array or a string.
   return: void */
-  /* TODO: Ez kurva ronda, olvashatatlan, így már most senki sem tudja hogyan működik. Leszel szíves refaktorálni, mert ez valami rettenetesre sikerült szegény!!!
+  /* TODO: Ez olvashatatlan, így már most senki sem tudja hogyan működik.
   ***********
   Javaslat: első step check és parse, második értékek átadása, beállítása */
   setBoard(board) {
@@ -436,8 +436,9 @@ class SudokuBoard {
               1D is 1D array, 2D is 2D array, string is string
           ** unfilledChard
   return: 1D, 2D array of integers, or string according to format argument, containig the values of the cells in order they are created */
-  getCellValues(params = { format: "1D", unfilledChar: "0" }) {
-    const { format, unfilledChar } = params;
+  getCellValues(
+    { format, unfilledChar } = { format: "1D", unfilledChar: "0" }
+  ) {
     let res = this.#cells.map((cell) => cell.value);
     if (format.toUpperCase() === "STRING") {
       return res.join("").replace(/0/g, unfilledChar);
@@ -459,9 +460,21 @@ class SudokuBoard {
   /* sets the value of a cells by the given coordinates
   arg:    x (integer) and y (integer) coordinates
   return: void (undefined) */
-  setCellValue(x, y, value) {
-    const cell = this.getCellByCoords(x, y);
-    cell.setValue(value);
+  setCellValue({ x, y, cell }, value) {
+    let selectedCell;
+    if (!cell) {
+      selectedCell = this.getCellByCoords(x, y);
+    } else if (x === undefined && y === undefined) {
+      selectedCell = cell;
+    } else {
+      throw new Error(
+        `The setCellValue arguments must be x (${x}), y (${y}), or a Cell (${cell}) object!`
+      );
+    }
+
+    selectedCell.setValue(value);
+
+    this.clearIssued();
     this.getIssuedCells().forEach((issuedCell) => issuedCell.setIssued());
   }
 }
