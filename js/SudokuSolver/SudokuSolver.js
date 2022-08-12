@@ -176,27 +176,25 @@ class SudokuSolver {
       : this.#checkPossiblities(this.#getPosiblities());
   }
 
-  /* generating 9 different puzzles, where the first free cell is filled with all the possible numbenr 1...n
+  /* generating (k-j) different puzzles, where the first free cell is filled with all the possible numbenr j...k
     arg:    puzzle n x n sized 2D array
-    return: possiblities m x (n x n) sized 3D array
-                  number <┘     └> puzzle
-              of possivilities */
+    return: m pieces of SudokuBorad class therefrom filtered out the incorrect versions */
   #getPosiblities() {
     const nextCell = this.#sudokuboard.getFirstFeeCell();
 
     if (nextCell) {
       const posNums = this.#sudokuboard.getCellPossiblities(nextCell);
-      return posNums
-        .map((nr) => {
-          const temporaryBoard = new SudokuBoard(
-            this.#sectionSize,
-            this.#sectionSize
-          );
-          temporaryBoard.setBoard(this.#sudokuboard.getCellValues());
-          temporaryBoard.setCellValue(nextCell.x, nextCell.y, nr);
-          return temporaryBoard;
-        })
-        .filter((puzzle) => puzzle.puzzleIsCorrect());
+      return posNums.map((nr) => {
+        const temporaryBoard = new SudokuBoard(
+          this.#sectionSize,
+          this.#sectionSize
+        );
+        temporaryBoard.setBoard(this.#sudokuboard.getCellValues());
+        temporaryBoard.setCellValue(nextCell.x, nextCell.y, nr);
+        return temporaryBoard;
+      });
+      //.filter((puzzle) => puzzle.puzzleIsCorrect());
+      /* lehet hogy ez a lépés teljesen felesleges, át kell gondolnom...hiszan ha már levizsgáltk, mit lehet egy adott cellába írni, akkor után már nem okozhat problémát */
     }
     return false;
   }
@@ -205,9 +203,9 @@ class SudokuSolver {
       * takes the first, and check that good is (recourevely),
       * if not generates new possibilities and returns that (recourevely),
       * returns a puzzle of a flase is there is not any solution
-      arg: possiblities m x (n x n) sized 3D array
-                number <┘      └> puzzle
-          of possivilities */
+      arg: m pieces of SudokuBorad class therefrom filtered out the incorrect versions
+      return: boolean only false value, or
+              n pieces of SudokuBorad class therefrom filtered out the incorrect versions */
   #checkPossiblities(possiblities) {
     if (possiblities.length > 0) {
       let possiblity = possiblities.shift();
