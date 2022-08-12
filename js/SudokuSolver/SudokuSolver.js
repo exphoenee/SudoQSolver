@@ -271,11 +271,7 @@ class SudokuSolver {
     const cell = this.#sudokuboard.getCellByCoords(x, y);
     const unfilled = cell.getAccepted().unfilled;
 
-    try {
-      this.#sudokuboard.setCellValue({ x, y }, value || unfilled);
-    } catch {
-      console.warn("The Given value is not allowed.");
-    }
+    this.#sudokuboard.setCellValue({ x, y }, value || unfilled);
     e.target.value = cell.value !== unfilled ? cell.value : "";
 
     this.#upadateIssuedCells();
@@ -284,18 +280,16 @@ class SudokuSolver {
   /* all the issued cells gets the issued class and style */
   #upadateIssuedCells() {
     this.#clearAllIssued();
-
-    this.#sudokuboard
-      .getIssuedCells()
+    this.#sudokuboard.cells
+      .filter((cell) => cell.issued)
       .forEach((cell) => cell.getRef().classList.add("issue"));
   }
 
-  /* removeing all the issue calss from inputs */
+  /* removeing all the issue class from inputs */
   #clearAllIssued() {
-    this.#sudokuboard.cells.forEach((cell) => {
-      cell.getRef().classList.remove("issue");
-      cell.setUnIssued();
-    });
+    this.#sudokuboard.cells.forEach((cell) =>
+      cell.getRef().classList.remove("issue")
+    );
   }
 
   /* getting all values from the UI inputs
