@@ -35,11 +35,7 @@ class SudokuSolver {
   #columns;
   #rows;
 
-  constructor(
-    { renderMyself, sectionSizeX, sectionSizeY } = {
-      renderMyself: false,
-    }
-  ) {
+  constructor({ renderMyself, sectionSizeX, sectionSizeY }) {
     //the size of a section and matrix of sections n x n, but the css isn't made for other sizes only 3 x 3 sudokus...
     this.#sectionSizeX = sectionSizeX || 3;
     this.#sectionSizeY = sectionSizeY || 3;
