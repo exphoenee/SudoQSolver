@@ -135,7 +135,7 @@ class SudokuSolver {
     this.#sudokuboard = new SudokuBoard(this.#sectionSizeX, this.#sectionSizeY);
 
     //rendering the table
-    renderMyself && (this.#render = new SudokuRenderer(this.sudokuboard));
+    renderMyself && this.render();
   }
 
   get sudokuboard() {
