@@ -34,6 +34,7 @@ class SudokuSolver {
   #cellsInSection;
   #columns;
   #rows;
+  #render;
 
   constructor({ renderMyself, sectionSizeX, sectionSizeY }) {
     //the size of a section and matrix of sections n x n, but the css isn't made for other sizes only 3 x 3 sudokus...
@@ -47,9 +48,6 @@ class SudokuSolver {
 
     //if it is true the calss rendering himself (...or herself)
     this.#renderMyself = renderMyself;
-
-    //using the SudokuBoard calss for handling the sudoku board
-    this.#sudokuboard = new SudokuBoard(this.#sectionSizeX, this.#sectionSizeY);
 
     //add some example puzzles here
     //source: https://www.sudokuonline.io/
@@ -133,8 +131,15 @@ class SudokuSolver {
       ],
     };
 
+    //using the SudokuBoard calss for handling the sudoku board
+    this.#sudokuboard = new SudokuBoard(this.#sectionSizeX, this.#sectionSizeY);
+
     //rendering the table
-    renderMyself && this.render();
+    renderMyself && (this.#render = new SudokuRenderer(this.sudokuboard));
+  }
+
+  get sudokuboard() {
+    return this.#sudokuboard;
   }
 
   /**********************************/
