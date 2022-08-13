@@ -138,10 +138,6 @@ class SudokuSolver {
     renderMyself && this.render();
   }
 
-  get sudokuboard() {
-    return this.#sudokuboard;
-  }
-
   /**********************************/
   /* methods for the puzzle solving */
   /*     here comes the magic...    */
