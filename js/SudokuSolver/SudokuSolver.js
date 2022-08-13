@@ -27,20 +27,33 @@ subarray e. g.:
 where n and m the x and y dimension of the sudoku, currently the n = m
 *************************************************************************/
 class SudokuSolver {
-  #sectionSize;
   #renderMyself;
-  #cellsInSection;
   #sudokuboard;
+  #sectionSizeX;
+  #sectionSizeY;
+  #cellsInSection;
+  #columns;
+  #rows;
 
-  constructor(params = null) {
+  constructor(
+    { renderMyself, sectionSizeX, sectionSizeY } = {
+      renderMyself: false,
+    }
+  ) {
     //the size of a section and matrix of sections n x n, but the css isn't made for other sizes only 3 x 3 sudokus...
-    this.#sectionSize = params.sectionSize || 3;
-    //if it is true the calss rendering himself (...or herself)
-    this.#renderMyself = params.renderMyself || false;
+    this.#sectionSizeX = sectionSizeX || 3;
+    this.#sectionSizeY = sectionSizeY || 3;
+    this.#columns = sectionSizeX ** 2;
+    this.#rows = sectionSizeY ** 2;
+
     //calculated value of cells in the index form the section size
-    this.#cellsInSection = this.#sectionSize ** 2;
+    this.#cellsInSection = this.#rows * this.#columns;
+
+    //if it is true the calss rendering himself (...or herself)
+    this.#renderMyself = renderMyself;
+
     //using the SudokuBoard calss for handling the sudoku board
-    this.#sudokuboard = new SudokuBoard(this.#sectionSize, this.#sectionSize);
+    this.#sudokuboard = new SudokuBoard(this.#sectionSizeX, this.#sectionSizeY);
 
     //add some example puzzles here
     //source: https://www.sudokuonline.io/
@@ -125,7 +138,7 @@ class SudokuSolver {
     };
 
     //rendering the table
-    params.renderMyself && this.render();
+    renderMyself && this.render();
   }
 
   /**********************************/
@@ -183,8 +196,8 @@ class SudokuSolver {
       const posNums = this.#sudokuboard.getCellPossiblities(nextCell);
       return posNums.map((nr) => {
         const temporaryBoard = new SudokuBoard(
-          this.#sectionSize,
-          this.#sectionSize
+          this.#sectionSizeX,
+          this.#sectionSizeY
         );
         temporaryBoard.setBoard(this.#sudokuboard.getCellValues());
         temporaryBoard.setCellValue({ x: nextCell.x, y: nextCell.y }, nr);
