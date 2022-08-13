@@ -149,6 +149,9 @@ class SudokuRenderer {
     this.#sudokuboard.cells.forEach((cell) => this.setCellStyle(cell));
   }
 
+  /* setting the HTML element classes end style of the cell HTML element
+  arg:      cell (object)
+  return:   undefined */
   setCellStyle(cell) {
     cell.issued
       ? cell.getRef().classList.add("issue")
@@ -229,7 +232,8 @@ class SudokuRenderer {
       });
     }
     this.renderButton("Solve!", () => {
-      this.solvePuzzle(this.extractInputs());
+      this.extractInputs();
+      this.#solvePuzzle();
     });
   }
 
