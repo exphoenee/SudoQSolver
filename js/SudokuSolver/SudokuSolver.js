@@ -135,7 +135,8 @@ class SudokuSolver {
     this.#sudokuboard = new SudokuBoard(this.#sectionSizeX, this.#sectionSizeY);
 
     //rendering the table
-    renderMyself && (this.#render = new SudokuRenderer(this.sudokuboard));
+    renderMyself &&
+      (this.#render = new SudokuRenderer(this.sudokuboard, this.solvePuzzle));
   }
 
   get sudokuboard() {
@@ -155,14 +156,12 @@ class SudokuSolver {
   solvePuzzle(puzzle = null, format = "default") {
     if (puzzle) {
       this.#sudokuboard.setBoard(puzzle);
-    } else if (this.#renderMyself) {
-      this.#extractInputs();
     }
 
     if (this.#sudokuboard.puzzleIsCorrect()) {
       const result = this.#solve();
       if (result) {
-        this.#updateUICells();
+        this.#render?.updateUICells();
         const formatting = {
           string: () => this.toString(result),
           default: () => result,
@@ -170,10 +169,13 @@ class SudokuSolver {
 
         return formatting[format]();
       } else {
-        this.#userMsg("There is no solution for this puzzle...", "error");
+        this.renderer?.userMsg(
+          "There is no solution for this puzzle...",
+          "error"
+        );
       }
     } else {
-      this.#userMsg("The puzzle is not correct!", "alert");
+      this.renderer?.userMsg("The puzzle is not correct!", "alert");
     }
     return false;
   }
@@ -273,7 +275,7 @@ class SudokuSolver {
     try {
       this.#sudokuboard.setCellValue({ x, y }, value || unfilled);
     } catch {
-      this.#userMsgTemporary({
+      this.renderer?.userMsgTemporary({
         text: `Wrong value! You gave ${value}, but it must be between ${min}...${max}!`,
         delay: 2000,
       });
@@ -296,125 +298,5 @@ class SudokuSolver {
       ? cell.getRef().classList.add("given")
       : cell.getRef().classList.remove("given");
     cell.getRef().disabled = cell.given;
-  }
-
-  /* getting all values from the UI inputs
-    return: a 2D array what is given by the user */
-  #extractInputs() {
-    this.#sudokuboard.setBoard(
-      this.#sudokuboard.cells.map((cell) => +cell.getRef().value)
-    );
-  }
-
-  /****************/
-  /* non-React UI */
-  /****************/
-
-  /* throw a message
-   * first argument is the text,
-   * the second object has one properties:
-   ** alert, gives allert as well, and
-   ** the type of the print to console. */
-  #userMsg(text, type = "none") {
-    this.#renderMyself && (this.errors.innerHTML = text);
-    const alerting = {
-      alert: () => alert(text),
-      log: () => console[type](text),
-      error: () => console[type](text),
-      none: () => null,
-    };
-    alerting[type]();
-  }
-  /* throw a message
-   * first argument is the text,
-   * the second object has one properties:
-   ** alert, gives allert as well, and
-   ** the type of the print to console. */
-  #userMsgTemporary(
-    { text, prevMsg, delay, type } = {
-      delay: 1500,
-      type: "none",
-    }
-  ) {
-    if (this.userMessageTimeout) {
-      clearTimeout(this.userMessageTimeout);
-    } else if (!prevMsg) this.prevMsg = this.errors.innerHTML;
-    this.#userMsg(text);
-    this.userMessageTimeout = setTimeout(
-      () => this.#userMsg(this.prevMsg, type),
-      delay
-    );
-  }
-
-  /* rendering the entire table from the SudokuBoard */
-  render() {
-    // if it is once rendered then should be saved to the class
-    this.#renderMyself = true;
-
-    //HTML element of the board
-    this.board = document.getElementById("board");
-    //HTML element of the error message
-    this.errors = document.getElementById("errors");
-
-    this.#sudokuboard.getAllRows().forEach((row) => this.#renderRow(row));
-
-    for (let puzzle in this.examples) {
-      this.#renderButton(puzzle, () => {
-        this.#sudokuboard.setBoard(this.examples[puzzle], true);
-        this.#updateUICells();
-        this.#userMsgTemporary({
-          text: `Puzzle changed to ${puzzle}!`,
-          delay: 2000,
-        });
-      });
-    }
-    this.#renderButton("Solve!", () => {
-      this.solvePuzzle();
-    });
-  }
-
-  /* rendering the rows, the only div and iterating throught the cells of each
-      arg:    Batch (object)
-      return: undefined */
-  #renderRow(row) {
-    const rowContainer = document.createElement("div");
-    rowContainer.classList.add(`row`);
-    rowContainer.classList.add(`nr-${row.id}`);
-    this.board.appendChild(rowContainer);
-    row.getCells().forEach((cellInfo) => {
-      this.#createInput(cellInfo, rowContainer);
-    });
-  }
-
-  /* generating the DOM of a cell input, the arguments are the following:
-      arg:    cellInfo Cell (object)
-              parent: the DOM element who is the parent of the input (cell)
-      return: undefined */
-  #createInput(cellInfo, parent) {
-    const cellDOM = document.createElement("input");
-    cellDOM.type = "number";
-    cellDOM.step = 1;
-    cellDOM.min = cellInfo.getAccepted().min;
-    cellDOM.max = cellInfo.getAccepted().max;
-    cellDOM.id = cellInfo.id;
-    cellDOM.classList.add("tile");
-    cellDOM.dataset.row = cellInfo.y;
-    cellDOM.dataset.col = cellInfo.x;
-    cellDOM.dataset.box = cellInfo.boxId;
-    cellDOM.addEventListener("change", (e) => this.#updateUICell(e));
-    parent.appendChild(cellDOM);
-    cellInfo.setRef(cellDOM);
-  }
-
-  /* buttons for the contorl panel, the arguments are the following:
-    text  -> text of the button
-    cb -> the callback function what is fired when the button is clicked */
-  #renderButton(text, cb) {
-    const button = document.createElement("button");
-    button.innerText = text;
-    button.addEventListener("click", () => {
-      cb();
-    });
-    document.getElementById("control").appendChild(button);
   }
 }
