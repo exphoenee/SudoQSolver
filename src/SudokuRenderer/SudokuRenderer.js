@@ -1,5 +1,7 @@
 "use strict";
+//import SudokuBoard from "../SudokuBoard/SudokuBoard";
 
+//export default
 class SudokuRenderer {
   #solver;
   #sudokuboard;
