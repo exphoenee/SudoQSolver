@@ -1,13 +1,13 @@
 "use strict";
 
 class SudokuRenderer {
+  #solver;
   #sudokuboard;
-  #solvePuzzle;
 
-  constructor(sudokuboard, solvePuzzle) {
+  constructor({ boxSizeX, boxSizeY }) {
     //using the SudokuBoard calss for handling the sudoku board
-    this.#sudokuboard = sudokuboard;
-    this.#solvePuzzle = solvePuzzle;
+    this.#solver = new SudokuSolver({ boxSizeX, boxSizeY });
+    this.#sudokuboard = this.#solver.sudokuboard;
 
     //add some example puzzles here
     //source: https://www.sudokuonline.io/
@@ -233,7 +233,7 @@ class SudokuRenderer {
     }
     this.renderButton("Solve!", () => {
       this.extractInputs();
-      this.#solvePuzzle();
+      this.#solver.solvePuzzle();
     });
   }
 
