@@ -27,8 +27,10 @@ class SudokuBoard {
     this.#rows = [];
     this.#cols = [];
     this.#boxes = [];
+
     this.generateBoard();
-    puzzle && this.setBoard(puzzle);
+
+    puzzle && this.setBoard(puzzle, true);
     return this;
   }
 
