@@ -1,6 +1,7 @@
 "use strict";
+import SudokuBoard from "../SudokuBoard/SudokuBoard";
 
-class SudokuSolver {
+export default class SudokuSolver {
   #sudokuboard;
   #boxSizeX;
   #boxSizeY;
