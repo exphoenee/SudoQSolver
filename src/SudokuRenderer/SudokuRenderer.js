@@ -233,9 +233,13 @@ class SudokuRenderer {
         });
       });
     }
+
     this.renderButton("Solve!", () => {
       this.extractInputs();
-      this.#solver.solvePuzzle();
+      const solution = this.#solver.solvePuzzle();
+      console.log(solution);
+      this.#sudokuboard.setBoard(solution, false);
+      this.updateUICells();
     });
   }
 
