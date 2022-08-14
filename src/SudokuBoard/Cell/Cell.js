@@ -1,3 +1,5 @@
+"use strict";
+
 /* this class describes the cell
  * x and y coordinate,
  * id of the cell,
@@ -9,7 +11,7 @@
  ** unfilled value is that value what means the cell is unfilled
  * given, the cell has an initial value or not
  * issued, the cell has an issue or not */
-class Cell {
+export default class Cell {
   #given;
   #issued;
   #value;
