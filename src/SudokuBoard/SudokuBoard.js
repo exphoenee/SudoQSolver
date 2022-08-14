@@ -1,10 +1,12 @@
 "use strict";
+import Cell from "./Cell/Cell";
+import Batch from "./Batch/Batch";
 
 /* this the class of the sudoku board
   the constructor only gets 2 argument, the x and y size of a box in the board
   therefrom is calculated everything
   this class is only responsible for tha handling, oranazing, setting and getting the status of the cells contained the board.*/
-class SudokuBoard {
+export default class SudokuBoard {
   #boxSizeX;
   #boxSizeY;
   #dimensionX;
