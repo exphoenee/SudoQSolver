@@ -1,3 +1,4 @@
 "use strict";
+//import SudokuRenderer from "../SudokuRenderer/SudokuRenderer";
 
-const solver = new SudokuRenderer({ boxSizeX: 3, boxSizeY: 3 });
+const sudoku = new SudokuRenderer({ boxSizeX: 3, boxSizeY: 3 });
