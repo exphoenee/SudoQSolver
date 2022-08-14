@@ -1,6 +1,6 @@
 "use strict";
+import SudokuBoard from "../SudokuBoard/SudokuBoard";
 
-const SudokuBoard = require("../SudokuBoard.js");
 const board = new SudokuBoard(3, 3);
 
 /******************************************/
