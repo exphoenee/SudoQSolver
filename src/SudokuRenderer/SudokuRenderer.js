@@ -6,9 +6,9 @@ class SudokuRenderer {
   #solver;
   #sudokuboard;
 
-  constructor({ boxSizeX, boxSizeY }) {
+  constructor(boxSizeX, boxSizeY, puzzle = null) {
     //using the SudokuBoard calss for handling the sudoku board
-    this.#solver = new SudokuSolver({ boxSizeX, boxSizeY });
+    this.#solver = new SudokuSolver(boxSizeX, boxSizeY, puzzle);
     this.#sudokuboard = this.#solver.sudokuboard;
 
     //add some example puzzles here
