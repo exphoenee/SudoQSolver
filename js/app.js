@@ -1,3 +1,3 @@
 "use strict";
 
-const solver = new SudokuSolver({ renderMyself: true });
+const solver = new SudokuRenderer({ boxSizeX: 3, boxSizeY: 3 });
