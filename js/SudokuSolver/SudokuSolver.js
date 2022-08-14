@@ -5,7 +5,7 @@ usage of this class:
 make a new object like this: const solver = new Solver(params)
 you can set the params in the constructor
 the params are the followings:
-      * sectionSize - this is only valid for 3x3 sudoku puzzles,
+      * boxSize - this is only valid for 3x3 sudoku puzzles,
         because the CSS did not written well
         later not only square but recatngular puzzles will be
         available also, but the solver works for other sized
@@ -27,34 +27,17 @@ subarray e. g.:
 where n and m the x and y dimension of the sudoku, currently the n = m
 *************************************************************************/
 class SudokuSolver {
-  #renderMyself;
   #sudokuboard;
-  #sectionSizeX;
-  #sectionSizeY;
-  #cellsInSection;
-  #columns;
-  #rows;
-  #render;
+  #boxSizeX;
+  #boxSizeY;
 
-  constructor({ renderMyself, sectionSizeX, sectionSizeY }) {
+  constructor({ boxSizeX, boxSizeY }) {
     //the size of a section and matrix of sections n x n, but the css isn't made for other sizes only 3 x 3 sudokus...
-    this.#sectionSizeX = sectionSizeX || 3;
-    this.#sectionSizeY = sectionSizeY || 3;
-    this.#columns = sectionSizeX ** 2;
-    this.#rows = sectionSizeY ** 2;
-
-    //calculated value of cells in the index form the section size
-    this.#cellsInSection = this.#rows * this.#columns;
-
-    //if it is true the calss rendering himself (...or herself)
-    this.#renderMyself = renderMyself;
+    this.#boxSizeX = boxSizeX || 3;
+    this.#boxSizeY = boxSizeY || 3;
 
     //using the SudokuBoard calss for handling the sudoku board
-    this.#sudokuboard = new SudokuBoard(this.#sectionSizeX, this.#sectionSizeY);
-
-    //rendering the table
-    renderMyself &&
-      (this.#render = new SudokuRenderer(this.sudokuboard, this.solvePuzzle));
+    this.#sudokuboard = new SudokuBoard(this.#boxSizeX, this.#boxSizeY);
   }
 
   get sudokuboard() {
@@ -79,21 +62,13 @@ class SudokuSolver {
     if (this.#sudokuboard.puzzleIsCorrect()) {
       const result = this.#solve();
       if (result) {
-        this.#render?.updateUICells();
         const formatting = {
           string: () => this.toString(result),
           default: () => result,
         };
 
         return formatting[format]();
-      } else {
-        this.renderer?.userMsg(
-          "There is no solution for this puzzle...",
-          "error"
-        );
       }
-    } else {
-      this.renderer?.userMsg("The puzzle is not correct!", "alert");
     }
     return false;
   }
@@ -116,10 +91,7 @@ class SudokuSolver {
     if (nextCell) {
       const posNums = this.#sudokuboard.getCellPossiblities(nextCell);
       return posNums.map((nr) => {
-        const temporaryBoard = new SudokuBoard(
-          this.#sectionSizeX,
-          this.#sectionSizeY
-        );
+        const temporaryBoard = new SudokuBoard(this.#boxSizeX, this.#boxSizeY);
         temporaryBoard.setBoard(this.#sudokuboard.getCellValues());
         temporaryBoard.setCellValue({ x: nextCell.x, y: nextCell.y }, nr);
         return temporaryBoard;
