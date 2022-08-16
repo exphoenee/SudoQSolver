@@ -49,13 +49,13 @@ class Batch {
     ) {
       this.#cells.push(cell);
     } else {
-      throw new Error(
+      console.error(
         "The current cell that would be added has not the same value acceptance as the cells that are already in the batch."
       );
     }
 
     if (this.#cells.length > this.#cellNumber)
-      throw new Error(
+      console.error(
         `There is more cells in this batch (${
           this.#cells.length
         }) then allowed (${this.#cellNumber}).`
