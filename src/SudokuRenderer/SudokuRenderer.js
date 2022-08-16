@@ -1,8 +1,7 @@
 "use strict";
-//import SudokuBoard from "../SudokuBoard/SudokuBoard";
+import SudokuSolver from "../SudokuSolver/SudokuSolver.js";
 
-//export default
-class SudokuRenderer {
+export default class SudokuRenderer {
   #solver;
   #sudokuboard;
 
