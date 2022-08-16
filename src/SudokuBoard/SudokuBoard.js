@@ -1,13 +1,12 @@
 "use strict";
-//import Cell from "./Cell/Cell";
-//import Batch from "./Batch/Batch";
+import Cell from "./Cell/Cell.js";
+import Batch from "./Batch/Batch.js";
 
 /* this the class of the sudoku board
   the constructor only gets 2 argument, the x and y size of a box in the board
   therefrom is calculated everything
   this class is only responsible for tha handling, oranazing, setting and getting the status of the cells contained the board.*/
-//export default
-class SudokuBoard {
+export default class SudokuBoard {
   #boxSizeX;
   #boxSizeY;
   #dimensionX;
