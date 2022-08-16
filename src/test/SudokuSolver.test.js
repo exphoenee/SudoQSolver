@@ -1,5 +1,4 @@
 "use strict";
-
 import SudokuSolver from "../SudokuSolver";
 
 console.log("It works");
