@@ -109,7 +109,7 @@ class Cell {
         this.#value = newValue;
       } else {
         this.#value = this.#accepted.unfilled;
-        throw new Error(
+        console.error(
           `Valid cell value is between: ${this.#accepted.min} - ${
             this.#accepted.max
           }, value: ${
@@ -122,7 +122,7 @@ class Cell {
         );
       }
     } else {
-      throw new Error("Set value must be a number!");
+      console.error("Set value must be a number!");
     }
   }
 
