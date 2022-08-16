@@ -83,7 +83,7 @@ class SudokuBoard {
         }
       }
     } else {
-      throw new Error(
+      console.error(
         `Something went wrong, only number of ${
           this.#cellNumber
         } cells allowed you tried to create the +1.`
@@ -123,7 +123,7 @@ class SudokuBoard {
       collector.push(batch);
     }
     if (collector.length !== dimension)
-      throw new Error(
+      console.error(
         `There is more columns (${collector.length}) then allowed (${dimension}).`
       );
     return collector;
@@ -353,7 +353,7 @@ class SudokuBoard {
     if (this.validateCoord(x, y)) {
       return this.#cells.find((cell) => cell.x == x && cell.y == y);
     } else {
-      throw new Error(
+      console.error(
         `The x coordinate value must be between 1...${
           this.#dimensionX
         }, the y must be between 1...${
@@ -418,7 +418,7 @@ class SudokuBoard {
         return this.setBoard(board.split(""), setGiven);
       },
       err: () => {
-        throw new Error(msg);
+        console.error(msg);
       },
     };
 
@@ -478,7 +478,7 @@ class SudokuBoard {
     } else if (id !== undefined) {
       selectedCell = this.#cells.find((cell) => cell.id === id);
     } else {
-      throw new Error(
+      console.error(
         `The setCellValue arguments must be x (${x}), y (${y}), or a Cell (${cell}) object, or an id (${id})! There is no such cell that meets the requirements.`
       );
     }
