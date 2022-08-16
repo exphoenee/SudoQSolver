@@ -3,8 +3,7 @@
 
 /* Class of the Batches, the batches in this concept a bunch of cells, thy can be rows, columns or boxes of the board, this is not matters, because every batch has the same porperties and methods
 only one argument required to create a Batch, th ID of them.*/
-//export default
-class Batch {
+export default class Batch {
   #id;
   #cells = [];
   #validValues = [];
