@@ -17,10 +17,6 @@ export default class Batch {
     this.#cellNumber = cellNumber;
   }
 
-  set id(id) {
-    this.#id = id;
-  }
-
   get id() {
     return this.#id;
   }
