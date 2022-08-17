@@ -137,6 +137,13 @@ export default class Batch {
     this.getDuplicateValuedCells().forEach((cell) => cell.setIssued());
   }
 
+  /* gives the issued cells in an array
+  arg:    null,
+  return: array of Cells. */
+  getIssuedCells() {
+    return this.#cells.filter((cell = cell.issued));
+  }
+
   /* removing the issued tag form the all the cells of the batch */
   clearIssued() {
     this.#cells.forEach((cell) => cell.setUnIssued());
