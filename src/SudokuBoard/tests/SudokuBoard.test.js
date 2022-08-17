@@ -1,4 +1,6 @@
 "use strict";
+
+import assert from "../../test/assert.mjs";
 import SudokuBoard from "../SudokuBoard.mjs";
 
 const board = new SudokuBoard(3, 3);
@@ -6,41 +8,6 @@ const board = new SudokuBoard(3, 3);
 /******************************************/
 /*                 tests                  */
 /******************************************/
-let tests = 0;
-let failed = 0;
-function assert({ first, check, excepted }) {
-  tests++;
-  const tooLong = 250;
-  let stepText = "";
-  if (first) {
-    const firstResult = first();
-    const firstValue = JSON.stringify(firstResult);
-    stepText = `Called first: ${first}, returned: ${firstValue}\n`;
-  }
-
-  const exceptValue = JSON.stringify(excepted);
-  const excepText = `Exceptation is: ${
-    exceptValue.length > tooLong ? "...too long..." : exceptValue
-  }\n`;
-
-  const res = check();
-  const resultValue = JSON.stringify(res);
-  const resultText = `Then called: ${check}, returned: ${
-    resultValue && resultValue.length > tooLong ? "...too long..." : resultValue
-  }\n`;
-
-  const testResult = resultValue == exceptValue;
-
-  const decision = `Result:     ${
-    resultValue == exceptValue ? `📗ok📗\n` : `📕FAILED📕\n`
-  }`;
-  !testResult && failed++;
-
-  console.warn(
-    `----------------------TEST STEP: ${tests} Failed: ${failed}----------------`
-  );
-  console.warn(stepText + excepText + resultText + decision);
-}
 
 if (true) {
   assert({
