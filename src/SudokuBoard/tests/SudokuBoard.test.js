@@ -1,5 +1,5 @@
 "use strict";
-import SudokuBoard from "../SudokuBoard/SudokuBoard";
+import SudokuBoard from "../SudokuBoard.mjs";
 
 const board = new SudokuBoard(3, 3);
 
