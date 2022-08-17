@@ -48,6 +48,7 @@ export default class Cell {
     this.#given = given || false;
     this.#issued = issued || false;
     this.#ref = ref || null;
+    return this;
   }
 
   get x() {
