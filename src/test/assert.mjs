@@ -43,6 +43,7 @@ const assert = ({ caseDesc, first, check, excepted }) => {
     console.warn(
       `----------------------TEST STEP: ${tests} Failed: ${failed}----------------`
     );
+    console.warn(`Test is 📕FAILED📕`);
     console.warn("Something went wrong with test case: " + caseDesc);
     console.warn(
       `${first ? `Called first: ${first}, then c` : "C"}alled: ${check}`
