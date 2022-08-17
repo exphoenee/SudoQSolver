@@ -225,7 +225,7 @@ const cases = [
     excepted: true,
   },
   {
-    caseDesc: "Is the cell filled?",
+    caseDesc: "Set the cell value to 3, and chacing is the cell filled?",
     first: () => cell.setValue(3),
     check: () => cell.isFilled(),
     excepted: true,
@@ -235,6 +235,12 @@ const cases = [
     first: null,
     check: () => cell.isUnfilled(),
     excepted: false,
+  },
+  {
+    caseDesc: "Setting a reference",
+    first: () => cell.setRef(3),
+    check: () => cell.getRef(3),
+    excepted: 3,
   },
 ];
 
