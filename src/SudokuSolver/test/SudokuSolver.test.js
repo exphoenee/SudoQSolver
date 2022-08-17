@@ -1,5 +1,6 @@
 "use strict";
 
+import assert from "../../test/assert.mjs";
 import SudokuSolver from "../SudokuSolver";
 
 console.log("It works");
