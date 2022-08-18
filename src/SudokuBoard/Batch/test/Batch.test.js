@@ -50,162 +50,174 @@ const batch = new Batch(4, 3);
 const cases = [
   /* Testing without a cell */
   {
-    caseDesc: "Getting the id of the batch.",
+    caseDesc: "Getting the id of the batch, batch doesn't has any cell.",
     first: null,
     check: () => batch.id,
     excepted: 4,
   },
   {
-    caseDesc: "Getting the cell values of the batch.",
+    caseDesc:
+      "Getting the cell values of the batch, batch doesn't has any cell.",
     first: null,
     check: () => batch.getCellValues(),
     excepted: [],
   },
   {
-    caseDesc: "Getting the cell missing values of the batch.",
+    caseDesc:
+      "Getting the cell missing values of the batch,, batch doesn't has any cell.",
     first: null,
     check: () => batch.getMissingNumbers(),
     excepted: [],
   },
   {
-    caseDesc: "Getting the cell filled values of the batch.",
+    caseDesc:
+      "Getting the cell filled values of the batch, batch doesn't has any cell.",
     first: null,
     check: () => batch.getFilledNumbers(),
     excepted: [],
   },
   {
-    caseDesc: "Has the batch diplicates?",
+    caseDesc: "Has the batch diplicates? The batch doesn't has any cell.",
     first: null,
     check: () => batch.hasDuplicates(),
     excepted: false,
   },
   {
-    caseDesc: "Get the cells of batch with diplicated values.",
+    caseDesc:
+      "Get the cells of batch with diplicated values, batch doesn't has any cell.",
     first: null,
     check: () => batch.getDuplicateValuedCells(),
     excepted: [],
   },
   {
-    caseDesc: "Get the batch diplicated values.",
+    caseDesc: "Get the batch diplicated values, batch doesn't has any cell.",
     first: null,
     check: () => batch.getDuplicateValues(),
     excepted: [],
   },
   {
-    caseDesc: "Get the a cell with value 1.",
+    caseDesc: "Get the a cell with value 1, batch doesn't has any cell.",
     first: null,
     check: () => batch.getCellByValue(1),
     excepted: [],
   },
   {
-    caseDesc: "Get the a cell with index 1.",
+    caseDesc: "Get the a cell with index 1, batch doesn't has any cell.",
     first: null,
     check: () => batch.getCellByIndex(1),
-    excepted: undefined,
+    excepted: [],
   },
   {
-    caseDesc: "Get the a cell of the batch.",
+    caseDesc: "Get the a cell of the batch, batch doesn't has any cell.",
     first: null,
     check: () => batch.getCells(),
     excepted: [],
   },
   {
-    caseDesc: "Get the a issued cell of the batch.",
+    caseDesc:
+      "Get the a issued cell of the batch, the batch doesn't has any cells, batch doesn't has any cell.",
     first: () => batch.findAndSetIssued(),
     check: () => batch.getIssuedCells(),
     excepted: [],
   },
   {
-    caseDesc: "Clears the a issued porperty of all cell of the batch.",
+    caseDesc:
+      "Clears the a issued porperty of all cell of the batch, batch doesn't has any cell.",
     first: () => batch.clearIssued(),
     check: () => batch.getIssuedCells(),
     excepted: undefined,
   },
   /************************************/
-  /* Adding a cell, for further tests */
+  /* Adding first cell, for further tests */
   /************************************/
   {
-    caseDesc: "Adding the first cell nad getting the valeus of the batch.",
+    caseDesc:
+      "Adding the first cell nad getting the valeus of the batch, batch has one cell only.",
     first: () => batch.addCell(cell1),
     check: () => batch.getCellValues(),
     excepted: [0],
   },
   {
     caseDesc:
-      "Changing the first cell value to 3 and getting the values of the batch.",
+      "Changing the first cell value to 3 and getting the values of the batch, batch has one cell only.",
     first: () => cell1.setValue(3),
     check: () => batch.getCellValues(),
     excepted: [3],
   },
   {
-    caseDesc: "Getting the missing values of the batch.",
+    caseDesc:
+      "Getting the missing values of the batch, batch has one cell only.",
     first: null,
     check: () => batch.getMissingNumbers(),
     excepted: [1, 2, 4, 5, 6, 7, 8, 9],
   },
   {
-    caseDesc: "Getting the filled values of the batch.",
+    caseDesc:
+      "Getting the filled values of the batch, batch has one cell only.",
     first: null,
     check: () => batch.getFilledNumbers(),
     excepted: [3],
   },
   {
     caseDesc:
-      "Changing the value of first cell to 4 and getting the missing values of the batch.",
+      "Changing the value of first cell to 4 and getting the missing values of the batch. The batch has one cell only.",
     first: () => cell1.setValue(4),
     check: () => batch.getMissingNumbers(),
     excepted: [1, 2, 3, 5, 6, 7, 8, 9],
   },
   {
-    caseDesc: "Getting the filled values of the batch.",
+    caseDesc:
+      "Getting the filled values of the batch, batch has one cell only.",
     first: null,
     check: () => batch.getFilledNumbers(),
     excepted: [4],
   },
   {
-    caseDesc: "Has the batch diplicates?",
+    caseDesc: "Has the batch diplicates? The batch has one cell only.",
     first: null,
     check: () => batch.hasDuplicates(),
     excepted: false,
   },
   {
-    caseDesc: "Get the cells of batch with diplicated values.",
+    caseDesc:
+      "Get the cells of batch with diplicated values, batch has one cell only.",
     first: null,
     check: () => batch.getDuplicateValuedCells(),
     excepted: [],
   },
   {
-    caseDesc: "Get the batch diplicated values.",
+    caseDesc: "Get the batch diplicated values, batch has one cell only.",
     first: null,
     check: () => batch.getDuplicateValues(),
     excepted: [],
   },
   {
-    caseDesc: "Get the a cell with value 4.",
+    caseDesc: "Get the a cell with value 4, batch has one cell only.",
     first: null,
     check: () => batch.getCellByValue(4),
     excepted: [{}],
   },
   {
-    caseDesc: "Get the a cell with index 0.",
+    caseDesc: "Get the a cell with index 0, batch has one cell only.",
     first: null,
     check: () => batch.getCellByIndex(0),
     excepted: {},
   },
   {
-    caseDesc: "Get the a cell of the batch.",
+    caseDesc: "Get the a cell of the batch, batch has one cell only.",
     first: null,
     check: () => batch.getCells(),
     excepted: [{}],
   },
   {
-    caseDesc: "Get the a issued cell of the batch.",
+    caseDesc: "Get the a issued cell of the batch, batch has one cell only.",
     first: () => batch.findAndSetIssued(),
     check: () => batch.getIssuedCells(),
     excepted: [],
   },
   {
-    caseDesc: "Clears the a issued porperty of all cell of the batch.",
+    caseDesc:
+      "Clears the a issued porperty of all cell of the batch, batch has one cell only.",
     first: () => batch.clearIssued(),
     check: () => batch.getIssuedCells(),
     excepted: undefined,
@@ -214,81 +226,84 @@ const cases = [
   /* Adding a second cell to the batch */
   /*************************************/
   {
-    caseDesc: "Adding the first cell nad getting the valeus of the batch.",
+    caseDesc:
+      "Adding the first cell nad getting the valeus of the batch, batch has two cell.",
     first: () => batch.addCell(cell2),
     check: () => batch.getCellValues(),
     excepted: [4, 0],
   },
   {
     caseDesc:
-      "Changing the first cell value to 3 and getting the values of the batch.",
+      "Changing the first cell value to 3 and getting the values of the batch, batch has two cell.",
     first: () => cell2.setValue(3),
     check: () => batch.getCellValues(),
     excepted: [4, 3],
   },
   {
-    caseDesc: "Getting the missing values of the batch.",
+    caseDesc: "Getting the missing values of the batch, batch has two cell.",
     first: null,
     check: () => batch.getMissingNumbers(),
     excepted: [1, 2, 5, 6, 7, 8, 9],
   },
   {
-    caseDesc: "Getting the filled values of the batch.",
+    caseDesc: "Getting the filled values of the batch, batch has two cell.",
     first: null,
     check: () => batch.getFilledNumbers(),
     excepted: [3, 4],
   },
   {
-    caseDesc: "Has the batch diplicates?",
+    caseDesc: "Has the batch diplicates? The batch has two cell.",
     first: null,
     check: () => batch.hasDuplicates(),
     excepted: false,
   },
   {
     caseDesc:
-      "Set cell 1 same value as cell 2 has, and checks: has the batch diplicates?",
+      "Set cell 1 same value as cell 2 has, and checks: has the batch diplicates? The batch has two cell.",
     first: () => cell1.setValue(cell2.value),
     check: () => batch.hasDuplicates(),
     excepted: true,
   },
   {
-    caseDesc: "Get the cells of batch with diplicated values.",
+    caseDesc:
+      "Get the cells of batch with diplicated values, batch has two cell.",
     first: null,
     check: () => batch.getDuplicateValuedCells(),
     excepted: [{}, {}],
   },
   {
-    caseDesc: "Get the batch diplicated values.",
+    caseDesc: "Get the batch diplicated values, batch has two cell.",
     first: null,
     check: () => batch.getDuplicateValues(),
     excepted: [3],
   },
   {
-    caseDesc: "Get the a cell with value 3.",
+    caseDesc: "Get the a cell with value 3, batch has two cell.",
     first: null,
     check: () => batch.getCellByValue(3),
     excepted: [{}, {}],
   },
   {
-    caseDesc: "Get the a cell with index 1.",
+    caseDesc: "Get the a cell with index 1, batch has two cell.",
     first: null,
     check: () => batch.getCellByIndex(1),
     excepted: {},
   },
   {
-    caseDesc: "Get the a cell of the batch.",
+    caseDesc: "Get the a cell of the batch, batch has two cell.",
     first: null,
     check: () => batch.getCells(),
     excepted: [{}, {}],
   },
   {
-    caseDesc: "Get the a issued cell of the batch.",
+    caseDesc: "Get the a issued cell of the batch, batch has two cell.",
     first: () => batch.findAndSetIssued(),
     check: () => batch.getIssuedCells(),
     excepted: [{}, {}],
   },
   {
-    caseDesc: "Clears the a issued porperty of all cell of the batch.",
+    caseDesc:
+      "Clears the a issued porperty of all cell of the batch, batch has two cell.",
     first: () => batch.clearIssued(),
     check: () => batch.getIssuedCells(),
     excepted: undefined,
