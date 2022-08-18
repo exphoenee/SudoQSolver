@@ -22,7 +22,7 @@ const cell2 = new Cell({
   y: 0,
   bx: 0,
   by: 0,
-  id: 0,
+  id: 1,
   boxId: 1,
   value: 0,
   accepted: { max: 9, min: 1, unfilled: 0 },
@@ -35,7 +35,7 @@ const cell3 = new Cell({
   y: 0,
   bx: 0,
   by: 0,
-  id: 0,
+  id: 2,
   boxId: 2,
   value: 0,
   accepted: { max: 9, min: 1, unfilled: 0 },
@@ -326,7 +326,7 @@ const cases = [
           y: 0,
           bx: 0,
           by: 0,
-          id: 0,
+          id: 4,
           boxId: 2,
           value: 0,
           accepted: { max: 9, min: 1, unfilled: 0 },
@@ -348,7 +348,7 @@ const cases = [
           y: 0,
           bx: 0,
           by: 0,
-          id: 0,
+          id: 5,
           boxId: 2,
           value: 0,
           accepted: { max: 9, min: 1, unfilled: 0 },
@@ -363,3 +363,24 @@ const cases = [
 ];
 
 batchAssert(cases, { showFailed: true, showSuccessed: false });
+
+const batch2 = new Batch(4, 3);
+
+const cases2 = [
+  {
+    caseDesc:
+      "Adding the first cell and getting the valeus of the batch, batch has one cell only.",
+    first: () => batch2.addCell(cell1),
+    check: () => batch2.getCellValues(),
+    excepted: [3],
+  },
+  {
+    caseDesc:
+      "Adding the first cell and getting the valeus of the batch, batch has one cell only.",
+    first: () => batch2.addCell(cell1),
+    check: () => batch2.getCellValues(),
+    excepted: [3],
+  },
+];
+
+batchAssert(cases2, { showFailed: true, showSuccessed: false });
