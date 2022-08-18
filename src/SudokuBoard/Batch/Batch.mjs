@@ -120,9 +120,7 @@ export default class Batch {
   arg:    i (integer) the index of the cell
   return: Cell (Object) */
   getCellByIndex(i) {
-    console.log(i);
-    console.log(this.#cells[i]);
-    return this.#cells[i];
+    return this.#cells[i] || [];
   }
 
   /* gives all the cells they are in the batch
