@@ -25,7 +25,7 @@ export default class Batch {
   arg:    Cell (Object)
   return: void (undefined) */
   addCell(cell) {
-    const accepted = cell.getAccepted();
+    const accepted = cell.accepted;
 
     if (this.#cells.length == 0) {
       this.#unfilledValue = accepted.unfilled;
