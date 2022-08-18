@@ -46,7 +46,7 @@ const cell3 = new Cell({
 
 const batch = new Batch(4, 3);
 
-//{ first, check, excepted }
+//{ caseDesc, first, check, excepted }
 const cases = [
   /* Testing without a cell */
   {
