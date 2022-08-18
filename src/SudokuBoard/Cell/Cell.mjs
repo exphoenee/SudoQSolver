@@ -22,7 +22,7 @@ export default class Cell {
   #id;
   #boxId;
   #accepted;
-  #ref;
+  #reference;
 
   constructor({
     x,
@@ -35,7 +35,7 @@ export default class Cell {
     accepted,
     given,
     issued,
-    ref,
+    reference,
   }) {
     this.#x = x;
     this.#y = y;
@@ -47,7 +47,7 @@ export default class Cell {
     this.#value = accepted.unfilled;
     this.#given = given || false;
     this.#issued = issued || false;
-    this.#ref = ref || null;
+    this.#reference = reference || null;
     return this;
   }
 
@@ -165,7 +165,7 @@ export default class Cell {
     ** min is the minimum value
     ** max is the maximum value
     ** unfilled value is that value what means the cell is unfilled */
-  getAccepted() {
+  get accepted() {
     return this.#accepted;
   }
 
@@ -173,21 +173,22 @@ export default class Cell {
   arg:    null
   return: boolean true if the cell has other values as an unfilled */
   isFilled() {
-    return this.value !== this.getAccepted().unfilled;
+    return this.value !== this.accepted.unfilled;
   }
 
   /* gives info about that the cell is free
   arg:    null
   return: boolean true if the cell has same values as an unfilled */
   isUnfilled() {
-    return this.#value === this.getAccepted().unfilled;
+    return this.#value === this.accepted.unfilled;
   }
 
   /* the cell can store an external reference also */
-  getRef() {
-    return this.#ref;
+  get ref() {
+    return this.#reference;
   }
-  setRef(ref) {
-    this.#ref = ref;
+
+  addRef(ref) {
+    this.#reference = ref;
   }
 }
