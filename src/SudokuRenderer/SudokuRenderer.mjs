@@ -100,7 +100,7 @@ export default class SudokuRenderer {
     return: a 2D array what is given by the user */
   extractInputs() {
     this.#sudokuboard.setBoard(
-      this.#sudokuboard.cells.map((cell) => +cell.getRef().value)
+      this.#sudokuboard.cells.map((cell) => +cell.ref.value)
     );
   }
 
@@ -113,7 +113,7 @@ export default class SudokuRenderer {
     return: a boolean true means the column doesn't has duplicates */
   updateUICells() {
     this.#sudokuboard.cells.forEach(
-      (cell) => (cell.getRef().value = +cell.value || "")
+      (cell) => (cell.ref.value = +cell.value || "")
     );
 
     this.upadateCells();
@@ -131,7 +131,7 @@ export default class SudokuRenderer {
       +e.target.value,
     ];
     const cell = this.#sudokuboard.getCellByCoords(x, y);
-    const { min, max, unfilled } = cell.getAccepted();
+    const { min, max, unfilled } = cell.accepted;
     try {
       this.#sudokuboard.setCellValue({ x, y }, value || unfilled);
     } catch {
@@ -155,19 +155,19 @@ export default class SudokuRenderer {
   return:   undefined */
   setCellStyle(cell) {
     cell.issued
-      ? cell.getRef().classList.add("issue")
-      : cell.getRef().classList.remove("issue");
+      ? cell.ref.classList.add("issue")
+      : cell.ref.classList.remove("issue");
     cell.given
-      ? cell.getRef().classList.add("given")
-      : cell.getRef().classList.remove("given");
-    cell.getRef().disabled = cell.given;
+      ? cell.ref.classList.add("given")
+      : cell.ref.classList.remove("given");
+    cell.ref.disabled = cell.given;
   }
 
   /* getting all values from the UI inputs
     return: a 2D array what is given by the user */
   extractInputs() {
     this.#sudokuboard.setBoard(
-      this.#sudokuboard.cells.map((cell) => +cell.getRef().value)
+      this.#sudokuboard.cells.map((cell) => +cell.ref.value)
     );
   }
 
@@ -263,8 +263,8 @@ export default class SudokuRenderer {
     const cellDOM = document.createElement("input");
     cellDOM.type = "number";
     cellDOM.step = 1;
-    cellDOM.min = cellInfo.getAccepted().min;
-    cellDOM.max = cellInfo.getAccepted().max;
+    cellDOM.min = cellInfo.accepted.min;
+    cellDOM.max = cellInfo.accepted.max;
     cellDOM.id = cellInfo.id;
     cellDOM.classList.add("tile");
     cellDOM.dataset.row = cellInfo.y;
@@ -272,7 +272,7 @@ export default class SudokuRenderer {
     cellDOM.dataset.box = cellInfo.boxId;
     cellDOM.addEventListener("change", (e) => this.updateUICell(e));
     parent.appendChild(cellDOM);
-    cellInfo.setRef(cellDOM);
+    cellInfo.ref(cellDOM);
   }
 
   /* buttons for the contorl panel, the arguments are the following:
