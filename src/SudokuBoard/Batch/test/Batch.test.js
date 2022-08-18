@@ -132,7 +132,7 @@ const cases = [
       "Clears the a issued porperty of all cell of the batch, batch doesn't has any cell.",
     first: () => batch.clearIssued(),
     check: () => batch.getIssuedCells(),
-    excepted: undefined,
+    excepted: [],
   },
   /************************************/
   /* Adding first cell, for further tests */
@@ -227,7 +227,7 @@ const cases = [
       "Clears the a issued porperty of all cell of the batch, batch has one cell only.",
     first: () => batch.clearIssued(),
     check: () => batch.getIssuedCells(),
-    excepted: undefined,
+    excepted: [],
   },
   /*************************************/
   /* Adding a second cell to the batch */
@@ -313,7 +313,7 @@ const cases = [
       "Clears the a issued porperty of all cell of the batch, batch has two cell.",
     first: () => batch.clearIssued(),
     check: () => batch.getIssuedCells(),
-    excepted: undefined,
+    excepted: [],
   },
 ];
 
