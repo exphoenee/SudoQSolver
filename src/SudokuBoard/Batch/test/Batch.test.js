@@ -362,4 +362,4 @@ const cases = [
   },
 ];
 
-batchAssert(cases, { showSuccessed: true });
+batchAssert(cases, { showFailed: true, showSuccessed: false });
