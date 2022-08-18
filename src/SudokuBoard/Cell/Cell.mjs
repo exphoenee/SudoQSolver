@@ -155,7 +155,7 @@ export default class Cell {
   }
 
   /* sets the cell to unissued state */
-  setUnIssued() {
+  unsetIssued() {
     this.#issued = false;
   }
 
