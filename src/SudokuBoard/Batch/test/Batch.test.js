@@ -115,6 +115,13 @@ const cases = [
   },
   {
     caseDesc:
+      "Get the cells of batch with diplicated values, batch doesn't has any cell only.",
+    first: null,
+    check: () => batch.getDuplicateValuedCells(),
+    excepted: [],
+  },
+  {
+    caseDesc:
       "Get the a issued cell of the batch, the batch doesn't has any cells, batch doesn't has any cell.",
     first: () => batch.findAndSetIssued(),
     check: () => batch.getIssuedCells(),
