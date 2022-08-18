@@ -110,7 +110,7 @@ const cases = [
   {
     caseDesc: "Get the a cell of the batch, batch doesn't has any cell.",
     first: null,
-    check: () => batch.getCells(),
+    check: () => batch.cells,
     excepted: [],
   },
   {
@@ -139,7 +139,7 @@ const cases = [
   /************************************/
   {
     caseDesc:
-      "Adding the first cell nad getting the valeus of the batch, batch has one cell only.",
+      "Adding the first cell and getting the valeus of the batch, batch has one cell only.",
     first: () => batch.addCell(cell1),
     check: () => batch.getCellValues(),
     excepted: [0],
@@ -213,7 +213,7 @@ const cases = [
   {
     caseDesc: "Get the a cell of the batch, batch has one cell only.",
     first: null,
-    check: () => batch.getCells(),
+    check: () => batch.cells,
     excepted: [{}],
   },
   {
@@ -234,7 +234,7 @@ const cases = [
   /*************************************/
   {
     caseDesc:
-      "Adding the first cell nad getting the valeus of the batch, batch has two cell.",
+      "Adding the first cell and getting the valeus of the batch, batch has two cell.",
     first: () => batch.addCell(cell2),
     check: () => batch.getCellValues(),
     excepted: [4, 0],
@@ -299,7 +299,7 @@ const cases = [
   {
     caseDesc: "Get the a cell of the batch, batch has two cell.",
     first: null,
-    check: () => batch.getCells(),
+    check: () => batch.cells,
     excepted: [{}, {}],
   },
   {
@@ -315,6 +315,51 @@ const cases = [
     check: () => batch.getIssuedCells(),
     excepted: [],
   },
+  /* triying to add a cell  */
+  {
+    caseDesc:
+      "Adding a cell and getting the valeus of the batch, batch has one cell only.",
+    first: () =>
+      batch.addCell(
+        new Cell({
+          x: 3,
+          y: 0,
+          bx: 0,
+          by: 0,
+          id: 0,
+          boxId: 2,
+          value: 0,
+          accepted: { max: 9, min: 1, unfilled: 0 },
+          given: false,
+          issued: false,
+          ref: null,
+        })
+      ),
+    check: () => batch.getCellValues(),
+    excepted: [3, 3, 0],
+  },
+  {
+    caseDesc:
+      "Adding a cell and getting the values of the batch, batch has one cell only.",
+    first: () =>
+      batch.addCell(
+        new Cell({
+          x: 3,
+          y: 0,
+          bx: 0,
+          by: 0,
+          id: 0,
+          boxId: 2,
+          value: 0,
+          accepted: { max: 9, min: 1, unfilled: 0 },
+          given: false,
+          issued: false,
+          ref: null,
+        })
+      ),
+    check: () => batch.getCellValues(),
+    excepted: [3, 3, 0],
+  },
 ];
 
-batchAssert(cases);
+batchAssert(cases, { showSuccessed: true });
