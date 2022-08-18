@@ -134,20 +134,18 @@ export default class Batch {
   arg:    null,
   return: null. */
   findAndSetIssued() {
-    this.getDuplicateValuedCells().forEach(
-      (cell) => cell instanceof Cell && cell.setIssued()
-    );
+    this.getDuplicateValuedCells().forEach((cell) => cell.setIssued());
   }
 
   /* gives the issued cells in an array
   arg:    null,
   return: array of Cells. */
   getIssuedCells() {
-    return this.#cells.filter((cell = cell.issued));
+    return this.#cells.filter((cell) => cell.issued);
   }
 
   /* removing the issued tag form the all the cells of the batch */
   clearIssued() {
-    this.#cells.forEach((cell) => cell.setUnIssued());
+    this.#cells.forEach((cell) => cell.unsetIssued());
   }
 }
