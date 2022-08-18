@@ -26,6 +26,7 @@ export default class Batch {
   return: void (undefined) */
   addCell(cell) {
     const accepted = cell.getAccepted();
+
     if (this.#cells.length == 0) {
       this.#unfilledValue = accepted.unfilled;
       this.#minValue = accepted.min;
@@ -38,23 +39,22 @@ export default class Batch {
     }
 
     if (
-      this.#unfilledValue === accepted.unfilled &&
-      this.#minValue === accepted.min &&
-      this.#maxValue === accepted.max
+      this.#unfilledValue !== accepted.unfilled &&
+      this.#minValue !== accepted.min &&
+      this.#maxValue !== accepted.max
     ) {
-      this.#cells.push(cell);
-    } else {
       console.error(
         "The current cell that would be added has not the same value acceptance as the cells that are already in the batch."
       );
-    }
-
-    if (this.#cells.length > this.#cellNumber)
+    } else if (this.#cells.length >= this.#cellNumber) {
       console.error(
         `There is more cells in this batch (${
           this.#cells.length
         }) then allowed (${this.#cellNumber}).`
       );
+    } else {
+      this.#cells.push(cell);
+    }
   }
 
   /* gives all the values of cell they ar in the batch
@@ -126,7 +126,7 @@ export default class Batch {
   /* gives all the cells they are in the batch
   arg:    null
   return: array of Cell (Object) */
-  getCells() {
+  get cells() {
     return this.#cells;
   }
 
@@ -147,5 +147,9 @@ export default class Batch {
   /* removing the issued tag form the all the cells of the batch */
   clearIssued() {
     this.#cells.forEach((cell) => cell.unsetIssued());
+  }
+
+  getInfo() {
+    return this.#cells.map((cell) => cell.getInfo());
   }
 }
