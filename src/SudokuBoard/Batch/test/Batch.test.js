@@ -1,6 +1,6 @@
 "use strict";
 
-import assert from "../../../test/assert.mjs";
+import { batchAssert } from "../../../test/assert.mjs";
 import Batch from "../Batch.mjs";
 import Cell from "../../Cell/Cell.mjs";
 
@@ -295,4 +295,4 @@ const cases = [
   },
 ];
 
-cases.forEach((cs) => assert(cs));
+batchAssert(cases);
