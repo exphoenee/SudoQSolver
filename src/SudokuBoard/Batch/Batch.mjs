@@ -134,7 +134,9 @@ export default class Batch {
   arg:    null,
   return: null. */
   findAndSetIssued() {
-    this.getDuplicateValuedCells().forEach((cell) => cell.setIssued());
+    this.getDuplicateValuedCells().forEach(
+      (cell) => cell instanceof Cell && cell.setIssued()
+    );
   }
 
   /* gives the issued cells in an array
