@@ -17,7 +17,7 @@ export const assert = ({ caseDesc, first, check, excepted, tests, failed }) => {
     }
 
     /* Creating exeption text */
-    const exceptValue = JSON.stringify(excepted);
+    const exceptValue = JSON.stringify(excepted) || "";
     const excepText = `Exceptation is: ${
       exceptValue.length > tooLong ? "...too long..." : exceptValue
     }\n`;
@@ -47,6 +47,7 @@ export const assert = ({ caseDesc, first, check, excepted, tests, failed }) => {
     printout = `Test is 📕FAILED📕\nSomething went wrong with ${caseDesc}\n${
       first ? `Called first: ${first},\nthen c` : "C"
     }alled: ${check}\n${e}`;
+    console.error(e);
   }
 
   /* Creating the header */
