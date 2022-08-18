@@ -64,7 +64,7 @@ const cases = [
   {
     caseDesc: "Getting the what accepted by the cell.",
     first: null,
-    check: () => cell.getAccepted(),
+    check: () => cell.accepted,
     excepted: { max: 9, min: 1, unfilled: 0 },
   },
   {
@@ -82,7 +82,7 @@ const cases = [
   {
     caseDesc: "Getting the reference of the cell.",
     first: null,
-    check: () => cell.getRef(),
+    check: () => cell.ref,
     excepted: null,
   },
   {
@@ -238,10 +238,10 @@ const cases = [
   },
   {
     caseDesc: "Setting a reference",
-    first: () => cell.setRef(3),
-    check: () => cell.getRef(3),
+    first: () => cell.addRef(3),
+    check: () => cell.ref,
     excepted: 3,
   },
 ];
 
-batchAssert(cases, { showSuccessed: true });
+batchAssert(cases, { showFailed: true, showSuccessed: false });
