@@ -52,6 +52,18 @@ export default class Batch {
           this.#cells.length
         }) then allowed (${this.#cellNumber}).`
       );
+    } else if (this.#cells.map((addedCell) => addedCell.id).includes(cell.id)) {
+      console.error(
+        `There is a cell in this batch already with this id: (${cell.id}). It is not allowed!`
+      );
+    } else if (
+      this.#cells
+        .map((addedCell) => `${addedCell.x}-${addedCell.y}`)
+        .includes(`${cell.x}-${cell.y}`)
+    ) {
+      console.error(
+        `There is a cell in this batch with the same coordinates: (x=${cell.x}, y=${cell.y}). It is not allowed!`
+      );
     } else {
       this.#cells.push(cell);
     }
