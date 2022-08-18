@@ -26,6 +26,7 @@ export default class Batch {
   return: void (undefined) */
   addCell(cell) {
     const accepted = cell.accepted;
+    let allowed = true;
 
     if (this.#cells.length == 0) {
       this.#unfilledValue = accepted.unfilled;
@@ -43,28 +44,36 @@ export default class Batch {
       this.#minValue !== accepted.min &&
       this.#maxValue !== accepted.max
     ) {
+      allowed = false;
       console.error(
         "The current cell that would be added has not the same value acceptance as the cells that are already in the batch."
       );
-    } else if (this.#cells.length >= this.#cellNumber) {
+    }
+    if (this.#cells.length >= this.#cellNumber) {
+      allowed = false;
       console.error(
         `There is more cells in this batch (${
           this.#cells.length
         }) then allowed (${this.#cellNumber}).`
       );
-    } else if (this.#cells.map((addedCell) => addedCell.id).includes(cell.id)) {
+    }
+    if (this.#cells.map((addedCell) => addedCell.id).includes(cell.id)) {
+      allowed = false;
       console.error(
         `There is a cell in this batch already with this id: (${cell.id}). It is not allowed!`
       );
-    } else if (
+    }
+    if (
       this.#cells
         .map((addedCell) => `${addedCell.x}-${addedCell.y}`)
         .includes(`${cell.x}-${cell.y}`)
     ) {
+      allowed = false;
       console.error(
         `There is a cell in this batch with the same coordinates: (x=${cell.x}, y=${cell.y}). It is not allowed!`
       );
-    } else {
+    }
+    if (allowed) {
       this.#cells.push(cell);
     }
   }
