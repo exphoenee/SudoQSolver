@@ -1,70 +1,88 @@
 export const assert = ({ caseDesc, first, check, excepted, tests, failed }) => {
-  let results;
   tests++;
   const tooLong = 250;
-  caseDesc = caseDesc ? `TESTCASE: ${caseDesc}\n` : "";
+  let testResult;
+
+  let results;
+  let printout = "";
   let stepText = "";
+
+  /* Creating test desctiption text */
+  caseDesc = caseDesc ? `TESTCASE: ${caseDesc}\n` : "";
 
   try {
     if (first) {
-      const firstResult = first();
-      const firstValue = JSON.stringify(firstResult);
+      const firstValue = JSON.stringify(first());
       stepText = `Called first: ${first}, returned: ${firstValue}\n`;
     }
 
+    /* Creating exeption text */
     const exceptValue = JSON.stringify(excepted);
     const excepText = `Exceptation is: ${
       exceptValue.length > tooLong ? "...too long..." : exceptValue
     }\n`;
 
-    const res = check();
-    const resultValue = JSON.stringify(res);
-    const resultText = `${first ? "Then c" : "C"}alled: ${check}, \nReturned: ${
+    /* Creating the check and result text */
+    const resultValue = JSON.stringify(check());
+    const resultText = `${first ? "Then c" : "C"}alled: ${check},\nReturned: ${
       resultValue && resultValue.length > tooLong
         ? "...too long..."
         : resultValue
     }\n`;
 
-    const testResult = resultValue == exceptValue;
-
+    /* Creating the decision text */
+    testResult = resultValue == exceptValue;
     const decision = `Result:     ${
-      resultValue == exceptValue ? `📗ok📗\n` : `📕FAILED📕\n`
+      resultValue == exceptValue ? `📗ok📗` : `📕FAILED📕`
     }`;
+
     !testResult && failed++;
 
-    console.warn(
-      `----------------------TEST STEP: ${tests} Failed: ${failed}----------------`
-    );
-    console.warn(caseDesc + stepText + resultText + excepText + decision);
+    /* printout */
+    printout = caseDesc + stepText + resultText + excepText + decision;
   } catch (e) {
     failed++;
-    console.warn(
-      `----------------------TEST STEP: ${tests} Failed: ${failed}----------------`
-    );
-    console.warn(`Test is 📕FAILED📕`);
-    console.warn("Something went wrong with " + caseDesc);
-    console.warn(
-      `${first ? `Called first: ${first}, then c` : "C"}alled: ${check}`
-    );
-    console.warn(e);
+    testResult = false;
+
+    printout = `Test is 📕FAILED📕\nSomething went wrong with ${caseDesc}\n${
+      first ? `Called first: ${first},\nthen c` : "C"
+    }alled: ${check}\n${e}`;
   }
-  return [results, tests, failed];
+
+  /* Creating the header */
+  const header = `------------------------------ TEST STEP: ${tests} Failed: ${failed} ------------------------------\n`;
+
+  printout = header + printout + "\n";
+
+  return [{ printout, testResult }, tests, failed];
 };
 
-export const batchAssert = (cases) => {
+export const batchAssert = (
+  cases,
+  { showFailed, showSuccessed } = { showFailed: true, showSuccessed: false }
+) => {
   let tests = 0;
   let failed = 0;
-  let results;
-  cases.forEach((cs) => {
-    [results, tests, failed] = assert({ ...cs, tests, failed });
+  let result;
+
+  const results = cases.map((cs) => {
+    [result, tests, failed] = assert({ ...cs, tests, failed });
+    return result;
   });
+
+  const summaryHeader =
+    "----------------------------------- TESTS ENDED! -----------------------------------\n";
   console.warn(
-    "--------------------------- TESTS ENDED ----------------------------"
+    summaryHeader +
+      `${
+        tests - failed
+      } test was 📗ok📗\n${failed} test was failed📕FAILED📕\n` +
+      summaryHeader
   );
-  console.warn(
-    `${tests - failed} test was 📗ok📗\n${failed} test was failed📕FAILED📕\n`
-  );
-  console.warn(
-    "--------------------------- TESTS ENDED ----------------------------"
-  );
+
+  const faliedTests = results.filter((result) => result.testResult);
+  const successedTests = results.filter((result) => !result.testResult);
+
+  showFailed && successedTests.forEach((sT) => console.warn(sT.printout));
+  showSuccessed && faliedTests.forEach((fT) => console.warn(fT.printout));
 };
