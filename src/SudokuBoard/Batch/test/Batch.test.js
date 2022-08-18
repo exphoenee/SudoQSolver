@@ -139,7 +139,7 @@ const cases = [
   /************************************/
   {
     caseDesc:
-      "Adding the first cell and getting the valeus of the batch, batch has one cell only.",
+      "Adding the first cell and getting the values of the batch, batch has one cell only.",
     first: () => batch.addCell(cell1),
     check: () => batch.getCellValues(),
     excepted: [0],
@@ -234,7 +234,7 @@ const cases = [
   /*************************************/
   {
     caseDesc:
-      "Adding the first cell and getting the valeus of the batch, batch has two cell.",
+      "Adding the first cell and getting the values of the batch, batch has two cell.",
     first: () => batch.addCell(cell2),
     check: () => batch.getCellValues(),
     excepted: [4, 0],
@@ -318,7 +318,7 @@ const cases = [
   /* triying to add a cell  */
   {
     caseDesc:
-      "Adding a cell and getting the valeus of the batch, batch has one cell only.",
+      "Adding a cell and getting the values of the batch, batch has one cell only.",
     first: () =>
       batch.addCell(
         new Cell({
@@ -369,14 +369,14 @@ const batch2 = new Batch(4, 3);
 const cases2 = [
   {
     caseDesc:
-      "Adding the first cell and getting the valeus of the batch, batch has one cell only.",
+      "Adding the first cell and getting the values of the batch, batch has one cell only.",
     first: () => batch2.addCell(cell1),
     check: () => batch2.getCellValues(),
     excepted: [3],
   },
   {
     caseDesc:
-      "Adding the first cell and getting the valeus of the batch, batch has one cell only.",
+      "Adding the first cell and getting the values of the batch, batch has one cell only.",
     first: () => batch2.addCell(cell1),
     check: () => batch2.getCellValues(),
     excepted: [3],
