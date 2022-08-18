@@ -208,7 +208,7 @@ const cases = [
   },
   {
     caseDesc: "Unsetting cell state to issued.",
-    first: () => cell.setUnIssued(),
+    first: () => cell.unsetIssued(),
     check: () => cell.issued,
     excepted: false,
   },
