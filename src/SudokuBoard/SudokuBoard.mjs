@@ -105,7 +105,7 @@ export default class SudokuBoard {
 
   /* clearing all the issued property of the cells */
   clearIssued() {
-    this.#cells.forEach((cell) => cell.setUnIssued());
+    this.#cells.forEach((cell) => cell.unsetIssued());
   }
 
   /* filtering a cells of batch with same batch id
