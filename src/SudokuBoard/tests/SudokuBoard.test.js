@@ -45,20 +45,9 @@ const wrong2d = [
 const wrong1d = wrong2d.flat();
 const wrongStr = wrong1d.join("");
 
-const board1 = new SudokuBoard(3, 3);
+const board = new SudokuBoard(3, 3);
 
-const cases1 = [
-  {
-    caseDesc: "Getting the id of the batch, batch doesn't has any cell.",
-    first: null,
-    check: () => batch.id,
-    excepted: 4,
-  },
-];
-
-const board2 = new SudokuBoard(3, 3, "");
-
-const cases2 = [
+const cases = [
   {
     caseDesc: "Getting the id of the batch, batch doesn't has any cell.",
     first: null,
