@@ -275,8 +275,33 @@ const cases = [
     caseDesc:
       "Get the cells of batch with diplicated values, batch has two cell.",
     first: null,
-    check: () => batch.getDuplicateValuedCells(),
-    excepted: [{}, {}],
+    check: () => batch.getDuplicateValuedCells().map((cell) => cell.info),
+    excepted: [
+      {
+        id: 0,
+        given: false,
+        issued: false,
+        value: 3,
+        x: 0,
+        y: 0,
+        bx: 0,
+        by: 0,
+        boxId: 0,
+        accepted: { max: 9, min: 1, unfilled: 0 },
+      },
+      {
+        id: 1,
+        given: false,
+        issued: false,
+        value: 3,
+        x: 1,
+        y: 0,
+        bx: 0,
+        by: 0,
+        boxId: 1,
+        accepted: { max: 9, min: 1, unfilled: 0 },
+      },
+    ],
   },
   {
     caseDesc: "Get the batch diplicated values, batch has two cell.",
@@ -287,8 +312,33 @@ const cases = [
   {
     caseDesc: "Get the a cell with value 3, batch has two cell.",
     first: null,
-    check: () => batch.getCellByValue(3),
-    excepted: [{}, {}],
+    check: () => batch.getCellByValue(3).map((cell) => cell.info),
+    excepted: [
+      {
+        id: 0,
+        given: false,
+        issued: false,
+        value: 3,
+        x: 0,
+        y: 0,
+        bx: 0,
+        by: 0,
+        boxId: 0,
+        accepted: { max: 9, min: 1, unfilled: 0 },
+      },
+      {
+        id: 1,
+        given: false,
+        issued: false,
+        value: 3,
+        x: 1,
+        y: 0,
+        bx: 0,
+        by: 0,
+        boxId: 1,
+        accepted: { max: 9, min: 1, unfilled: 0 },
+      },
+    ],
   },
   {
     caseDesc: "Get the a cell with index 1, batch has two cell.",
@@ -299,14 +349,64 @@ const cases = [
   {
     caseDesc: "Get the a cell of the batch, batch has two cell.",
     first: null,
-    check: () => batch.cells,
-    excepted: [{}, {}],
+    check: () => batch.info,
+    excepted: [
+      {
+        id: 0,
+        given: false,
+        issued: false,
+        value: 3,
+        x: 0,
+        y: 0,
+        bx: 0,
+        by: 0,
+        boxId: 0,
+        accepted: { max: 9, min: 1, unfilled: 0 },
+      },
+      {
+        id: 1,
+        given: false,
+        issued: false,
+        value: 3,
+        x: 1,
+        y: 0,
+        bx: 0,
+        by: 0,
+        boxId: 1,
+        accepted: { max: 9, min: 1, unfilled: 0 },
+      },
+    ],
   },
   {
     caseDesc: "Get the a issued cell of the batch, batch has two cell.",
     first: () => batch.findAndSetIssued(),
-    check: () => batch.getIssuedCells(),
-    excepted: [{}, {}],
+    check: () => batch.getIssuedCells().map((cell) => cell.info),
+    excepted: [
+      {
+        id: 0,
+        given: false,
+        issued: true,
+        value: 3,
+        x: 0,
+        y: 0,
+        bx: 0,
+        by: 0,
+        boxId: 0,
+        accepted: { max: 9, min: 1, unfilled: 0 },
+      },
+      {
+        id: 1,
+        given: false,
+        issued: true,
+        value: 3,
+        x: 1,
+        y: 0,
+        bx: 0,
+        by: 0,
+        boxId: 1,
+        accepted: { max: 9, min: 1, unfilled: 0 },
+      },
+    ],
   },
   {
     caseDesc:
@@ -362,7 +462,11 @@ const cases = [
   },
 ];
 
-batchAssert(cases, { showFailed: true, showSuccessed: false });
+batchAssert(cases, {
+  showFailed: true,
+  showSuccessed: false,
+  length: Infinity,
+});
 
 const batch2 = new Batch(4, 3);
 
@@ -383,4 +487,8 @@ const cases2 = [
   },
 ];
 
-batchAssert(cases2, { showFailed: true, showSuccessed: false });
+batchAssert(cases2, {
+  showFailed: true,
+  showSuccessed: false,
+  length: Infinity,
+});
