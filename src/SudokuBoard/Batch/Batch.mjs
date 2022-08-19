@@ -170,7 +170,7 @@ export default class Batch {
     this.#cells.forEach((cell) => cell.unsetIssued());
   }
 
-  getInfo() {
-    return this.#cells.map((cell) => cell.getInfo());
+  get info() {
+    return this.#cells.map((cell) => cell.info);
   }
 }
