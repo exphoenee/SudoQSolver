@@ -18,6 +18,12 @@ import {
   puzzleIssuedCells,
   furtherIssuedCells,
   secondFreeCell,
+  dupsInFirstRow,
+  dupsInSecondRow,
+  dupsInFirstCol,
+  dupsInSecondCol,
+  dupsInFirstBox,
+  dupsInSecondBox,
 } from "./SudokuBoard.exceptions.mjs";
 import Batch from "../Batch/Batch.mjs";
 import Cell from "../Cell/Cell.mjs";
@@ -356,6 +362,150 @@ const cases = [
     first: null,
     check: () => board.coordsOfFirstFreeCell(),
     excepted: { x: secondFreeCell.x, y: secondFreeCell.y },
+  },
+  {
+    caseDesc: "Gets the first row, and gets the value of them.",
+    first: null,
+    check: () => board.getRow(0).getCellValues(),
+    excepted: [1, 1, 0, 0, 0, 7, 0, 0, 3],
+  },
+  {
+    caseDesc: "Gets the first row, and gets the missing value of them.",
+    first: null,
+    check: () => board.getRow(0).getMissingNumbers(),
+    excepted: [2, 4, 5, 6, 8, 9],
+  },
+  {
+    caseDesc: "Gets the first row, and gets the value of them.",
+    first: null,
+    check: () => board.getRow(0).getFilledNumbers(),
+    excepted: [1, 3, 7],
+  },
+  {
+    caseDesc: "Gets the duplicate cells in the first row.",
+    first: null,
+    check: () =>
+      board
+        .getRow(0)
+        .getDuplicateValuedCells()
+        .map((cell) => cell.info),
+    excepted: dupsInFirstRow,
+  },
+  {
+    caseDesc: "Gets the duplicate cells in the second row.",
+    first: null,
+    check: () =>
+      board
+        .getRow(1)
+        .getDuplicateValuedCells()
+        .map((cell) => cell.info),
+    excepted: dupsInSecondRow,
+  },
+  {
+    caseDesc: "Gets the duplicate cells in the third row.",
+    first: null,
+    check: () =>
+      board
+        .getRow(2)
+        .getDuplicateValuedCells()
+        .map((cell) => cell.info),
+    excepted: [],
+  },
+  {
+    caseDesc: "Gets the duplicate cells in the first column.",
+    first: null,
+    check: () =>
+      board
+        .getCol(0)
+        .getDuplicateValuedCells()
+        .map((cell) => cell.info),
+    excepted: dupsInFirstCol,
+  },
+  {
+    caseDesc: "Gets the duplicate cells in the second column.",
+    first: null,
+    check: () =>
+      board
+        .getCol(1)
+        .getDuplicateValuedCells()
+        .map((cell) => cell.info),
+    excepted: dupsInSecondCol,
+  },
+  {
+    caseDesc: "Gets the duplicate cells in the third column.",
+    first: null,
+    check: () =>
+      board
+        .getCol(2)
+        .getDuplicateValuedCells()
+        .map((cell) => cell.info),
+    excepted: [],
+  },
+  {
+    caseDesc: "Gets the duplicate cells in the first box.",
+    first: null,
+    check: () =>
+      board
+        .getBox(0)
+        .getDuplicateValuedCells()
+        .map((cell) => cell.info),
+    excepted: dupsInFirstBox,
+  },
+  {
+    caseDesc: "Gets the duplicate cells in the second box.",
+    first: null,
+    check: () =>
+      board
+        .getBox(1)
+        .getDuplicateValuedCells()
+        .map((cell) => cell.info),
+    excepted: dupsInSecondBox,
+  },
+  {
+    caseDesc: "Gets the duplicate cells in the third box.",
+    first: null,
+    check: () =>
+      board
+        .getBox(2)
+        .getDuplicateValuedCells()
+        .map((cell) => cell.info),
+    excepted: [],
+  },
+  {
+    caseDesc: "Checks the board has duplicated cells in the first row.",
+    first: null,
+    check: () => board.hasRowDuplicates(0),
+    excepted: true,
+  },
+  {
+    caseDesc: "Checks the board has duplicated cells in the second row.",
+    first: null,
+    check: () => board.hasRowDuplicates(1),
+    excepted: true,
+  },
+  {
+    caseDesc: "Checks the board has duplicated cells in the fifth row.",
+    first: null,
+    check: () => board.hasRowDuplicates(4),
+    excepted: true,
+  },
+  {
+    caseDesc: "Checks the board has duplicated cells in the first column.",
+    first: null,
+    check: () => board.hasColumnDuplicates(0),
+    excepted: true,
+  },
+  {
+    caseDesc: "Checks the board has duplicated cells in the second column.",
+    first: null,
+    check: () => board.hasColumnDuplicates(1),
+    excepted: true,
+  },
+  {
+    caseDesc: "Checks the board has duplicated cells in the fifth column.",
+    first: null,
+    check: () => board.hasColumnDuplicates(4),
+    excepted: true,
   },
 ];
 
