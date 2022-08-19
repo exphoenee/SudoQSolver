@@ -3598,3 +3598,41 @@ export const puzzleBoard = [
     accepted: { unfilled: 0, min: 1, max: 9 },
   },
 ];
+export const puzzleFirstCell = {
+  id: 0,
+  given: false,
+  issued: false,
+  value: 1,
+  x: 0,
+  y: 0,
+  bx: 0,
+  by: 0,
+  boxId: 0,
+  accepted: { unfilled: 0, min: 1, max: 9 },
+};
+export const puzzleX3Y6Cell = {
+  id: 48,
+  given: false,
+  issued: false,
+  value: 2,
+  x: 3,
+  y: 5,
+  bx: 1,
+  by: 1,
+  boxId: 4,
+  accepted: { unfilled: 0, min: 1, max: 9 },
+};
+export const puzzleStrWithDots =
+  "1....7..39.6..82.4.3.52..9.39...15....5...9....12...47.2..65.1.5.81..7.26..7....5";
+export const firstFreeCell = {
+  id: 1,
+  given: false,
+  issued: false,
+  value: 0,
+  x: 1,
+  y: 0,
+  bx: 0,
+  by: 0,
+  boxId: 0,
+  accepted: { unfilled: 0, min: 1, max: 9 },
+};
