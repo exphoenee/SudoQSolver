@@ -175,7 +175,7 @@ export default class SudokuBoard {
     arg:    batch
     return: array of integers the values in the batch */
   #filterValuesFromBatch(batch) {
-    return batch.getCells().map((cell) => cell.value);
+    return batch.cells.map((cell) => cell.value);
   }
 
   /* gives a row according to the given row number
@@ -249,7 +249,8 @@ export default class SudokuBoard {
                   * cell (integer),
       return:   array of integer what is missing form the row, column, and box of the cell */
   getCellPossiblities({ x, y, cell }) {
-    if (!cell) cell = this.getCellByCoords(x, y);
+    !cell && (cell = this.getCellByCoords(x, y));
+
     const missingFromCol = this.getMissingFromCol(cell.x);
     const missingFromRow = this.getMissingFromRow(cell.y);
     const missingFromBox = this.getMissingFromBox(cell.boxId);
