@@ -74,7 +74,7 @@ export default class Cell {
   }
 
   /* gives all the properties of a cell for debuging purpose made */
-  getInfo() {
+  get info() {
     return {
       id: this.#id,
       given: this.#given,
