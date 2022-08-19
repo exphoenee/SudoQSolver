@@ -1,6 +1,14 @@
-export const assert = ({ caseDesc, first, check, excepted, tests, failed }) => {
+export const assert = ({
+  caseDesc,
+  first,
+  check,
+  excepted,
+  tests,
+  failed,
+  length,
+}) => {
   tests++;
-  const tooLong = 250;
+  const tooLong = length || 250;
   let testResult;
 
   let results;
@@ -33,7 +41,7 @@ export const assert = ({ caseDesc, first, check, excepted, tests, failed }) => {
     /* Creating the decision text */
     testResult = resultValue == exceptValue;
     const decision = `Result:     ${
-      resultValue == exceptValue ? `📗ok📗` : `📕FAILED📕`
+      resultValue == exceptValue ? `📗successed📗` : `📕FAILED📕`
     }`;
 
     !testResult && failed++;
@@ -60,29 +68,33 @@ export const assert = ({ caseDesc, first, check, excepted, tests, failed }) => {
 
 export const batchAssert = (
   cases,
-  { showFailed, showSuccessed } = { showFailed: true, showSuccessed: false }
+  { showFailed, showSuccessed, length } = {
+    showFailed: true,
+    showSuccessed: false,
+  }
 ) => {
   let tests = 0;
   let failed = 0;
   let result;
 
   const results = cases.map((cs) => {
-    [result, tests, failed] = assert({ ...cs, tests, failed });
+    [result, tests, failed] = assert({ ...cs, tests, failed, length });
     return result;
   });
 
-  const summaryHeader =
-    "----------------------------------- TESTS ENDED! -----------------------------------\n";
-  console.warn(
-    summaryHeader +
-      `${
-        tests - failed
-      } test was 📗ok📗\n${failed} test was failed📕FAILED📕\n` +
-      summaryHeader
-  );
-
   const faliedTests = results.filter((result) => result.testResult);
   const successedTests = results.filter((result) => !result.testResult);
+
+  const summaryHeader =
+    "----------------------------------- TESTS ENDED! -----------------------------------\n";
+
+  let summary = summaryHeader;
+  summary += `${tests} performed\n`;
+  summary += `${tests - failed} test was 📗successed📗\n`;
+  failed > 0 && (summary += `${failed} test was 📕FAILED📕\n`);
+  summary += summaryHeader;
+
+  console.warn(summary);
 
   showFailed && successedTests.forEach((sT) => console.warn(sT.printout));
   showSuccessed && faliedTests.forEach((fT) => console.warn(fT.printout));
