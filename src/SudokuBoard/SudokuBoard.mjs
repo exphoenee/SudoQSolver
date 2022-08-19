@@ -310,11 +310,12 @@ export default class SudokuBoard {
 
   /* the method is checking the puzzle does or not any duplicates in the rows, columns or boxes
   arg:    null,
-  return: boolen the puzzle is correct, true, that means there aren't any duplicates */
+  return: boolen the puzzle is correct true, that means there aren't any duplicates */
   puzzleIsCorrect() {
-    [...this.#rows, ...this.#cols, ...this.#boxes].forEach((batch) => {
+    const batches = [...this.#rows, ...this.#cols, ...this.#boxes];
+    for (let batch of batches) {
       if (batch.hasDuplicates()) return false;
-    });
+    }
     return true;
   }
 
