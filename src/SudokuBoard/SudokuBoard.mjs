@@ -99,8 +99,8 @@ export default class SudokuBoard {
 
   /* the method returns all the data of the cells what the board including
    that used only for debugging purpose */
-  boardProperties() {
-    return this.#cells.map((cell) => cell.getInfo());
+  get info() {
+    return this.#cells.map((cell) => cell.info);
   }
 
   /* clearing all the issued property of the cells */
