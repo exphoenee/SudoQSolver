@@ -88,7 +88,7 @@ const cases = [
   {
     caseDesc: "Getting the info of the cell.",
     first: null,
-    check: () => cell.getInfo(),
+    check: () => cell.info,
     excepted: {
       id: 4,
       given: false,
