@@ -404,31 +404,33 @@ export default class SudokuBoard {
   setBoard(board, setGiven = false) {
     const [format, msg] = this.#boardFormat(board);
 
-    const convertFormat = {
-      "2D": () => {
-        return board;
-      },
-      "1D": () => {
-        const board2D = [];
-        while (board.length) board2D.push(board.splice(0, this.#dimensionX));
-        return board2D;
-      },
-      string: () => {
-        return this.setBoard(board.split(""), setGiven);
-      },
-      err: () => {
-        console.error(msg);
-      },
+    const conver1Dto2D = (board) => {
+      const board2D = [];
+      while (board.length) board2D.push(board.splice(0, this.#dimensionX));
+      return board2D;
     };
 
-    convertFormat[format]().forEach((row, y) =>
-      row.forEach((cellValue, x) => {
-        const cell = this.getCellByCoords(x, y);
-        cell.setValue(cellValue);
-        if (setGiven) cell.isFilled() ? cell.setGiven() : cell.unsetGiven();
-      })
-    );
-    this.#setAllIssuedCells();
+    const ConvertStrTo1D = (board) => {
+      return conver1Dto2D(board.split("").map((cell) => +cell));
+    };
+
+    let convertedBoard;
+    format === "2D" && (convertedBoard = board);
+    format === "1D" && (convertedBoard = conver1Dto2D(board));
+    format === "string" && (convertedBoard = ConvertStrTo1D(board));
+
+    if (convertedBoard) {
+      convertedBoard.forEach((row, y) =>
+        row.forEach((cellValue, x) => {
+          const cell = this.getCellByCoords(x, y);
+          cell.setValue(cellValue);
+          if (setGiven) cell.isFilled() ? cell.setGiven() : cell.unsetGiven();
+        })
+      );
+      this.#setAllIssuedCells();
+    } else {
+      console.error(msg);
+    }
   }
 
   /* gives the values of all the cells in the board
@@ -444,12 +446,10 @@ export default class SudokuBoard {
               1D is 1D array, 2D is 2D array, string is string
           ** unfilledChard
   return: 1D, 2D array of integers, or string according to format argument, containig the values of the cells in order they are created */
-  getCellValues(
-    { format, unfilledChar } = { format: "1D", unfilledChar: "0" }
-  ) {
+  getCellValues({ format, unfilledChar }) {
     let res = this.#cells.map((cell) => cell.value);
     if (format.toUpperCase() === "STRING") {
-      return res.join("").replace(/0/g, unfilledChar);
+      return res.join("").replace(/0/g, unfilledChar || 0);
     } else if (format.toUpperCase() === "2D") {
       const board2D = [];
       while (res.length) board2D.push(res.splice(0, this.#dimensionX));
