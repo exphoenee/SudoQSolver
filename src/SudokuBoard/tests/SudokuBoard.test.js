@@ -11,6 +11,10 @@ import {
   clearBoardFirstBox,
   clearBoardSixthBox,
   puzzleBoard,
+  puzzleFirstCell,
+  puzzleX3Y6Cell,
+  puzzleStrWithDots,
+  firstFreeCell,
 } from "./SudokuBoard.exceptions.mjs";
 import Batch from "../Batch/Batch.mjs";
 import Cell from "../Cell/Cell.mjs";
@@ -126,39 +130,118 @@ const cases = [
     excepted: puzzle2d,
   },
   {
-    caseDesc: "Getting the board values as string.",
+    caseDesc: "Getting the board values as string, the board is set to puzzle.",
     first: null,
     check: () => board.getCellValues({ format: "1D" }),
     excepted: puzzle1d,
   },
   {
-    caseDesc: "Getting the board values as string.",
+    caseDesc: "Getting the board values as string, the board is set to puzzle.",
     first: null,
     check: () => board.getCellValues({ format: "string" }),
     excepted: puzzleStr,
   },
   {
-    caseDesc: "Getting the board values as string.",
+    caseDesc:
+      "Getting the board values as string, and unfilled chars set to '.', the board is set to puzzle.",
+    first: null,
+    check: () => board.getCellValues({ format: "string", unfilledChar: "." }),
+    excepted: puzzleStrWithDots,
+  },
+  {
+    caseDesc: "Getting info of first cell, the board is set to puzzle.",
     first: null,
     check: () => board.getCellByCoords(0, 0).info,
-    excepted: {
-      id: 0,
-      given: false,
-      issued: false,
-      value: 1,
-      x: 0,
-      y: 0,
-      bx: 0,
-      by: 0,
-      boxId: 0,
-      accepted: { unfilled: 0, min: 1, max: 9 },
-    },
+    excepted: puzzleFirstCell,
+  },
+  {
+    caseDesc:
+      "Getting getting the info of X3 - Y6 cell, the board is set to puzzle.",
+    first: null,
+    check: () => board.getCellByCoords(3, 5).info,
+    excepted: puzzleX3Y6Cell,
   },
   {
     caseDesc: "Getting the board info, the board is set to puzzle.",
     first: null,
     check: () => board.info,
     excepted: puzzleBoard,
+  },
+  {
+    caseDesc:
+      "Finding the first free cell of the board, the board is set to puzzle.",
+    first: null,
+    check: () => board.getFirstFeeCell().info,
+    excepted: firstFreeCell,
+  },
+  {
+    caseDesc:
+      "Finding the first free cell of the board and getting the coords of them, the board is set to puzzle.",
+    first: null,
+    check: () => board.coordsOfFirstFreeCell(),
+    excepted: { x: 1, y: 0 },
+  },
+  {
+    caseDesc: "Checking the puzzle is correct, the board is set to puzzle.",
+    first: null,
+    check: () => board.puzzleIsCorrect(),
+    excepted: true,
+  },
+  {
+    caseDesc:
+      "Setting the first free cell value to 1 thorug coordinate, checking the value of that.",
+    first: () => board.setCellValue({ x: 1, y: 0 }, 1),
+    check: () => board.getCellByCoords(1, 0).info,
+    excepted: { ...firstFreeCell, value: 1, issued: true },
+  },
+  {
+    caseDesc:
+      "Setting the first free cell value to 0 thorug id selector, checking the value of that.",
+    first: () => board.setCellValue({ id: 1 }, 0),
+    check: () => board.getCellByCoords(1, 0).info,
+    excepted: { ...firstFreeCell, value: 0, issued: false },
+  },
+  {
+    caseDesc:
+      "Setting the first free cell value to 2 throug Cell reference, checking the value of that.",
+    first: () => board.setCellValue({ cell: board.getFirstFeeCell() }, 1),
+    check: () => board.getCellByCoords(1, 0).info,
+    excepted: { ...firstFreeCell, value: 1, issued: true },
+  },
+  {
+    caseDesc:
+      "Trying to set first free cell to invalid value: 11, checking the value of that.",
+    first: () => board.setCellValue({ x: 1, y: 0 }, 11),
+    check: () => board.getCellByCoords(1, 0).info,
+    excepted: { ...firstFreeCell, value: 0, issued: false },
+  },
+  {
+    caseDesc:
+      "Trying to set first free cell to invalid value: 'a' string, checking the value of that.",
+    first: () => board.setCellValue({ x: 1, y: 0 }, "a"),
+    check: () => board.getCellByCoords(1, 0).info,
+    excepted: { ...firstFreeCell, value: 0, issued: false },
+  },
+  {
+    caseDesc:
+      "Trying to set first free cell to invalid value: true boolean, checking the value of that.",
+    first: () => board.setCellValue({ x: 1, y: 0 }, true),
+    check: () => board.getCellByCoords(1, 0).info,
+    excepted: { ...firstFreeCell, value: 0, issued: false },
+  },
+  {
+    caseDesc:
+      "Trying to set first free cell to invalid value: true boolean, checking the value of that.",
+    first: () => board.setCellValue({ x: 1, y: 0 }, false),
+    check: () => board.getCellByCoords(1, 0).info,
+    excepted: { ...firstFreeCell, value: 0, issued: false },
+  },
+  {
+    caseDesc:
+      "Setting the first free cell value to 1, checking the puzzle is correct, the board is set to puzzle, it must be incorrect!",
+    first: () => board.setCellValue({ x: 1, y: 0 }, 1),
+    check: () => board.puzzleIsCorrect(),
+    excepted: false,
   },
 ];
 
