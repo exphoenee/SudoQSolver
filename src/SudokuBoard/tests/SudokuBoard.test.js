@@ -15,6 +15,9 @@ import {
   puzzleX3Y6Cell,
   puzzleStrWithDots,
   firstFreeCell,
+  puzzleIssuedCells,
+  furtherIssuedCells,
+  secondFreeCell,
 } from "./SudokuBoard.exceptions.mjs";
 import Batch from "../Batch/Batch.mjs";
 import Cell from "../Cell/Cell.mjs";
@@ -179,7 +182,7 @@ const cases = [
       "Finding the first free cell of the board and getting the coords of them, the board is set to puzzle.",
     first: null,
     check: () => board.coordsOfFirstFreeCell(),
-    excepted: { x: 1, y: 0 },
+    excepted: { x: firstFreeCell.x, y: firstFreeCell.y },
   },
   {
     caseDesc: "Checking the puzzle is correct, the board is set to puzzle.",
@@ -238,10 +241,121 @@ const cases = [
   },
   {
     caseDesc:
-      "Setting the first free cell value to 1, checking the puzzle is correct, the board is set to puzzle, it must be incorrect!",
-    first: () => board.setCellValue({ x: 1, y: 0 }, 1),
+      "Setting the first and second cell value to 1, getting array of the issued cells!",
+    first: () => {
+      board.setCellValue({ x: 0, y: 0 }, 1);
+      board.setCellValue({ x: 1, y: 0 }, 1);
+    },
+    check: () => board.getIssuedCells().map((cell) => cell.info),
+    excepted: puzzleIssuedCells,
+  },
+  {
+    caseDesc:
+      "Setting second rows first and second cell value to 1, getting array of the issued cells!",
+    first: () => {
+      board.setCellValue({ x: 0, y: 0 }, 1);
+      board.setCellValue({ x: 1, y: 0 }, 1);
+      board.setCellValue({ x: 0, y: 1 }, 1);
+      board.setCellValue({ x: 1, y: 1 }, 1);
+    },
+    check: () => board.getIssuedCells().map((cell) => cell.info),
+    excepted: furtherIssuedCells,
+  },
+  {
+    caseDesc: "Getting first row, that is issued, end chacking there are dups!",
+    first: () => {
+      board.setCellValue({ x: 0, y: 0 }, 1);
+      board.setCellValue({ x: 1, y: 0 }, 1);
+      board.setCellValue({ x: 0, y: 1 }, 1);
+      board.setCellValue({ x: 1, y: 1 }, 1);
+    },
+    check: () => board.getRow(0).hasDuplicates(),
+    excepted: true,
+  },
+  {
+    caseDesc:
+      "Getting third row, that is NOT issued, end chacking there are dups!",
+    first: () => {
+      board.setCellValue({ x: 0, y: 0 }, 1);
+      board.setCellValue({ x: 1, y: 0 }, 1);
+      board.setCellValue({ x: 0, y: 1 }, 1);
+      board.setCellValue({ x: 1, y: 1 }, 1);
+    },
+    check: () => board.getRow(2).hasDuplicates(),
+    excepted: false,
+  },
+  {
+    caseDesc:
+      "Getting first column, that is issued, end chacking there are dups!",
+    first: () => {
+      board.setCellValue({ x: 0, y: 0 }, 1);
+      board.setCellValue({ x: 1, y: 0 }, 1);
+      board.setCellValue({ x: 0, y: 1 }, 1);
+      board.setCellValue({ x: 1, y: 1 }, 1);
+    },
+    check: () => board.getCol(0).hasDuplicates(),
+    excepted: true,
+  },
+  {
+    caseDesc:
+      "Getting third column, that is NOT issued, end chacking there are dups!",
+    first: () => {
+      board.setCellValue({ x: 0, y: 0 }, 1);
+      board.setCellValue({ x: 1, y: 0 }, 1);
+      board.setCellValue({ x: 0, y: 1 }, 1);
+      board.setCellValue({ x: 1, y: 1 }, 1);
+    },
+    check: () => board.getCol(2).hasDuplicates(),
+    excepted: false,
+  },
+  {
+    caseDesc: "Getting first box, that is issued, end chacking there are dups!",
+    first: () => {
+      board.setCellValue({ x: 0, y: 0 }, 1);
+      board.setCellValue({ x: 1, y: 0 }, 1);
+      board.setCellValue({ x: 0, y: 1 }, 1);
+      board.setCellValue({ x: 1, y: 1 }, 1);
+    },
+    check: () => board.getBox(0).hasDuplicates(),
+    excepted: true,
+  },
+  {
+    caseDesc:
+      "Getting ninth box, that is NOT issued, end chacking there are dups!",
+    first: () => {
+      board.setCellValue({ x: 0, y: 0 }, 1);
+      board.setCellValue({ x: 1, y: 0 }, 1);
+      board.setCellValue({ x: 0, y: 1 }, 1);
+      board.setCellValue({ x: 1, y: 1 }, 1);
+    },
+    check: () => board.getBox(8).hasDuplicates(),
+    excepted: false,
+  },
+
+  {
+    caseDesc:
+      "Setting first and second rows first and second cell value to 1, checking the puzzle is correct?",
+    first: () => {
+      board.setCellValue({ x: 0, y: 0 }, 1);
+      board.setCellValue({ x: 1, y: 0 }, 1);
+      board.setCellValue({ x: 0, y: 1 }, 1);
+      board.setCellValue({ x: 1, y: 1 }, 1);
+    },
     check: () => board.puzzleIsCorrect(),
     excepted: false,
+  },
+  {
+    caseDesc: "After filled the first free cell, find the next one.",
+    first: null,
+    check: () => board.getFirstFeeCell().info,
+    excepted: secondFreeCell,
+  },
+  {
+    caseDesc:
+      "After filled the first free cell, find the next one, and gets the coords of it.",
+    first: null,
+    check: () => board.coordsOfFirstFreeCell(),
+    excepted: { x: secondFreeCell.x, y: secondFreeCell.y },
   },
 ];
 
