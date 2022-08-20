@@ -38,7 +38,7 @@ import {
   wrong2d,
   wrong1d,
   wrongStr,
-} from "../../test/Puzzles.mjs";
+} from "../../Model/Puzzles.mjs";
 
 const board = new SudokuBoard(3, 3);
 
