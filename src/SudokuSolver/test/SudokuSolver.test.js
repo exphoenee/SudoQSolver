@@ -15,7 +15,7 @@ import {
   wrong2d,
   wrong1d,
   wrongStr,
-} from "../../test/Puzzles.mjs";
+} from "../../Model/Puzzles.mjs";
 
 const solver = new SudokuSolver(3, 3);
 
@@ -54,49 +54,49 @@ const cases = [
   {
     caseDesc:
       "Clearing the board, and solving the easy puzzle, gets the format in 1D array.",
-    first: null,
+    first: () => solver.clearBoard(),
     check: () => solver.convertPuzzle(puzzle2d, "1D"),
     excepted: puzzle2d.flat(),
   },
   {
     caseDesc: "Convert easy puzzle 2D to 2D.",
-    first: null,
+    first: () => solver.clearBoard(),
     check: () => solver.convertPuzzle(puzzle2d, "2D"),
     excepted: puzzle2d,
   },
   {
     caseDesc: "Convert easy puzzle 2D to 1D.",
-    first: null,
+    first: () => solver.clearBoard(),
     check: () => solver.convertPuzzle(puzzle2d, "1D"),
     excepted: puzzle1d,
   },
   {
     caseDesc: "Convert easy puzzle 2D to string.",
-    first: null,
+    first: () => solver.clearBoard(),
     check: () => solver.convertPuzzle(puzzle2d, "string"),
     excepted: puzzleStr,
   },
   {
     caseDesc: "Convert easy puzzle 2D to string replacing the '0' to '.'.",
-    first: null,
+    first: () => solver.clearBoard(),
     check: () => solver.convertPuzzle(puzzle2d, "string", "."),
     excepted: puzzleStr.replace(/0/g, "."),
   },
   {
     caseDesc: "Convert easy puzzle 1D to 1D.",
-    first: null,
+    first: () => solver.clearBoard(),
     check: () => solver.convertPuzzle(puzzle1d, "1D"),
     excepted: puzzle1d,
   },
   {
     caseDesc: "Convert easy puzzle 1D to 2D.",
-    first: null,
+    first: () => solver.clearBoard(),
     check: () => solver.convertPuzzle(puzzle1d, "2D"),
     excepted: puzzle2d,
   },
   {
     caseDesc: "Convert easy puzzle 1D to string.",
-    first: null,
+    first: () => solver.clearBoard(),
     check: () => solver.convertPuzzle(puzzle2d, "string"),
     excepted: puzzleStr,
   },
