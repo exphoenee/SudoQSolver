@@ -34,7 +34,7 @@ const cases = [
   },
   {
     caseDesc: "Setting the eazy puzzle to the board and solving that.",
-    first: () => solver.setBoard({ puzzle: puzzle2d }),
+    first: () => solver.setBoard(puzzle2d),
     check: () => solver.solvePuzzle(),
     excepted: puzzleSolution,
   },
@@ -53,4 +53,4 @@ const cases = [
   },
 ];
 
-batchAssert(cases, { showFailed: false, showSuccessed: false });
+batchAssert(cases, { showFailed: true, showSuccessed: false });
