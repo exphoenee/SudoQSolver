@@ -33,6 +33,8 @@ export default class SudokuBoard {
     this.generateBoard();
 
     if (this.#boardFormat(puzzle)[0] !== "err") {
+      if (this.#boardFormat(puzzle)[0] === "1D") {
+      }
       this.setBoard(puzzle, true);
     }
 
@@ -410,8 +412,9 @@ export default class SudokuBoard {
     const [format, msg] = this.#boardFormat(board);
 
     const conver1Dto2D = (board) => {
+      const mBoard = [...board];
       const board2D = [];
-      while (board.length) board2D.push(board.splice(0, this.#dimensionX));
+      while (mBoard.length) board2D.push(mBoard.splice(0, this.#dimensionX));
       return board2D;
     };
 
@@ -470,7 +473,7 @@ export default class SudokuBoard {
       while (res.length) board2D.push(res.splice(0, this.#dimensionX));
       return board2D;
     } else if (format.toUpperCase() === "1D") {
-      return res.flat();
+      return res;
     } else return false;
   }
 
