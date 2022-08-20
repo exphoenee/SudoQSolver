@@ -21,7 +21,7 @@ export const puzzle2d = [
   [5, 0, 8, 1, 0, 0, 7, 0, 2],
   [6, 0, 0, 7, 0, 0, 0, 0, 5],
 ];
-export const puzzle1d = puzzle2d.flat();
+export const puzzle1d = puzzle2d.flat(1);
 export const puzzleStr = puzzle1d.join("");
 export const puzzleSolution = [
   [1, 8, 2, 9, 4, 7, 6, 5, 3],
@@ -46,7 +46,7 @@ export const unsolvable2d = [
   [3, 0, 0, 0, 0, 0, 0, 0, 0],
   [2, 0, 0, 0, 0, 0, 0, 0, 0],
 ];
-export const unsolvable1d = unsolvable2d.flat();
+export const unsolvable1d = unsolvable2d.flat(1);
 export const unsolvableStr = unsolvable1d.join("");
 /* Wrong puzzle */
 export const wrong2d = [
@@ -60,5 +60,5 @@ export const wrong2d = [
   [1, 2, 3, 4, 5, 6, 7, 8, 9],
   [1, 2, 3, 4, 5, 6, 7, 8, 9],
 ];
-export const wrong1d = wrong2d.flat();
+export const wrong1d = wrong2d.flat(1);
 export const wrongStr = wrong1d.join("");
