@@ -190,6 +190,7 @@ export default class SudokuRenderer {
     };
     alerting[type]();
   }
+
   /* throw a message
    * first argument is the text,
    * the second object has one properties:
@@ -234,12 +235,21 @@ export default class SudokuRenderer {
     }
 
     this.renderButton("Solve!", () => {
+      this.userMsg("...solving...");
       this.extractInputs();
-      const solution = this.#solver.solvePuzzle();
-      console.log(solution);
-      this.#sudokuboard.setBoard(solution, false);
+      this.solve();
       this.updateUICells();
     });
+  }
+
+  /* solving the board SudokuBoard */
+  solve() {
+    const solution = this.#solver.solvePuzzle();
+    if (solution) {
+      this.#sudokuboard.setBoard(solution, false);
+    } else {
+      this.userMsg("This puzzle does not has a solution!", "error");
+    }
   }
 
   /* rendering the rows, the only div and iterating throught the cells of each
