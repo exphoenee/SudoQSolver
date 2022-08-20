@@ -268,7 +268,6 @@ export default class SudokuRenderer {
       document.getElementById("numbers").appendChild(numButton);
 
       numButton.addEventListener("click", (e) => {
-        console.log(this.#selectedCell);
         if (this.#selectedCell) {
           this.#selectedCell.ref.value = num;
           this.#sudokuboard.setCellValue({ cell: this.#selectedCell }, num);
