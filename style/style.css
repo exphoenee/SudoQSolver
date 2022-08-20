@@ -89,14 +89,14 @@ button:active {
   background-color: lightsalmon;
 }
 
-.issue {
+.issue:not(.selected) {
   background-color: rgba(255, 0, 0, 0.6);
 }
 
-.row:nth-child(3n + 3):not(.tile:last-of-type) {
-  margin-bottom: 3px;
+.selected:not(.issued) {
+  background-color: rgba(100, 255, 100, 0.2);
 }
 
-.tile:nth-child(3n + 3):not(.tile:last-of-type) {
-  margin-right: 3px;
+.issue.selected {
+  background-color: rgba(255, 100, 0, 0.8);
 }
