@@ -97,7 +97,7 @@ const cases = [
   {
     caseDesc: "Convert easy puzzle 1D to string.",
     first: () => solver.clearBoard(),
-    check: () => solver.convertPuzzle(puzzle2d, "string"),
+    check: () => solver.convertPuzzle(puzzle1d, "string"),
     excepted: puzzleStr,
   },
 ];
