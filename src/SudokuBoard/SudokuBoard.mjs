@@ -32,7 +32,14 @@ export default class SudokuBoard {
 
     this.generateBoard();
 
-    puzzle && this.setBoard(puzzle, true);
+    console.log(puzzle);
+    console.log(this.#boardFormat(puzzle));
+
+    if (this.#boardFormat(puzzle)[0] == "err") {
+      console.error("The puzzle is not the right size.");
+    } else {
+      this.setBoard(puzzle, true);
+    }
     return this;
   }
 
@@ -466,8 +473,9 @@ export default class SudokuBoard {
       const board2D = [];
       while (res.length) board2D.push(res.splice(0, this.#dimensionX));
       return board2D;
-    }
-    return res;
+    } else if (format.toUpperCase() === "1D") {
+      return res.flat();
+    } else return false;
   }
 
   /* gives the value of a cells by the given coordinates
