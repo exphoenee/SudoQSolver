@@ -60,16 +60,20 @@ export default class SudokuSolver {
       const result = this.#solve();
 
       if (result) {
-        return this.convertPuzzle(result, format);
+        return this.convertPuzzle(result, format, unfilledChar);
       }
     }
     return false;
   }
 
+  /* Cerates a temporary board and sets the cell value to the given value
+  return: a new board Class */
   #createTemporaryBoard(puzzle) {
     return new SudokuBoard(this.#boxSizeX, this.#boxSizeY, puzzle);
   }
 
+  /* Converting the board to different formats
+  return: the converted board */
   convertPuzzle(puzzle, format = "2D", unfilledChar = "0") {
     return this.#createTemporaryBoard(puzzle).getCellValues({
       format,
