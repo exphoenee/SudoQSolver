@@ -4,11 +4,17 @@ import SudokuSolver from "../SudokuSolver/SudokuSolver.mjs";
 export default class SudokuRenderer {
   #solver;
   #sudokuboard;
+  #boxSizeX;
+  #boxSizeY;
+  #selectedCell;
 
   constructor(boxSizeX, boxSizeY, puzzle = null) {
     //using the SudokuBoard calss for handling the sudoku board
     this.#solver = new SudokuSolver(boxSizeX, boxSizeY, puzzle);
     this.#sudokuboard = this.#solver.sudokuboard;
+    this.#boxSizeX = boxSizeX;
+    this.#boxSizeY = boxSizeY;
+    this.#selectedCell = null;
 
     //add some example puzzles here
     //source: https://www.sudokuonline.io/
@@ -212,6 +218,16 @@ export default class SudokuRenderer {
     );
   }
 
+  /* solving the board SudokuBoard */
+  solve() {
+    const solution = this.#solver.solvePuzzle();
+    if (solution) {
+      this.#sudokuboard.setBoard(solution, false);
+    } else {
+      this.userMsg("This puzzle does not has a solution!", "error");
+    }
+  }
+
   /* rendering the entire table from the SudokuBoard */
   render() {
     // if it is once rendered then should be saved to the class
@@ -240,15 +256,25 @@ export default class SudokuRenderer {
       this.solve();
       this.updateUICells();
     });
+
+    this.renderNumbers();
   }
 
-  /* solving the board SudokuBoard */
-  solve() {
-    const solution = this.#solver.solvePuzzle();
-    if (solution) {
-      this.#sudokuboard.setBoard(solution, false);
-    } else {
-      this.userMsg("This puzzle does not has a solution!", "error");
+  renderNumbers() {
+    for (let num = 1; num <= this.#boxSizeX * this.#boxSizeY; num++) {
+      const numButton = document.createElement("button");
+      numButton.textContent = num;
+      numButton.classList.add("num");
+      document.getElementById("numbers").appendChild(numButton);
+
+      numButton.addEventListener("click", (e) => {
+        console.log(this.#selectedCell);
+        if (this.#selectedCell) {
+          this.#selectedCell.ref.value = num;
+          this.#sudokuboard.setCellValue({ cell: this.#selectedCell }, num);
+          this.updateUICells();
+        }
+      });
     }
   }
 
@@ -280,6 +306,25 @@ export default class SudokuRenderer {
     cellDOM.dataset.row = cellInfo.y;
     cellDOM.dataset.col = cellInfo.x;
     cellDOM.dataset.box = cellInfo.boxId;
+    if (
+      (cellInfo.x + 1) % this.#boxSizeX === 0 &&
+      cellInfo.x + 1 !== this.#boxSizeX ** 2
+    ) {
+      cellDOM.style.marginRight = "3px";
+    }
+    if (
+      (cellInfo.y + 1) % this.#boxSizeY === 0 &&
+      cellInfo.x + 1 !== this.#boxSizeY ** 2
+    ) {
+      cellDOM.style.marginBottom = "3px";
+    }
+    cellDOM.addEventListener("click", (e) => {
+      this.#sudokuboard.cells.forEach((cell) => {
+        cell.ref.classList.remove("selected");
+      });
+      cellDOM.classList.add("selected");
+      this.#selectedCell = cellInfo;
+    });
     cellDOM.addEventListener("change", (e) => this.updateUICell(e));
     parent.appendChild(cellDOM);
     cellInfo.addRef(cellDOM);
