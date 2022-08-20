@@ -59,11 +59,8 @@ export default class SudokuSolver {
     if (this.#sudokuboard.puzzleIsCorrect()) {
       const result = this.#solve();
 
-      if (result) {
-        return this.convertPuzzle(result, format, unfilledChar);
-      }
+      return result ? this.convertPuzzle(result, format, unfilledChar) : false;
     }
-    return false;
   }
 
   /* Cerates a temporary board and sets the cell value to the given value
