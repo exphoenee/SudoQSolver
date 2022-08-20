@@ -408,6 +408,7 @@ export default class SudokuBoard {
   return: void */
   setBoard(board, setGiven = false) {
     const [format, msg] = this.#boardFormat(board);
+
     const conver1Dto2D = (board) => {
       const board2D = [];
       while (board.length) board2D.push(board.splice(0, this.#dimensionX));
