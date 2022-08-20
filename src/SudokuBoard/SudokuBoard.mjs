@@ -435,6 +435,13 @@ export default class SudokuBoard {
     }
   }
 
+  /* the method is setting all the values of cells of to 0
+  arg:    null,
+  return: undefined */
+  clearBoard() {
+    this.#cells.forEach((cell) => cell.setValue(0));
+  }
+
   /* gives the values of all the cells in the board
   arg:    null
   return: 1D of Cells (Object) */
@@ -455,7 +462,7 @@ export default class SudokuBoard {
 
     if (format.toUpperCase() === "STRING") {
       return res.join("").replace(/0/g, unfilledChar || 0);
-    } else if (format.toUpperCase() === "1D") {
+    } else if (format.toUpperCase() === "2D") {
       const board2D = [];
       while (res.length) board2D.push(res.splice(0, this.#dimensionX));
       return board2D;
