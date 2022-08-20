@@ -17,8 +17,22 @@ export default class SudokuSolver {
     this.#sudokuboard = new SudokuBoard(this.#boxSizeX, this.#boxSizeY, puzzle);
   }
 
+  /* gives back info form all the cells in the board
+  arg:    null,
+  return: array of object literals */
   get sudokuboard() {
     return this.#sudokuboard;
+  }
+
+  /* gives back info form all the cells in the board
+  arg:    null,
+  return: array of object literals */
+  setBoard(puzzle) {
+    this.#sudokuboard.setBoard(puzzle);
+  }
+
+  clearBoard() {
+    this.#sudokuboard.clearBoard();
   }
 
   /**********************************/
@@ -31,7 +45,15 @@ export default class SudokuSolver {
     returns:
       * the solved puzzle n x n sized 2D array
       * or a boolen which value can be only false what mean there is no solution for this puzzle */
-  solvePuzzle(puzzle = null, format = "default") {
+  solvePuzzle(
+    { puzzle, format, unfilledChar } = {
+      puzzle: null,
+      format: "2D",
+      unfilledChar: ".",
+    }
+  ) {
+    console.log(format);
+
     if (puzzle) {
       this.#sudokuboard.setBoard(puzzle);
     }
@@ -40,8 +62,16 @@ export default class SudokuSolver {
       const result = this.#solve();
       if (result) {
         const formatting = {
-          string: () => this.toString(result),
-          default: () => result,
+          "1D": () =>
+            this.createTemporaryBoard(result).getCellValues({
+              format: "1D",
+            }),
+          string: () =>
+            this.createTemporaryBoard(result).getCellValues({
+              format: "string",
+              unfilledChar: unfilledChar || ".",
+            }),
+          "2D": () => result,
         };
 
         return formatting[format]();
@@ -95,19 +125,5 @@ export default class SudokuSolver {
     } else {
       return false;
     }
-  }
-
-  /***********************************/
-  /* methods for checking the puzzle */
-  /***********************************/
-
-  /* converts a table to string
-    arg:    puzzle a 2D array n x n sized
-    return: a flattened 2D array, what is joined to a String */
-  toString(puzzle) {
-    return this.createTemporaryBoard(puzzle).getCellValues({
-      format: "string",
-      unfilledChar: ".",
-    });
   }
 }
