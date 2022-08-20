@@ -250,7 +250,7 @@ export default class SudokuRenderer {
     rowContainer.classList.add(`row`);
     rowContainer.classList.add(`nr-${row.id}`);
     this.board.appendChild(rowContainer);
-    row.getCells().forEach((cellInfo) => {
+    row.cells.forEach((cellInfo) => {
       this.createInput(cellInfo, rowContainer);
     });
   }
@@ -272,7 +272,7 @@ export default class SudokuRenderer {
     cellDOM.dataset.box = cellInfo.boxId;
     cellDOM.addEventListener("change", (e) => this.updateUICell(e));
     parent.appendChild(cellDOM);
-    cellInfo.ref(cellDOM);
+    cellInfo.addRef(cellDOM);
   }
 
   /* buttons for the contorl panel, the arguments are the following:
