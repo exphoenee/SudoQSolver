@@ -70,7 +70,7 @@ export default class SudokuSolver {
     return new SudokuBoard(this.#boxSizeX, this.#boxSizeY, puzzle);
   }
 
-  convertPuzzle(puzzle, format) {
+  convertPuzzle(puzzle, format = "2D", unfilledChar = "0") {
     const formatting = {
       "1D": () =>
         this.#createTemporaryBoard(puzzle).getCellValues({
@@ -79,12 +79,15 @@ export default class SudokuSolver {
       string: () =>
         this.#createTemporaryBoard(puzzle).getCellValues({
           format: "string",
-          unfilledChar: unfilledChar || ".",
+          unfilledChar: unfilledChar,
         }),
-      "2D": () => puzzle,
+      "2D": () =>
+        this.#createTemporaryBoard(puzzle).getCellValues({
+          format: "2D",
+        }),
     };
 
-    return formatting[format || "2D"]();
+    return formatting[format]();
   }
 
   /* this method is the entry for making solution possiblities and filtrind out the not valid solution
