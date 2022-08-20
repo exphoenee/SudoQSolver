@@ -448,11 +448,14 @@ export default class SudokuBoard {
               1D is 1D array, 2D is 2D array, string is string
           ** unfilledChard
   return: 1D, 2D array of integers, or string according to format argument, containig the values of the cells in order they are created */
-  getCellValues({ format, unfilledChar }) {
+  getCellValues(
+    { format, unfilledChar } = { format: "2D", unfilledChar: "0" }
+  ) {
     let res = this.#cells.map((cell) => cell.value);
+
     if (format.toUpperCase() === "STRING") {
       return res.join("").replace(/0/g, unfilledChar || 0);
-    } else if (format.toUpperCase() === "2D") {
+    } else if (format.toUpperCase() === "1D") {
       const board2D = [];
       while (res.length) board2D.push(res.splice(0, this.#dimensionX));
       return board2D;
