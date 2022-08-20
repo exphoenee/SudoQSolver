@@ -52,32 +52,39 @@ export default class SudokuSolver {
       unfilledChar: ".",
     }
   ) {
-    console.log(format);
-
     if (puzzle) {
       this.#sudokuboard.setBoard(puzzle);
     }
 
     if (this.#sudokuboard.puzzleIsCorrect()) {
       const result = this.#solve();
-      if (result) {
-        const formatting = {
-          "1D": () =>
-            this.createTemporaryBoard(result).getCellValues({
-              format: "1D",
-            }),
-          string: () =>
-            this.createTemporaryBoard(result).getCellValues({
-              format: "string",
-              unfilledChar: unfilledChar || ".",
-            }),
-          "2D": () => result,
-        };
 
-        return formatting[format]();
+      if (result) {
+        return this.convertPuzzle(result, format);
       }
     }
     return false;
+  }
+
+  #createTemporaryBoard(puzzle) {
+    return new SudokuBoard(this.#boxSizeX, this.#boxSizeY, puzzle);
+  }
+
+  convertPuzzle(puzzle, format) {
+    const formatting = {
+      "1D": () =>
+        this.#createTemporaryBoard(puzzle).getCellValues({
+          format: "1D",
+        }),
+      string: () =>
+        this.#createTemporaryBoard(puzzle).getCellValues({
+          format: "string",
+          unfilledChar: unfilledChar || ".",
+        }),
+      "2D": () => puzzle,
+    };
+
+    return formatting[format || "2D"]();
   }
 
   /* this method is the entry for making solution possiblities and filtrind out the not valid solution
