@@ -20,6 +20,7 @@ export default class SudokuRenderer {
     this.#solver = new SudokuSolver(boxSizeX, boxSizeY, puzzle);
 
     this.#sudokuboard = this.#solver.sudokuboard;
+
     this.#boxSizeX = boxSizeX;
     this.#boxSizeY = boxSizeY;
     this.#selectedCell = null;
