@@ -135,17 +135,17 @@ export default class SudokuBoard {
 
   /* filtering out the cells, that are in the same column, putting into a Batch, that handle the columns */
   createCols() {
-    this.#cols = this.#filterSameBatchID(this.#dimensionX, "x");
+    this.#cols = this.#filterSameBatchID(this.#dimensionY, "x");
   }
 
   /* filtering out the cells, that are in the same rows, putting into a Batch, that handle the rows */
   createRows() {
-    this.#rows = this.#filterSameBatchID(this.#dimensionY, "y");
+    this.#rows = this.#filterSameBatchID(this.#dimensionX, "y");
   }
 
   /* filtering out the cells, that are in the same boxes, putting into a Batch, that handle the boxes */
   createBoxes() {
-    this.#boxes = this.#filterSameBatchID(this.#cellNumber, "boxId");
+    this.#boxes = this.#filterSameBatchID(this.#maxNumber, "boxId");
   }
 
   /* gives a row according to the given row number
