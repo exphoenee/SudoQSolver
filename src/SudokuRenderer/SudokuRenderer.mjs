@@ -327,7 +327,6 @@ export default class SudokuRenderer {
       return: undefined */
   renderRow(row) {
     const rowContainer = document.createElement("div");
-    console.log(rowContainer);
     rowContainer.classList.add(`row`);
     rowContainer.classList.add(`nr-${row.id}`);
     this.#board.appendChild(rowContainer);
