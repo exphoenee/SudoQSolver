@@ -241,6 +241,13 @@ export default class SudokuRenderer {
 
     //HTML element of the board
     this.#board = this.createContainer("board", this.app);
+    this.#board.style.width = `calc((3rem + 2 * 1px) * ${
+      this.#boxSizeX ** 2
+    } + 6px)`;
+    this.#board.style.height = `calc((3rem + 2 * 1px) * ${
+      this.#boxSizeY ** 2
+    } + 6px)`;
+
     this.#errors = this.createContainer("errors", this.app);
     this.#control = this.createContainer("control", this.app);
     this.#numbers = this.createContainer("numbers", this.app);
