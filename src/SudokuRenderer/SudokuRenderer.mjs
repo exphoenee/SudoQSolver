@@ -11,14 +11,38 @@ export default class SudokuRenderer {
   #errors;
   #control;
   #numbers;
+  #tileSizes;
+  #boardSizes;
 
   constructor(boxSizeX, boxSizeY, puzzle = null) {
     //using the SudokuBoard calss for handling the sudoku board
+
     this.#solver = new SudokuSolver(boxSizeX, boxSizeY, puzzle);
+
     this.#sudokuboard = this.#solver.sudokuboard;
     this.#boxSizeX = boxSizeX;
     this.#boxSizeY = boxSizeY;
     this.#selectedCell = null;
+
+    this.#tileSizes = {
+      width: 48,
+      height: 48,
+      padding: 0,
+      margin: 0,
+      fontSize: 20,
+      boxGap: 5,
+    };
+    this.#boardSizes = {
+      padding: 30,
+      width:
+        (this.#tileSizes.width + 2) * this.#boxSizeX ** 2 +
+        this.#boxSizeX * this.#tileSizes.boxGap +
+        2 * 2,
+      height:
+        (this.#tileSizes.height + 2) * this.#boxSizeY ** 2 +
+        this.#boxSizeY * this.#tileSizes.boxGap +
+        2 * this.#tileSizes.padding,
+    };
 
     //add some example puzzles here
     //source: https://www.sudokuonline.io/
@@ -241,12 +265,7 @@ export default class SudokuRenderer {
 
     //HTML element of the board
     this.#board = this.createContainer("board", this.app);
-    this.#board.style.width = `calc((3rem + 2 * 1px) * ${
-      this.#boxSizeX ** 2
-    } + 6px)`;
-    this.#board.style.height = `calc((3rem + 2 * 1px) * ${
-      this.#boxSizeY ** 2
-    } + 6px)`;
+    this.#addSizes(this.#board, this.#boardSizes);
 
     this.#errors = this.createContainer("errors", this.app);
     this.#control = this.createContainer("control", this.app);
@@ -287,9 +306,6 @@ export default class SudokuRenderer {
   renderNumbers() {
     for (let num = 1; num <= this.#boxSizeX * this.#boxSizeY; num++) {
       const numButton = document.createElement("button");
-
-      console.log(numbers);
-
       this.#numbers.appendChild(numButton);
 
       numButton.textContent = num;
@@ -318,6 +334,12 @@ export default class SudokuRenderer {
     });
   }
 
+  #addSizes(dom, styles) {
+    return Object.entries(styles).forEach(
+      ([key, value]) => (dom.style[key] = `${value}px`)
+    );
+  }
+
   /* generating the DOM of a cell input, the arguments are the following:
       arg:    cellInfo Cell (object)
               parent: the DOM element who is the parent of the input (cell)
@@ -330,6 +352,7 @@ export default class SudokuRenderer {
     cellDOM.max = cellInfo.accepted.max;
     cellDOM.id = cellInfo.id;
     cellDOM.classList.add("tile");
+    this.#addSizes(cellDOM, this.#tileSizes);
     cellDOM.dataset.row = cellInfo.y;
     cellDOM.dataset.col = cellInfo.x;
     cellDOM.dataset.box = cellInfo.boxId;
@@ -337,13 +360,13 @@ export default class SudokuRenderer {
       (cellInfo.x + 1) % this.#boxSizeX === 0 &&
       cellInfo.x + 1 !== this.#boxSizeX ** 2
     ) {
-      cellDOM.style.marginRight = "3px";
+      cellDOM.style.marginRight = `${this.#tileSizes.boxGap}px`;
     }
     if (
       (cellInfo.y + 1) % this.#boxSizeY === 0 &&
       cellInfo.x + 1 !== this.#boxSizeY ** 2
     ) {
-      cellDOM.style.marginBottom = "3px";
+      cellDOM.style.marginBottom = `${this.#tileSizes.boxGap}px`;
     }
     cellDOM.addEventListener("click", (e) => {
       this.#sudokuboard.cells.forEach((cell) => {
