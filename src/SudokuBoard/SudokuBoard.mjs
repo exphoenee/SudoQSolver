@@ -152,7 +152,11 @@ export default class SudokuBoard {
 
   /* filtering out the cells, that are in the same boxes, putting into a Batch, that handle the boxes */
   createBoxes() {
-    this.#boxes = this.#filterSameBatchID(this.#boxSize, "boxId");
+    this.#boxes = this.#filterSameBatchID(
+      this.#boxSize,
+      this.#boxSize,
+      "boxId"
+    );
   }
 
   /* gives a row according to the given row number
@@ -401,7 +405,7 @@ export default class SudokuBoard {
             } element.`,
           ]
       : typeof board === "string"
-      ? board.length === this.#cellNumber
+      ? board.split(this.#separator).length === this.#cellNumber
         ? ["string"]
         : [
             "err",
