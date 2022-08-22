@@ -7,6 +7,10 @@ export default class SudokuRenderer {
   #boxSizeX;
   #boxSizeY;
   #selectedCell;
+  #board;
+  #errors;
+  #control;
+  #numbers;
 
   constructor(boxSizeX, boxSizeY, puzzle = null) {
     //using the SudokuBoard calss for handling the sudoku board
@@ -141,7 +145,7 @@ export default class SudokuRenderer {
     try {
       this.#sudokuboard.setCellValue({ x, y }, value || unfilled);
     } catch {
-      this.userMsgTemporary({
+      this.#userMsgTemporary({
         text: `Wrong value! You gave ${value}, but it must be between ${min}...${max}!`,
         delay: 2000,
       });
@@ -186,8 +190,8 @@ export default class SudokuRenderer {
    * the second object has one properties:
    ** alert, gives allert as well, and
    ** the type of the print to console. */
-  userMsg(text, type = "none") {
-    this.errors.innerHTML = text;
+  #userMsg(text, type = "none") {
+    this.#errors.innerHTML = text;
     const alerting = {
       alert: () => alert(text),
       log: () => console[type](text),
@@ -202,7 +206,7 @@ export default class SudokuRenderer {
    * the second object has one properties:
    ** alert, gives allert as well, and
    ** the type of the print to console. */
-  userMsgTemporary(
+  #userMsgTemporary(
     { text, prevMsg, delay, type } = {
       delay: 1500,
       type: "none",
@@ -210,10 +214,10 @@ export default class SudokuRenderer {
   ) {
     if (this.userMessageTimeout) {
       clearTimeout(this.userMessageTimeout);
-    } else if (!prevMsg) this.prevMsg = this.errors.innerHTML;
-    this.userMsg(text);
+    } else if (!prevMsg) this.prevMsg = this.#errors.innerHTML;
+    this.#userMsg(text);
     this.userMessageTimeout = setTimeout(
-      () => this.userMsg(this.prevMsg, type),
+      () => this.#userMsg(this.prevMsg, type),
       delay
     );
   }
@@ -224,7 +228,7 @@ export default class SudokuRenderer {
     if (solution) {
       this.#sudokuboard.setBoard(solution, false);
     } else {
-      this.userMsg("This puzzle does not has a solution!", "error");
+      this.#userMsg("This puzzle does not has a solution!", "error");
     }
   }
 
@@ -232,10 +236,15 @@ export default class SudokuRenderer {
   render() {
     // if it is once rendered then should be saved to the class
 
+    /* main div */
+    this.app = document.getElementById("app");
+
     //HTML element of the board
-    this.board = document.getElementById("board");
-    //HTML element of the error message
-    this.errors = document.getElementById("errors");
+    this.#board = this.createContainer("board", this.app);
+    this.#errors = this.createContainer("errors", this.app);
+    this.#control = this.createContainer("control", this.app);
+    this.#numbers = this.createContainer("numbers", this.app);
+    this.#userMsg("Let's solve this puzzle!");
 
     this.#sudokuboard.getAllRows().forEach((row) => this.renderRow(row));
 
@@ -243,7 +252,7 @@ export default class SudokuRenderer {
       this.renderButton(puzzle, () => {
         this.#sudokuboard.setBoard(this.examples[puzzle], true);
         this.updateUICells();
-        this.userMsgTemporary({
+        this.#userMsgTemporary({
           text: `Puzzle changed to ${puzzle}!`,
           delay: 2000,
         });
@@ -251,7 +260,7 @@ export default class SudokuRenderer {
     }
 
     this.renderButton("Solve!", () => {
-      this.userMsg("...solving...");
+      this.#userMsg("...solving...");
       this.extractInputs();
       this.solve();
       this.updateUICells();
@@ -260,12 +269,24 @@ export default class SudokuRenderer {
     this.renderNumbers();
   }
 
+  createContainer(id, parent) {
+    const element = document.createElement("div");
+    element.id = id;
+    parent.appendChild(element);
+    return element;
+  }
+
+  /* rendering the inputs */
   renderNumbers() {
     for (let num = 1; num <= this.#boxSizeX * this.#boxSizeY; num++) {
       const numButton = document.createElement("button");
+
+      console.log(numbers);
+
+      this.#numbers.appendChild(numButton);
+
       numButton.textContent = num;
       numButton.classList.add("num");
-      document.getElementById("numbers").appendChild(numButton);
 
       numButton.addEventListener("click", (e) => {
         if (this.#selectedCell) {
@@ -284,7 +305,7 @@ export default class SudokuRenderer {
     const rowContainer = document.createElement("div");
     rowContainer.classList.add(`row`);
     rowContainer.classList.add(`nr-${row.id}`);
-    this.board.appendChild(rowContainer);
+    this.#board.appendChild(rowContainer);
     row.cells.forEach((cellInfo) => {
       this.createInput(cellInfo, rowContainer);
     });
@@ -338,6 +359,6 @@ export default class SudokuRenderer {
     button.addEventListener("click", () => {
       cb();
     });
-    document.getElementById("control").appendChild(button);
+    this.#control.appendChild(button);
   }
 }
