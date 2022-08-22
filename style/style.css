@@ -21,13 +21,12 @@ h2 {
 
 #errors {
   color: coral;
+  font-size: 1.5em;
+  margin: 20px auto;
 }
 
 #board {
-  width: calc((3rem + 2 * 1px) * 9 + 6px);
-  aspect-ratio: 1;
-  padding: 2rem;
-  margin: 2rem auto;
+  margin: 2px auto;
   border-radius: 2rem;
   background-image: linear-gradient(
     60deg,
@@ -40,10 +39,7 @@ h2 {
 .tile {
   padding: 0px;
   margin: 0px;
-  width: 3rem;
-  height: 3rem;
   border: 1px solid lightgray;
-  font-size: 20px;
   font-weight: bold;
   justify-content: center;
   border-radius: 0.5rem;
