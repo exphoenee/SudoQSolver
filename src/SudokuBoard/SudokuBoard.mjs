@@ -374,15 +374,25 @@ export default class SudokuBoard {
     return this.cells.filter((cell) => cell.value === value);
   }
 
+  generatePossiblityMap() {
+    return this.cells
+      .map((cell) => (cell.possiblities = this.getCellPossiblities))
+      .sort(a, (b) => a.possiblities.length - b.possiblities.length);
+  }
+
   /* the method gives back a free cell with the less possiblity */
   getFreeCellWithLessPosiblity() {
     const freeCell = this.#cells
       .filter((cell) => cell.value == 0)
       .map((cell) => {
-        return { cell, cellPosiblities: this.getCellPossiblities(cell) };
+        const possiblities = this.getCellPossiblities(cell);
+        return { cell, possiblities };
       })
-      .sort((a, b) => a.cellPosiblities - b.cellPosiblities)[0].cell;
-    if (freeCell) return freeCell;
+      .sort((a, b) => a.possiblities.length - b.possiblities.length)[0].cell;
+
+    console.log(this.getCellPossiblities(freeCell));
+
+    if (freeCell && freeCell.length > 0) return freeCell;
     return false;
   }
 
