@@ -54,9 +54,13 @@ export default class SudokuGenerator {
 
   setCellRandomValue(cell) {
     const possibleities = this.getCellPossiblities({ cell });
-    const value =
-      possibleities[Math.floor(Math.random() * possibleities.length)];
-    if (value) cell.setValue(+value);
+
+    if (possibleities) {
+      const value =
+        possibleities[Math.floor(Math.random() * possibleities.length)];
+      // console.log("pos: " + possibleities, " | val:" + value);
+      if (value) cell.setValue(+value);
+    }
   }
 
   setRandomCellToRandomValue() {
@@ -66,28 +70,50 @@ export default class SudokuGenerator {
 
   generateBoard({ level } = { level: "easy" }) {
     const cellAmmount = {
-      easy: 0.35,
-      medium: 0.4,
-      hard: 0.5,
-      evil: 0.7,
+      easy: 0.7,
+      medium: 0.5,
+      hard: 0.4,
+      evil: 0.35,
     };
 
     const nrOfCell = this.sudokuboard.cells.length;
-    const nrOfSetFree = nrOfCell * cellAmmount[level.toLowerCase()];
-    const randomize = Math.floor(nrOfSetFree / 2);
+    const nrOfSetFree = Math.floor(nrOfCell * cellAmmount[level.toLowerCase()]);
+    let trial = Math.floor(Math.min(nrOfSetFree * 0.6), nrOfCell * 0.27);
 
     let solution;
+
+    const startTime = performance.now();
     do {
       this.#sudokuboard.clearBoard();
+
       const cells = [...this.getFreeCells()]
+        .sort(() => Math.random() - 0.5)
+        .splice(0, trial);
+
+      cells.forEach((cell) => this.setCellRandomValue(cell));
+
+      solution = this.#solver.solvePuzzle({ format: "string" });
+
+      const cellsForFreeUp = [...this.#sudokuboard.cells]
         .sort(() => Math.random() - 0.5)
         .splice(0, nrOfSetFree);
 
-      cells.forEach((cell) => this.setCellRandomValue(cell));
-      console.log(cells.map((cell) => cell.value));
+      trial -= 1;
+      console.log("| trial", trial);
 
-      solution = this.#solver.solvePuzzle();
-      console.log(solution);
-    } while (!solution);
+      /*       cells.forEach((cell) => this.sudokuboard.setCellValue({ cell }, 0));
+      console.log(
+        "random valuess: ",
+        cells.map((cell) => "id: " + cell.id + "->" + cell.value)
+        );
+        console.log("solution: ", solution); */
+    } while (solution === false);
+
+    const endTime = performance.now();
+    console.log(
+      `Call to puzzle generation took ${(endTime - startTime) / 1000} seconds`
+    );
+
+    return this.sudokuboard.getCellValues({ format: "string" });
   }
 }
