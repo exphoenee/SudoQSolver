@@ -5,13 +5,14 @@ export default class SudokuSolver {
   #sudokuboard;
   #boxSizeX;
   #boxSizeY;
-  #puzzle;
+  #startTime;
 
   constructor(sudokuboard) {
     //the size of a section and matrix of sections n x n, but the css isn't made for other sizes only 3 x 3 sudokus...
     this.#boxSizeX = sudokuboard.boardSize.boxSizeX;
     this.#boxSizeY = sudokuboard.boardSize.boxSizeY;
     this.#puzzle = sudokuboard.getCellValues({ format: "2D" });
+    this.#startTime = false;
 
     //using the SudokuBoard calss for handling the sudoku board
     this.#sudokuboard = sudokuboard;
@@ -46,12 +47,23 @@ export default class SudokuSolver {
       * the solved puzzle n x n sized 2D array
       * or a boolen which value can be only false what mean there is no solution for this puzzle */
   solvePuzzle(
-    { puzzle, format, unfilledChar } = {
+    { puzzle, format, unfilledChar, timeOut } = {
       puzzle: null,
       format: "2D",
       unfilledChar: ".",
+      timeOut: false,
     }
   ) {
+    if (timeOut) {
+      if (!this.#startTime) {
+        this.#startTime = performance.now();
+      }
+    }
+    if ((performance.now() - this.#startTime) / 1000 > timeOut) {
+      this.#startTime = false;
+      return false;
+    }
+
     if (puzzle) {
       this.#sudokuboard.setBoard(puzzle);
     }
