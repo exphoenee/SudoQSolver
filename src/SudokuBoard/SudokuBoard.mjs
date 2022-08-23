@@ -351,6 +351,7 @@ export default class SudokuBoard {
   arg:    null,
   return: boolen the puzzle is correct true, that means there aren't any duplicates */
   puzzleIsCorrect() {
+    /* TODO: Nem csak akkor megfelelő a pzzle, ha nincs duplikátum, hanem ha nincs olyan cella, amibe nem leht számot írni. */
     const batches = [...this.#rows, ...this.#cols, ...this.#boxes];
     for (let batch of batches) {
       if (batch.hasDuplicates()) return false;
@@ -381,6 +382,7 @@ export default class SudokuBoard {
   }
 
   /* the method gives back a free cell with the less possiblity */
+  /* TODO: ez nem működik valamiért!!! */
   getFreeCellWithLessPosiblity() {
     const freeCell = this.#cells
       .filter((cell) => cell.value == 0)
