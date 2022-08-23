@@ -6,6 +6,7 @@ export default class SudokuSolver {
   #boxSizeX;
   #boxSizeY;
   #startTime;
+  #puzzle;
 
   constructor(sudokuboard) {
     //the size of a section and matrix of sections n x n, but the css isn't made for other sizes only 3 x 3 sudokus...
@@ -54,18 +55,20 @@ export default class SudokuSolver {
       timeOut: false,
     }
   ) {
+    if (puzzle) {
+      this.#sudokuboard.setBoard(puzzle);
+    }
+
     if (timeOut) {
       if (!this.#startTime) {
         this.#startTime = performance.now();
       }
     }
-    if ((performance.now() - this.#startTime) / 1000 > timeOut) {
+    /* A #solve a rekurzív, így sosem fog kiszállni.... */
+    if (performance.now() - this.#startTime > timeOut) {
       this.#startTime = false;
+      console.log("Solver timed out!");
       return false;
-    }
-
-    if (puzzle) {
-      this.#sudokuboard.setBoard(puzzle);
     }
 
     if (this.#sudokuboard.puzzleIsCorrect()) {
@@ -103,7 +106,8 @@ export default class SudokuSolver {
     arg:    puzzle n x n sized 2D array
     return: m pieces of SudokuBorad class therefrom filtered out the incorrect versions */
   #getPosiblities() {
-    const nextCell = this.#sudokuboard.getFreeCellWithLessPosiblity();
+    //const nextCell = this.#sudokuboard.getFreeCellWithLessPosiblity();
+    const nextCell = this.#sudokuboard.getFirstFreeCell();
 
     if (nextCell) {
       const posNums = this.#sudokuboard.getCellPossiblities(nextCell);
