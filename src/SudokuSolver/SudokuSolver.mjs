@@ -106,6 +106,7 @@ export default class SudokuSolver {
     arg:    puzzle n x n sized 2D array
     return: m pieces of SudokuBorad class therefrom filtered out the incorrect versions */
   #getPosiblities() {
+    /* TODO: ezt meg kell oldani, hogy nem az első üreset telálja meg, hanem azt az üreset, aminek a legkevesebb lehetősége van. */
     //const nextCell = this.#sudokuboard.getFreeCellWithLessPosiblity();
     const nextCell = this.#sudokuboard.getFirstFreeCell();
 
