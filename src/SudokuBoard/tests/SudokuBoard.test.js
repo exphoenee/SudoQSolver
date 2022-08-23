@@ -154,7 +154,7 @@ const cases = [
     caseDesc:
       "Finding the first free cell of the board, the board is set to puzzle.",
     first: null,
-    check: () => board.getFirstFeeCell().info,
+    check: () => board.getFirstFreeCell().info,
     excepted: firstFreeCell,
   },
   {
@@ -187,7 +187,7 @@ const cases = [
   {
     caseDesc:
       "Setting the first free cell value to 2 throug Cell reference, checking the value of that.",
-    first: () => board.setCellValue({ cell: board.getFirstFeeCell() }, 1),
+    first: () => board.setCellValue({ cell: board.getFirstFreeCell() }, 1),
     check: () => board.getCellByCoords(1, 0).info,
     excepted: { ...firstFreeCell, value: 1, issued: true },
   },
@@ -327,7 +327,7 @@ const cases = [
   {
     caseDesc: "After filled the first free cell, find the next one.",
     first: null,
-    check: () => board.getFirstFeeCell().info,
+    check: () => board.getFirstFreeCell().info,
     excepted: secondFreeCell,
   },
   {
