@@ -91,7 +91,7 @@ export default class SudokuSolver {
     arg:    puzzle n x n sized 2D array
     return: m pieces of SudokuBorad class therefrom filtered out the incorrect versions */
   #getPosiblities() {
-    const nextCell = this.#sudokuboard.getFirstFeeCell();
+    const nextCell = this.#sudokuboard.getFreeCellWithLessPosiblity();
 
     if (nextCell) {
       const posNums = this.#sudokuboard.getCellPossiblities(nextCell);
