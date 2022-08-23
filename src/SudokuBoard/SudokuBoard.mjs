@@ -179,6 +179,20 @@ export default class SudokuBoard {
   /* gives all rows in a 2D array
   arg:    rowNr (Integer)
   return: 1D array of Batch (Objects) */
+  getAllCols() {
+    return this.#cols;
+  }
+
+  /* gives all rows in a 2D array
+  arg:    rowNr (Integer)
+  return: 1D array of Batch (Objects) */
+  getAllBoxes() {
+    return this.#boxes;
+  }
+
+  /* gives all rows in a 2D array
+  arg:    rowNr (Integer)
+  return: 1D array of Batch (Objects) */
   getAllRows() {
     return this.#rows;
   }
@@ -276,7 +290,6 @@ export default class SudokuBoard {
       return:   array of integer what is missing form the row, column, and box of the cell */
   getCellPossiblities({ x, y, cell }) {
     !cell && (cell = this.getCellByCoords(x, y));
-
     const missingFromCol = this.getMissingFromCol(cell.x);
     const missingFromRow = this.getMissingFromRow(cell.y);
     const missingFromBox = this.getMissingFromBox(cell.boxId);
