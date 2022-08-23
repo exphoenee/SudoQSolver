@@ -84,22 +84,21 @@ export default class SudokuGenerator {
       this.#sudokuboard.clearBoard();
 
       const SampleNr = trialGoal - trialStep;
-      const cells = [...this.#sudokuboard.cells]
+
+      [...this.#sudokuboard.cells]
         .sort(() => Math.random() - 0.5)
-        .splice(0, SampleNr);
+        .splice(0, SampleNr)
+        .forEach((cell) => this.setCellRandomValue(cell));
 
       trialStep++;
       console.log("trialStep: " + trialStep, "SampleNr: " + SampleNr);
 
-      cells.forEach((cell) => this.setCellRandomValue(cell));
-
       solution = this.#solver.solvePuzzle({ format: "string", timeOut: 1 });
 
-      const cellsForFreeUp = [...this.#sudokuboard.cells]
+      [...this.#sudokuboard.cells]
         .sort(() => Math.random() - 0.5)
-        .splice(0, nrOfSetFree);
-
-      cellsForFreeUp.forEach((cell) => cell.setValue(0));
+        .splice(0, nrOfSetFree)
+        .forEach((cell) => cell.setValue(0));
     } while (solution === false);
 
     const endTime = performance.now();
@@ -111,6 +110,7 @@ export default class SudokuGenerator {
 
     const puzzle = this.sudokuboard.getCellValues({ format: "string" });
     console.log(level + " puzzle: " + puzzle);
+    console.log("solution: " + solution);
 
     return {
       puzzle,
