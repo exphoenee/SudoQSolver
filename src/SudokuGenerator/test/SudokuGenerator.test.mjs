@@ -79,61 +79,6 @@ const cases = [
     check: () => generator.sudokuboard.getRowValues(0),
     excepted: [1, 2, 3, 4, 5, 6, 7, 8, 9],
   },
-
-  {
-    caseDesc: "Generating an evil puzzle.",
-    first: () => {
-      generator.sudokuboard.clearBoard();
-      generator.generateBoard({ level: "easy" });
-      console.log("freeCells: ", generator.getFreeCells().length);
-      console.log(
-        "puzzle: ",
-        generator.sudokuboard.getCellValues({ format: "string" })
-      );
-      const solver = new SudokuSolver(generator.sudokuboard);
-      const solution = solver.solvePuzzle({ format: "string" });
-      console.log("solution: ", solution);
-    },
-    check: () => false,
-    excepted: true,
-  },
-
-  {
-    caseDesc: "Generating an evil puzzle.",
-    first: () => {
-      generator.sudokuboard.clearBoard();
-      generator.generateBoard({ level: "medium" });
-      console.log("freeCells: ", generator.getFreeCells().length);
-      console.log(
-        "puzzle: ",
-        generator.sudokuboard.getCellValues({ format: "string" })
-      );
-      const solver = new SudokuSolver(generator.sudokuboard);
-      const solution = solver.solvePuzzle({ format: "string" });
-      console.log("solution: ", solution);
-    },
-    check: () => false,
-    excepted: true,
-  },
-
-  {
-    caseDesc: "Generating an evil puzzle.",
-    first: () => {
-      generator.sudokuboard.clearBoard();
-      generator.generateBoard({ level: "hard" });
-      console.log("freeCells: ", generator.getFreeCells().length);
-      console.log(
-        "puzzle: ",
-        generator.sudokuboard.getCellValues({ format: "string" })
-      );
-      const solver = new SudokuSolver(generator.sudokuboard);
-      const solution = solver.solvePuzzle({ format: "string" });
-      console.log("solution: ", solution);
-    },
-    check: () => false,
-    excepted: true,
-  },
-
   {
     caseDesc: "Generating an evil puzzle.",
     first: () => {
