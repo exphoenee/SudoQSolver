@@ -1,6 +1,6 @@
 "use strict";
 
-import SudokuSolver from "../SudokuGenerator/SudokuSolver.mjs";
+import SudokuSolver from "../SudokuSolver/SudokuSolver.mjs";
 
 export default class SudokuGenerator {
   #sudokuboard;
@@ -68,15 +68,25 @@ export default class SudokuGenerator {
     const cellAmmount = {
       easy: 0.5,
       medium: 0.6,
-      hard: 0.7,
-      evil: 0.8,
+      hard: 0.65,
+      evil: 0.7,
     };
+    let solution;
 
-    for (let i = 0; i < 6; i++) {
-      setRandomCellToRandomValue();
+    for (let i = 5; i < 5 + Math.floor(Math.random() * 6); i++) {
+      this.setRandomCellToRandomValue();
     }
 
-    const solution = this.#solver.solvePuzzle();
-    console.log(solution);
+    do {
+      solution = this.#solver.solvePuzzle();
+    } while (!solution);
+
+    do {
+      const cell = this.getRandomFreeCell();
+      console.log(cell);
+    } while (
+      this.getFreeCells().length <
+      this.sudokuboard.cells.length * cellAmmount[level]
+    );
   }
 }
