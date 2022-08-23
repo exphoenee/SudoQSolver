@@ -8,7 +8,7 @@ import { freeCells } from "./SudokuGenerator.exceptions.mjs";
 
 const sudokuboard = new SudokuBoard(3, 3);
 
-const generator = new SudokuGenerator(sudokuboard);
+const generator = new SudokuGenerator({ sudokuboard });
 
 const randomCell = [
   generator.getRandomFreeCell().info,
@@ -79,21 +79,26 @@ const cases = [
     check: () => generator.sudokuboard.getRowValues(0),
     excepted: [1, 2, 3, 4, 5, 6, 7, 8, 9],
   },
+
   {
-    caseDesc: "Generating an evil puzzle.",
+    caseDesc: "Generating an easy puzzle.",
     first: () => {
-      generator.sudokuboard.clearBoard();
-      generator.generateBoard({ level: "evil" });
-      console.log("freeCells: ", generator.getFreeCells().length);
+      const level = "easy";
+      const { puzzle, generationTime, trialStep } = generator.generateBoard({
+        level,
+      });
       console.log(
-        "puzzle: ",
-        generator.sudokuboard.getCellValues({ format: "string" })
+        "level: " + level,
+        "freeCells: ",
+        generator.getFreeCells().length
       );
-      const solver = new SudokuSolver(generator.sudokuboard);
-      const solution = solver.solvePuzzle({ format: "string" });
-      console.log("solution: ", solution);
+      console.log("puzzle: ", puzzle);
+      sudokuboard.setBoard(puzzle);
     },
-    check: () => false,
+    check: () => {
+      const solver = new SudokuSolver(sudokuboard);
+      !!solver.solvePuzzle({ format: "string" });
+    },
     excepted: true,
   },
 ];
