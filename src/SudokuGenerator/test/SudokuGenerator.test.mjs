@@ -126,11 +126,14 @@ const cases = [
     first: () => {
       generator.sudokuboard.clearBoard();
       generator.generateBoard({ level: "evil" });
-      console.log(generator.getFreeCells().length);
-      console.log(generator.sudokuboard.getCellValues({ format: "string" }));
+      console.log("freeCells: ", generator.getFreeCells().length);
+      console.log(
+        "solution: ",
+        generator.sudokuboard.getCellValues({ format: "string" })
+      );
       const solver = new SudokuSolver(generator.sudokuboard);
       const solution = solver.solvePuzzle({ format: "string" });
-      console.log(solution);
+      console.log("solution: ", solution);
     },
     check: () => false,
     excepted: true,
