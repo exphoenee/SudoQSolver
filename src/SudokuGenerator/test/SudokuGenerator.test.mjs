@@ -51,8 +51,9 @@ const cases = [
       generator.sudokuboard
         .getAllRows()
         .forEach((row) => row.cells.forEach((cell, i) => cell.setValue(i + 1)));
-      for (let y = 0; y < 9; y++)
-        generator.sudokuboard.getCellByCoords(8, y).setValue(0);
+      for (let y = 1; y < 9; y++)
+        generator.sudokuboard.getCellByCoords(8, y).setValue(1);
+      generator.sudokuboard.getCellByCoords(8, 0).setValue(0);
     },
     check: () => {
       return [
@@ -64,17 +65,17 @@ const cases = [
     },
     excepted: [
       [1, 2, 3, 4, 5, 6, 7, 8, 0],
-      [1, 2, 3, 4, 5, 6, 7, 8, 0],
-      [1, 2, 3, 4, 5, 6, 7, 8, 0],
-      [1, 2, 3, 4, 5, 6, 7, 8, 0],
+      [1, 2, 3, 4, 5, 6, 7, 8, 1],
+      [1, 2, 3, 4, 5, 6, 7, 8, 1],
+      [1, 2, 3, 4, 5, 6, 7, 8, 1],
     ],
   },
   {
     caseDesc:
       "Getting a random free cell (only one is free already) and setting it to a random value (only possible is the 9).",
     first: () => generator.setARandomCellToRandomValue(),
-    check: () => generator.sudokuboard.getCellByCoords(8, 0).value,
-    excepted: 9,
+    check: () => generator.sudokuboard.getRowValues(0),
+    excepted: [1, 2, 3, 4, 5, 6, 7, 8, 9],
   },
 ];
 
