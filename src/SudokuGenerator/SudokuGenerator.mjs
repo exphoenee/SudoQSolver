@@ -1,24 +1,21 @@
 "use strict";
 
+import SudokuBoard from "../SudokuBoard/SudokuBoard.mjs";
 import SudokuSolver from "../SudokuSolver/SudokuSolver.mjs";
 
 export default class SudokuGenerator {
   #sudokuboard;
   #boxSizeX;
   #boxSizeY;
-  #puzzle;
   #solver;
 
-  constructor(sudokuboard) {
+  constructor({ sudokuboard, boxSizeX, boxSizeY }) {
     //the size of a section and matrix of sections n x n, but the css isn't made for other sizes only 3 x 3 sudokus...
-    this.#boxSizeX = sudokuboard.boardSize.boxSizeX;
-    this.#boxSizeY = sudokuboard.boardSize.boxSizeY;
-    this.#puzzle = sudokuboard.getCellValues({ format: "2D" });
+    this.#boxSizeX = sudokuboard.boardSize.boxSizeX || boxSizeX;
+    this.#boxSizeY = sudokuboard.boardSize.boxSizeY || boxSizeY;
 
-    this.#solver = new SudokuSolver(sudokuboard);
-
-    //using the #sudokuboard calss for handling the sudoku board
-    this.#sudokuboard = sudokuboard;
+    this.#sudokuboard = new SudokuBoard(this.#boxSizeX, this.#boxSizeY);
+    this.#solver = new SudokuSolver(this.#sudokuboard);
   }
 
   /* gives back the entire sudokuboard
@@ -70,15 +67,15 @@ export default class SudokuGenerator {
 
   generateBoard({ level } = { level: "easy" }) {
     const cellAmmount = {
-      easy: 0.7,
-      medium: 0.5,
-      hard: 0.4,
-      evil: 0.35,
+      easy: 0.75,
+      medium: 0.65,
+      hard: 0.45,
+      evil: 0.4,
     };
 
     const nrOfCell = this.sudokuboard.cells.length;
     const nrOfSetFree = Math.floor(nrOfCell * cellAmmount[level.toLowerCase()]);
-    let trial = Math.floor(Math.min(nrOfSetFree * 0.6), nrOfCell * 0.27);
+    let trial = Math.floor(nrOfSetFree * 0.6);
 
     let solution;
 
@@ -86,7 +83,7 @@ export default class SudokuGenerator {
     do {
       this.#sudokuboard.clearBoard();
 
-      const cells = [...this.getFreeCells()]
+      const cells = [...this.#sudokuboard.cells]
         .sort(() => Math.random() - 0.5)
         .splice(0, trial);
 
@@ -98,7 +95,9 @@ export default class SudokuGenerator {
         .sort(() => Math.random() - 0.5)
         .splice(0, nrOfSetFree);
 
-      trial -= 1;
+      cellsForFreeUp.forEach((cell) => cell.setValue(0));
+
+      trial -= 2;
       console.log("| trial", trial);
 
       /*       cells.forEach((cell) => this.sudokuboard.setCellValue({ cell }, 0));
