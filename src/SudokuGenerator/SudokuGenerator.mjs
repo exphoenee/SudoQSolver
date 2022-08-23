@@ -50,9 +50,7 @@ export default class SudokuGenerator {
   setARandomCellToRandomValue() {
     const cell = this.getARandomFreeCell();
     const possibleities = this.getCellPossiblities(cell);
-    console.log(possibleities);
-    cell.setValue(
-      possibleities[Math.floor(Math.random() * possibleities.length)]
-    );
+    const value = Math.floor(Math.random() * possibleities.length);
+    cell.setValue(possibleities[value]);
   }
 }
