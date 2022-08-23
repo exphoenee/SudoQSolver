@@ -280,7 +280,6 @@ export default class SudokuBoard {
     const missingFromCol = this.getMissingFromCol(cell.x);
     const missingFromRow = this.getMissingFromRow(cell.y);
     const missingFromBox = this.getMissingFromBox(cell.boxId);
-
     const intersection = (arr1, arr2) =>
       arr1.filter((value) => arr2.includes(value));
 
@@ -349,10 +348,17 @@ export default class SudokuBoard {
   /* gives the first free cell
     arg:    null
     return: Cell (Object) */
-  getFirstFeeCell() {
+  getFirstFreeCell() {
     const freeCell = this.#cells.find((cell) => cell.value == 0);
     if (freeCell) return freeCell;
     return false;
+  }
+
+  /* Gives back the cells with value
+  arg:    value (Integer)
+  return: Cell (Object) */
+  getCellsByValue(value) {
+    return this.cells.filter((cell) => cell.value === value);
   }
 
   /* the method gives back a free cell with the less possiblity */
@@ -371,7 +377,7 @@ export default class SudokuBoard {
     arg:    null
     return: Object {x, y} the two coorinate of the cell */
   coordsOfFirstFreeCell() {
-    const freeCell = this.getFirstFeeCell();
+    const freeCell = this.getFirstFreeCell();
     if (freeCell) return { x: freeCell.x, y: freeCell.y };
     return false;
   }
