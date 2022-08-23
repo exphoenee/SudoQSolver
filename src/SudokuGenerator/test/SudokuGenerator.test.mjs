@@ -2,18 +2,20 @@
 
 import { batchAssert } from "../../test/assert.mjs";
 import SudokuBoard from "../../SudokuBoard/SudokuBoard.mjs";
+
 import SudokuGenerator from "../SudokuGenerator.mjs";
 import { freeCells } from "./SudokuGenerator.exceptions.mjs";
 
 const sudokuboard = new SudokuBoard(3, 3);
+
 const generator = new SudokuGenerator(sudokuboard);
 
 const randomCell = [
-  generator.getARandomFreeCell().info,
-  generator.getARandomFreeCell().info,
-  generator.getARandomFreeCell().info,
-  generator.getARandomFreeCell().info,
-  generator.getARandomFreeCell().info,
+  generator.getRandomFreeCell().info,
+  generator.getRandomFreeCell().info,
+  generator.getRandomFreeCell().info,
+  generator.getRandomFreeCell().info,
+  generator.getRandomFreeCell().info,
 ];
 
 const cases = [
@@ -31,14 +33,14 @@ const cases = [
   },
   {
     caseDesc: "Getting a random cell and setting it to a random value.",
-    first: () => generator.setARandomCellToRandomValue(),
+    first: () => generator.setRandomCellToRandomValue(),
     check: () =>
       generator.sudokuboard.cells.filter((cell) => cell.isFilled()).length,
     excepted: 1,
   },
   {
     caseDesc: "Getting another random cell and setting it to a random value.",
-    first: () => generator.setARandomCellToRandomValue(),
+    first: () => generator.setRandomCellToRandomValue(),
     check: () =>
       generator.sudokuboard.cells.filter((cell) => cell.isFilled()).length,
     excepted: 2,
@@ -73,9 +75,22 @@ const cases = [
   {
     caseDesc:
       "Getting a random free cell (only one is free already) and setting it to a random value (only possible is the 9).",
-    first: () => generator.setARandomCellToRandomValue(),
+    first: () => generator.setRandomCellToRandomValue(),
     check: () => generator.sudokuboard.getRowValues(0),
     excepted: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+  },
+  {
+    caseDesc: "Generating an easy puzzle.",
+    first: () => {
+      generator.sudokuboard.clearBoard();
+      generator.generateBoard({ level: "easy" });
+    },
+    check: () => {
+      return (
+        generator.getFreeCells().length < generator.sudokuboard.cells.length / 2
+      );
+    },
+    excepted: true,
   },
 ];
 
