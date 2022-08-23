@@ -8,6 +8,8 @@ import { freeCells } from "./SudokuGenerator.exceptions.mjs";
 
 const sudokuboard = new SudokuBoard(3, 3);
 
+console.log("Testing SudokuGenerator...");
+
 const generator = new SudokuGenerator({ sudokuboard });
 
 const randomCell = [
@@ -97,7 +99,7 @@ const cases = [
     },
     check: () => {
       const solver = new SudokuSolver(sudokuboard);
-      !!solver.solvePuzzle({ format: "string" });
+      return !!solver.solvePuzzle({ format: "string" });
     },
     excepted: true,
   },
