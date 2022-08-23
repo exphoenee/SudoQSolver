@@ -10,9 +10,8 @@ export default class SudokuGenerator {
   #solver;
 
   constructor({ sudokuboard, boxSizeX, boxSizeY }) {
-    //the size of a section and matrix of sections n x n, but the css isn't made for other sizes only 3 x 3 sudokus...
-    this.#boxSizeX = sudokuboard.boardSize.boxSizeX || boxSizeX;
-    this.#boxSizeY = sudokuboard.boardSize.boxSizeY || boxSizeY;
+    this.#boxSizeX = boxSizeX || sudokuboard.boardSize.boxSizeX;
+    this.#boxSizeY = boxSizeY || sudokuboard.boardSize.boxSizeY;
 
     this.#sudokuboard = new SudokuBoard(this.#boxSizeX, this.#boxSizeY);
     this.#solver = new SudokuSolver(this.#sudokuboard);
@@ -55,7 +54,6 @@ export default class SudokuGenerator {
     if (possibleities) {
       const value =
         possibleities[Math.floor(Math.random() * possibleities.length)];
-      // console.log("pos: " + possibleities, " | val:" + value);
       if (value) cell.setValue(+value);
     }
   }
@@ -71,11 +69,13 @@ export default class SudokuGenerator {
       medium: 0.65,
       hard: 0.45,
       evil: 0.4,
+      default: () => (isNanN(+level) ? 0.75 : +level),
     };
 
     const nrOfCell = this.sudokuboard.cells.length;
     const nrOfSetFree = Math.floor(nrOfCell * cellAmmount[level.toLowerCase()]);
-    let trial = Math.floor(nrOfSetFree * 0.6);
+    const trialGoal = Math.floor(nrOfCell * 0.24);
+    let trialStep = 0;
 
     let solution;
 
@@ -83,36 +83,41 @@ export default class SudokuGenerator {
     do {
       this.#sudokuboard.clearBoard();
 
+      const SampleNr = trialGoal - trialStep;
       const cells = [...this.#sudokuboard.cells]
         .sort(() => Math.random() - 0.5)
-        .splice(0, trial);
+        .splice(0, SampleNr);
+
+      trialStep++;
+      console.log("trialStep: " + trialStep, "SampleNr: " + SampleNr);
 
       cells.forEach((cell) => this.setCellRandomValue(cell));
 
-      solution = this.#solver.solvePuzzle({ format: "string" });
+      solution = this.#solver.solvePuzzle({ format: "string", timeOut: 1 });
 
       const cellsForFreeUp = [...this.#sudokuboard.cells]
         .sort(() => Math.random() - 0.5)
         .splice(0, nrOfSetFree);
 
       cellsForFreeUp.forEach((cell) => cell.setValue(0));
-
-      trial -= 2;
-      console.log("| trial", trial);
-
-      /*       cells.forEach((cell) => this.sudokuboard.setCellValue({ cell }, 0));
-      console.log(
-        "random valuess: ",
-        cells.map((cell) => "id: " + cell.id + "->" + cell.value)
-        );
-        console.log("solution: ", solution); */
     } while (solution === false);
 
     const endTime = performance.now();
+    const generationTime = endTime - startTime;
+
     console.log(
-      `Call to puzzle generation took ${(endTime - startTime) / 1000} seconds`
+      "Puzzle generation time: " + generationTime / 1000 + " seconds"
     );
 
-    return this.sudokuboard.getCellValues({ format: "string" });
+    const puzzle = this.sudokuboard.getCellValues({ format: "string" });
+    console.log(level + " puzzle: " + puzzle);
+
+    return {
+      puzzle,
+      solution,
+      generationTime,
+      trialStep,
+      level,
+    };
   }
 }
