@@ -66,12 +66,16 @@ export default class SudokuGenerator {
 
   generateBoard({ level } = { level: "easy" }) {
     const cellAmmount = {
-      easy: 0.5,
-      medium: 0.6,
-      hard: 0.65,
+      easy: 0.35,
+      medium: 0.4,
+      hard: 0.5,
       evil: 0.7,
     };
     let solution;
+
+    const nrOfCell = this.sudokuboard.cells.length;
+    const nrOfSetFree = nrOfCell * cellAmmount[level.toLowerCase()];
+    let nrOfFreeCells;
 
     for (let i = 5; i < 5 + Math.floor(Math.random() * 6); i++) {
       this.setRandomCellToRandomValue();
@@ -82,11 +86,13 @@ export default class SudokuGenerator {
     } while (!solution);
 
     do {
-      const cell = this.getRandomFreeCell();
-      console.log(cell);
-    } while (
-      this.getFreeCells().length <
-      this.sudokuboard.cells.length * cellAmmount[level]
-    );
+      this.sudokuboard.cells[Math.floor(Math.random() * nrOfCell)].setValue(0);
+      nrOfFreeCells = this.getFreeCells().length;
+    } while (nrOfFreeCells < nrOfSetFree);
+    /*
+    for (let nr = 0; nr < nrOfSetFree; nr++) {
+      this.sudokuboard.cells[Math.floor(Math.random() * nrOfCell)].setValue(0);
+    }
+    */
   }
 }
