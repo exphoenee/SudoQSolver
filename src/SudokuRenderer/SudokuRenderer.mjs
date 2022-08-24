@@ -1,6 +1,7 @@
 "use strict";
 import SudokuBoard from "../SudokuBoard/SudokuBoard.mjs";
 import SudokuSolver from "../SudokuSolver/SudokuSolver.mjs";
+import SudokuGenerator from "../SudokuGenerator/SudokuGenerator.mjs";
 
 export default class SudokuRenderer {
   #solver;
@@ -14,12 +15,15 @@ export default class SudokuRenderer {
   #numbers;
   #tileSizes;
   #boardSizes;
+  #generator;
+  #generatorBoard;
 
   constructor(boxSizeX, boxSizeY, puzzle = null) {
     //using the SudokuBoard calss for handling the sudoku board
 
     this.#sudokuboard = new SudokuBoard(boxSizeX, boxSizeY, puzzle);
     this.#solver = new SudokuSolver(this.#sudokuboard);
+    this.#generator = new SudokuGenerator({ sudokuboard: this.#sudokuboard });
 
     this.#boxSizeX = boxSizeX;
     this.#boxSizeY = boxSizeY;
@@ -270,28 +274,26 @@ export default class SudokuRenderer {
 
     this.#errors = this.createContainer("errors", this.app);
     this.#control = this.createContainer("control", this.app);
+    this.#generatorBoard = this.createContainer("generator", this.app);
     this.#numbers = this.createContainer("numbers", this.app);
     this.#userMsg("Let's solve this puzzle!");
 
     this.#sudokuboard.getAllRows().forEach((row) => this.renderRow(row));
 
-    for (let puzzle in this.examples) {
-      this.renderButton(puzzle, () => {
-        this.#sudokuboard.setBoard(this.examples[puzzle], true);
-        this.updateUICells();
-        this.#userMsgTemporary({
-          text: `Puzzle changed to ${puzzle}!`,
-          delay: 2000,
-        });
-      });
-    }
+    this.renderExamples();
 
-    this.renderButton("Solve!", () => {
-      this.#userMsg("...solving...");
-      this.extractInputs();
-      this.solve();
-      this.updateUICells();
-    });
+    this.sudokuGeneratorBoard();
+
+    this.renderButton(
+      "Solve!",
+      () => {
+        this.#userMsg("...solving...");
+        this.extractInputs();
+        this.solve();
+        this.updateUICells();
+      },
+      this.#control
+    );
 
     this.renderNumbers();
   }
@@ -381,15 +383,52 @@ export default class SudokuRenderer {
     cellInfo.addRef(cellDOM);
   }
 
+  sudokuGeneratorBoard() {
+    Object.keys(this.#generator.levels).map((level) => {
+      this.renderButton(
+        "Generate a random " + level + " level",
+        () => {
+          this.#sudokuboard.setBoard(
+            this.#generator.generatePuzzle({ level }).puzzle,
+            true
+          );
+          this.updateUICells();
+          this.#userMsgTemporary({
+            text: `Generated a ${level} level puzzle!`,
+            delay: 2000,
+          });
+        },
+        this.#generatorBoard
+      );
+    });
+  }
+
+  renderExamples() {
+    for (let puzzle in this.examples) {
+      this.renderButton(
+        puzzle,
+        () => {
+          this.#sudokuboard.setBoard(this.examples[puzzle], true);
+          this.updateUICells();
+          this.#userMsgTemporary({
+            text: `Puzzle changed to ${puzzle}!`,
+            delay: 2000,
+          });
+        },
+        this.#control
+      );
+    }
+  }
+
   /* buttons for the contorl panel, the arguments are the following:
     text  -> text of the button
     cb -> the callback function what is fired when the button is clicked */
-  renderButton(text, cb) {
+  renderButton(text, cb, parent) {
     const button = document.createElement("button");
     button.innerText = text;
     button.addEventListener("click", () => {
       cb();
     });
-    this.#control.appendChild(button);
+    parent.appendChild(button);
   }
 }
