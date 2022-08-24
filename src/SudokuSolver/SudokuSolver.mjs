@@ -118,15 +118,18 @@ export default class SudokuSolver {
     const nextCell = this.#sudokuboard.getFirstFreeCell();
 
     if (nextCell) {
-      const posNums = this.#sudokuboard.getCellPossiblities(nextCell);
-      return posNums.map((nr) => {
-        const temporaryBoard = new SudokuBoard(this.#boxSizeX, this.#boxSizeY);
-        temporaryBoard.setBoard(this.#sudokuboard.getCellValues());
-        temporaryBoard.setCellValue({ x: nextCell.x, y: nextCell.y }, nr);
-        return temporaryBoard;
-      });
-      //.filter((puzzle) => puzzle.puzzleIsCorrect());
-      /* TODO: lehet hogy ez a lépés teljesen felesleges, át kell gondolnom...hiszan ha már levizsgáltk, mit lehet egy adott cellába írni, akkor után már nem okozhat problémát */
+      const posNums = this.#sudokuboard.getCellPossibilities(nextCell);
+      return posNums
+        .map((nr) => {
+          const temporaryBoard = new SudokuBoard(
+            this.#boxSizeX,
+            this.#boxSizeY
+          );
+          temporaryBoard.setBoard(this.#sudokuboard.getCellValues());
+          temporaryBoard.setCellValue({ x: nextCell.x, y: nextCell.y }, nr);
+          return temporaryBoard;
+        })
+        .filter((puzzle) => puzzle.puzzleIsCorrect());
     }
     return false;
   }
