@@ -120,8 +120,8 @@ export default class SudokuSolver {
     return: m pieces of SudokuBorad class therefrom filtered out the incorrect versions */
   #getPosiblities() {
     /* TODO: ezt meg kell oldani, hogy nem az első üreset telálja meg, hanem azt az üreset, aminek a legkevesebb lehetősége van. */
-    //const nextCell = this.#sudokuboard.getFreeCellWithLessPosiblity();
-    const nextCell = this.#sudokuboard.getFirstFreeCell();
+    const nextCell = this.#sudokuboard.getFreeCellWithLessPosiblity();
+    //const nextCell = this.#sudokuboard.getFirstFreeCell();
 
     if (nextCell) {
       const posNums = this.#sudokuboard.getCellPossibilities(nextCell);
