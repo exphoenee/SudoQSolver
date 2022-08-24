@@ -172,7 +172,7 @@ const cases = [
   },
   {
     caseDesc:
-      "Setting the first free cell value to 1 thorug coordinate, checking the value of that.",
+      "Setting the second free cell value to 1 throug coordinate, checking the value of that.",
     first: () => board.setCellValue({ x: 1, y: 0 }, 1),
     check: () => board.getCellByCoords(1, 0).info,
     excepted: { ...firstFreeCell, value: 1, issued: true },
