@@ -303,6 +303,19 @@ export default class SudokuBoard {
       .every((dups) => dups === true);
   }
 
+  /* checking the given cell has duplicates its row, column or section
+    arg:    Cell (object) x, y (integers) the coordinates of the cell
+    return: true or false that means there are a duplicates for this cell */
+  setCellIssue({ x, y, cell }) {
+    if (!cell) cell = this.getCellByCoords(x, y);
+    return this.getBatchesOfCell({ x, y, cell }).forEach((batch) => {
+      batch.cells.forEach((cell) => cell.unsetIssued());
+      batch
+        .getDuplicateValuedCells()
+        .forEach((issuedCell) => issuedCell.setIssued());
+    });
+  }
+
   /* the method gives the issued cells in an array
   arg:    null,
   return: array of cells (object) */
@@ -314,6 +327,16 @@ export default class SudokuBoard {
           .flat()
       ),
     ];
+  }
+
+  setCellPosiblities({ cell, x, y }) {
+    if (!cell) cell = this.getCellByCoords(x, y);
+    const possibilities = this.getCellPossiblities(cell);
+    if (possibilities.length > 0) {
+      cell.setPossibilities(possibilities);
+    } else {
+      console.warn("This modification made the puzzle incorrect!");
+    }
   }
 
   /* the method is checking the puzzle does or not any duplicates in the rows, columns or boxes
@@ -536,14 +559,9 @@ export default class SudokuBoard {
 
     if (selectedCell) {
       selectedCell.setValue(value);
-      this.#setAllIssuedCells();
 
-      const possibilities = this.getCellPossiblities(selectedCell);
-      if (possibilities.length > 0) {
-        selectedCell.setPossibilities(possibilities);
-      } else {
-        console.warn("This modification made the puzzle incorrect!");
-      }
+      this.setCellIssue(selectedCell);
+      this.setCellPosiblities(selectedCell);
     }
   }
 
