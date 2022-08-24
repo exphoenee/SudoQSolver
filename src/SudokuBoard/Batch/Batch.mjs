@@ -34,11 +34,7 @@ export default class Batch {
       this.#unfilledValue = accepted.unfilled;
       this.#minValue = accepted.min;
       this.#maxValue = accepted.max;
-
-      this.#validValues = Array.from(
-        { length: accepted.max },
-        (_, i) => i + accepted.min
-      );
+      this.#validValues = cell.validValues;
     }
 
     if (
