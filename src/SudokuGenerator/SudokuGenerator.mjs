@@ -39,8 +39,8 @@ export default class SudokuGenerator {
     return this.#sudokuboard.cells.filter((cell) => cell.isUnfilled());
   }
 
-  getCellPossiblities(cell) {
-    return this.#sudokuboard.getCellPossiblities(cell);
+  getCellPossibilities({ cell }) {
+    return this.#sudokuboard.getCellPossibilities({ cell });
   }
 
   getRandomFreeCell() {
@@ -49,7 +49,7 @@ export default class SudokuGenerator {
   }
 
   setCellRandomValue(cell) {
-    const possibleities = this.getCellPossiblities({ cell });
+    const possibleities = this.getCellPossibilities({ cell });
 
     if (possibleities) {
       const value =
@@ -83,15 +83,15 @@ export default class SudokuGenerator {
     do {
       this.#sudokuboard.clearBoard();
 
-      const SampleNr = trialGoal - trialStep;
+      const sampleNr = trialGoal - trialStep;
 
       [...this.#sudokuboard.cells]
         .sort(() => Math.random() - 0.5)
-        .splice(0, SampleNr)
+        .splice(0, sampleNr)
         .forEach((cell) => this.setCellRandomValue(cell));
 
       trialStep++;
-      console.log("trialStep: " + trialStep, "SampleNr: " + SampleNr);
+      console.log("trialStep: " + trialStep, "sampleNr: " + sampleNr);
 
       solution = this.#solver.solvePuzzle({ format: "string", timeOut: 1 });
 
@@ -99,7 +99,7 @@ export default class SudokuGenerator {
         .sort(() => Math.random() - 0.5)
         .splice(0, nrOfSetFree)
         .forEach((cell) => cell.setValue(0));
-    } while (solution === false);
+    } while (solution === false || sampleNr > 5);
 
     const endTime = performance.now();
     const generationTime = endTime - startTime;
