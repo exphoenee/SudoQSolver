@@ -16,5 +16,12 @@
   "bugs": {
     "url": "https://github.com/exphoenee/SudoQSolver/issues"
   },
-  "homepage": "https://github.com/exphoenee/SudoQSolver#readme"
+  "homepage": "https://github.com/exphoenee/SudoQSolver#readme",
+  "dependencies": {
+    "SudokuSolver": "file:./src/SudokuSolver/SudokuSolver.mjs",
+    "SudokuGenerator": "file:./src/SudokuGenerator/SudokuGenerator.mjs",
+    "SudokuBoard": "file:./src/SudokuBoard/SudokuBoard.mjs",
+    "Cell": "file:./src/SudokuBoard/Cell/Cell.mjs",
+    "Batch": "file:./src/SudokuBoard/Batch/Batch.mjs"
+  }
 }
