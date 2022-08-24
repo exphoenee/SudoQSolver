@@ -286,11 +286,9 @@ export default class SudokuBoard {
     const selectedCell = this.getCell({ x, y, cell, id });
 
     const [missingFromCol, missingFromRow, missingFromBox] =
-      this.getBatchesOfCell({
-        x,
-        y,
-        selectedCell,
-      }).map((batch) => batch.getMissingNumbers());
+      this.getBatchesOfCell({ cell: selectedCell }).map((batch) =>
+        batch.getMissingNumbers()
+      );
 
     const intersection = (arr1, arr2) =>
       arr1.filter((value) => arr2.includes(value));
@@ -312,7 +310,7 @@ export default class SudokuBoard {
     return: true or false that means there are a duplicates for this cell */
   haselectedCellDuplicates({ x, y, cell, id }) {
     const selectedCell = this.getCell({ x, y, cell, id });
-    return this.getBatchesOfCell({ x, y, selectedCell })
+    return this.getBatchesOfCell({ selectedCell })
       .map((batch) => batch.hasDuplicates())
       .every((dups) => dups === true);
   }
