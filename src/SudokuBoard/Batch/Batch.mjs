@@ -12,11 +12,20 @@ export default class Batch {
   #maxValue;
   #cellNumber;
   #type;
+  #warnings;
+  #errors;
 
-  constructor(id, cellNumber, type) {
+  constructor(
+    id,
+    cellNumber,
+    type,
+    { warnings, errors } = { warnings: false, errors: false }
+  ) {
     this.#id = id;
     this.#cellNumber = cellNumber;
     this.#type = type;
+    this.#warnings = warnings;
+    this.#errors = errors;
   }
 
   get id() {
@@ -43,23 +52,26 @@ export default class Batch {
       this.#maxValue !== accepted.max
     ) {
       allowed = false;
-      console.error(
-        "The current cell that would be added has not the same value acceptance as the cells that are already in the batch."
-      );
+      this.#errors &&
+        console.error(
+          "The current cell that would be added has not the same value acceptance as the cells that are already in the batch."
+        );
     }
     if (this.#cells.length >= this.#cellNumber) {
       allowed = false;
-      console.error(
-        `There is more cells (${this.#cells.length}) in this batch (${
-          this.#type
-        }) then allowed (${this.#cellNumber}).`
-      );
+      this.#errors &&
+        console.error(
+          `There is more cells (${this.#cells.length}) in this batch (${
+            this.#type
+          }) then allowed (${this.#cellNumber}).`
+        );
     }
     if (this.#cells.map((addedCell) => addedCell.id).includes(cell.id)) {
       allowed = false;
-      console.error(
-        `There is a cell in this batch already with this id: (${cell.id}). It is not allowed!`
-      );
+      this.#errors &&
+        console.error(
+          `There is a cell in this batch already with this id: (${cell.id}). It is not allowed!`
+        );
     }
     if (
       this.#cells
@@ -67,9 +79,10 @@ export default class Batch {
         .includes(`${cell.x}-${cell.y}`)
     ) {
       allowed = false;
-      console.error(
-        `There is a cell in this batch with the same coordinates: (x=${cell.x}, y=${cell.y}). It is not allowed!`
-      );
+      this.#errors &&
+        console.error(
+          `There is a cell in this batch with the same coordinates: (x=${cell.x}, y=${cell.y}). It is not allowed!`
+        );
     }
     if (allowed) {
       this.#cells.push(cell);
