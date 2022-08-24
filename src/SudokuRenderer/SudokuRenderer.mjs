@@ -385,13 +385,15 @@ export default class SudokuRenderer {
       this.#renderButton(
         "Generate a random " + level + " level",
         () => {
-          this.#sudokuboard.setBoard(
-            this.#generator.generatePuzzle({ level }).puzzle,
-            true
-          );
+          const { puzzle, generationTime } = this.#generator.generatePuzzle({
+            level,
+          });
+          this.#sudokuboard.setBoard(puzzle, true);
           this.updateUICells();
           this.#userMsgTemporary({
-            text: `Generated a ${level} level puzzle!`,
+            text: `Generated a ${level} level puzzle! That tooked only ${
+              Math.round(generationTime / 100) / 10
+            } seconds!`,
             delay: 2000,
           });
         },
