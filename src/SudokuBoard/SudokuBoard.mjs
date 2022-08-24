@@ -346,7 +346,7 @@ export default class SudokuBoard {
   /* the method sets the possiblities all the a cells that are in the same batches with the given cell
   arg:    Cell (object) or coordinates x, y (integer, integer)
   return: undefined */
-  #setCellPosiblities({ cell, x, y }) {
+  #setCellPosiblities({ cell, x, y, id }) {
     if (!cell) cell = this.getCellByCoords(x, y);
 
     this.getBatchesOfCell({
@@ -441,17 +441,13 @@ export default class SudokuBoard {
     args:   x, y integers the coords what we would like to validate
     return: true is the coords are in range */
   validateCoord(x, y) {
-    return (
-      0 <= x && x <= this.#dimensionX - 1 && 0 <= y && y <= this.#dimensionY - 1
-    );
-  }
-
-  /* gives a cells by the given coordinates
-  arg:    x (integer) and y (integer) coordinates
-  return: Cell (Object) */
-  getCellByCoords(x, y) {
-    if (this.validateCoord(x, y)) {
-      return this.#cells.find((cell) => cell.x == x && cell.y == y);
+    if (
+      0 <= x &&
+      x <= this.#dimensionX - 1 &&
+      0 <= y &&
+      y <= this.#dimensionY - 1
+    ) {
+      return true;
     } else {
       this.#errors &&
         console.error(
@@ -462,6 +458,13 @@ export default class SudokuBoard {
           }. You asked x: ${x} and y: ${y}.`
         );
     }
+  }
+
+  /* gives a cells by the given coordinates
+  arg:    x (integer) and y (integer) coordinates
+  return: Cell (Object) */
+  getCellByCoords(x, y) {
+    return this.getCell({ x, y });
   }
 
   /* the method check the incoming format of the board what will be set
@@ -501,7 +504,9 @@ export default class SudokuBoard {
   }
 
   /* setBoard method sets all the cells of the table according to the given arguments.
-  arg:    board can be 1D array, 2D array or a string.
+  arg:
+      * board can be 1D array, 2D array or a string.
+      * setGiven - if true the cell sets to given, if false the cells will be not (that means the cell is the protected form user input, that is the part of the initial puzzle not the solution).
   return: void */
   setBoard(board, setGiven = false) {
     const [format, msg] = this.#boardFormat(board);
@@ -551,7 +556,8 @@ export default class SudokuBoard {
   }
 
   /* gives the values of all the cells in the board
-  arg:    object with following keys:
+  arg:
+        *object literal with following keys:
           ** type: (string) can be 1D, 2D, or string, the format of the result
               1D is 1D array, 2D is 2D array, string is string
           ** unfilledChard
@@ -572,22 +578,22 @@ export default class SudokuBoard {
     } else return false;
   }
 
-  /* gives the value of a cells by the given coordinates
-  arg:    x (integer) and y (integer) coordinates
-  return: value of the cell (integer) */
-  getCellValue(x, y) {
-    return this.getCellByCoords(x, y).value;
-  }
-
-  /* sets the value of a cells by the given coordinates
-  arg:    x (integer) and y (integer) coordinates
-  return: void (undefined) */
-  setCellValue({ x, y, cell, id }, value) {
+  /* gives back a cell according to given coords or cell, or id
+    arg:
+        * object literal:
+          ** x, y (integer, integer) coordinates both is requierd,
+          ** cell easyly passing through,
+          ** id (integer) id of the cell
+    return:
+        * Cell (object) */
+  getCell({ x, y, cell, id }) {
     let selectedCell;
-    if (cell) {
+    if (cell instanceof Cell) {
       selectedCell = cell;
     } else if (x !== undefined && y !== undefined) {
-      selectedCell = this.getCellByCoords(x, y);
+      selectedCell = this.#cells.find(
+        (cell) => this.validateCoord(x, y) && cell.x === x && cell.y === y
+      );
     } else if (id !== undefined) {
       selectedCell = this.#cells.find((cell) => cell.id === id);
     } else {
@@ -596,7 +602,17 @@ export default class SudokuBoard {
           `The setCellValue arguments must be x (${x}), y (${y}), or a Cell (${cell}) object, or an id (${id})! There is no such cell that meets the requirements.`
         );
     }
+    return selectedCell;
+  }
 
+  /* sets the value of a cells by the given coordinates
+  arg:
+      * object literal:
+        **  Cell (object) or x (integer) and y (integer) coordinates or id
+      *  value (integer)
+  return: void (undefined) */
+  setCellValue({ x, y, cell, id }, value) {
+    const selectedCell = this.getCell({ x, y, cell, id });
     if (selectedCell) {
       selectedCell.setValue(value);
 
