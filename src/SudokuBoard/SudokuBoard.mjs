@@ -464,13 +464,6 @@ export default class SudokuBoard {
     }
   }
 
-  /* gives a cells by the given coordinates
-  arg:    x (integer) and y (integer) coordinates
-  return: Cell (Object) */
-  getCellByCoords(x, y) {
-    return this.getCell({ x, y });
-  }
-
   /* the method check the incoming format of the board what will be set
   arg:    board it acn be 2D array, 1D array or a string
   return: array, where the frist element is the type of the incoming argument, the second is the message in case of error */
@@ -534,9 +527,12 @@ export default class SudokuBoard {
     if (convertedBoard) {
       convertedBoard.forEach((row, y) =>
         row.forEach((cellValue, x) => {
-          const cell = this.getCellByCoords(x, y);
-          cell.setValue(cellValue);
-          if (setGiven) cell.isFilled() ? cell.setGiven() : cell.unsetGiven();
+          const selectedCell = this.getCell({ x, y });
+          selectedCell.setValue(cellValue);
+          if (setGiven)
+            selectedCell.isFilled()
+              ? selectedCell.setGiven()
+              : selectedCell.unsetGiven();
         })
       );
       this.#setAllIssuedCells();
