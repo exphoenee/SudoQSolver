@@ -24,6 +24,7 @@ import {
   dupsInSecondCol,
   dupsInFirstBox,
   dupsInSecondBox,
+  possibilityMap,
 } from "./SudokuBoard.exceptions.mjs";
 import Batch from "../Batch/Batch.mjs";
 import Cell from "../Cell/Cell.mjs";
@@ -497,14 +498,14 @@ const cases = [
     caseDesc:
       "Setting the board to puzzle as 2D array again, and fingind the first free cell, and checking tha possiblities of that. It must be wrong because that is issued currently.",
     first: null,
-    check: () => board.getCellPossiblities(firstFreeCell),
+    check: () => board.getCellPossibilities(firstFreeCell),
     excepted: [4, 5, 8],
   },
   {
     caseDesc:
       "Setting the board to puzzle as 2D array again,, and fingind the first free cell, and checking tha possiblities of that.",
     first: () => board.setBoard(puzzle2d),
-    check: () => board.getCellPossiblities(firstFreeCell),
+    check: () => board.getCellPossibilities(firstFreeCell),
     excepted: [4, 5, 8],
   },
   {
@@ -668,6 +669,29 @@ const cases = [
     first: null,
     check: () => board.getFilledFromBatch(board.getBox(7)),
     excepted: [1, 5, 6, 7],
+  },
+  {
+    caseDesc: "Getting the the cell with less possiblity.",
+    first: null,
+    check: () => board.getFreeCellWithLessPosiblity().info,
+    excepted: {
+      id: 12,
+      given: false,
+      issued: false,
+      value: 0,
+      x: 3,
+      y: 1,
+      bx: 1,
+      by: 0,
+      boxId: 1,
+      accepted: { unfilled: 0, min: 1, max: 9 },
+    },
+  },
+  {
+    caseDesc: "Generating possibilty map.",
+    first: () => board.updatePossibilityMap(),
+    check: () => board.getPossibilityMap(),
+    excepted: possibilityMap,
   },
 ];
 
