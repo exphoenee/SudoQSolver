@@ -25,20 +25,13 @@ export default class Cell {
   #reference;
   #possibilities;
   #validValues;
+  #warnings;
+  #errors;
 
-  constructor({
-    x,
-    y,
-    bx,
-    by,
-    id,
-    boxId,
-    value,
-    accepted,
-    given,
-    issued,
-    reference,
-  }) {
+  constructor(
+    { x, y, bx, by, id, boxId, value, accepted, given, issued, reference },
+    { warnings, errors } = { warnings: false, errors: false }
+  ) {
     this.#x = x;
     this.#y = y;
     this.#bx = bx;
@@ -55,6 +48,8 @@ export default class Cell {
       (_, i) => i + accepted.min
     );
     this.#possibilities = this.#validValues;
+    this.#warnings = warnings;
+    this.#errors = errors;
     return this;
   }
 
@@ -125,20 +120,21 @@ export default class Cell {
         this.#value = newValue;
       } else {
         this.#value = this.#accepted.unfilled;
-        console.error(
-          `Valid cell value is between: ${this.#accepted.min} - ${
-            this.#accepted.max
-          }, value: ${
-            this.#accepted.unfilled
-          } is allowed for unfilled cells.\nYou tried to set value: ${newValue}, for cell(x=${
-            this.#x
-          }, y=${this.y}) but value set to: ${
-            this.#accepted.unfilled
-          }, because of this issue.`
-        );
+        this.#errors &&
+          console.error(
+            `Valid cell value is between: ${this.#accepted.min} - ${
+              this.#accepted.max
+            }, value: ${
+              this.#accepted.unfilled
+            } is allowed for unfilled cells.\nYou tried to set value: ${newValue}, for cell(x=${
+              this.#x
+            }, y=${this.y}) but value set to: ${
+              this.#accepted.unfilled
+            }, because of this issue.`
+          );
       }
     } else {
-      console.error("Set value must be a number!");
+      this.#errors && console.error("Set value must be a number!");
     }
   }
 
