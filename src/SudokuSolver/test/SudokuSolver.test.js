@@ -102,6 +102,20 @@ const cases = [
     check: () => solver.convertPuzzle(puzzle1d, "string"),
     excepted: puzzleStr,
   },
+  {
+    caseDesc:
+      "Setting the eazy puzzle to the board as 2D array and trying to solve that under 1 ms.",
+    first: () => solver.setBoard(puzzle2d),
+    check: () => solver.solvePuzzle({ timeOut: 1 }),
+    excepted: false,
+  },
+  {
+    caseDesc:
+      "Setting the eazy puzzle to the board as 2D array and trying to solve that under 1000 ms.",
+    first: () => solver.setBoard(puzzle2d),
+    check: () => solver.solvePuzzle({ timeOut: 5000 }),
+    excepted: puzzleSolution,
+  },
 ];
 
 batchAssert(cases, { showFailed: true, showSuccessed: false });
