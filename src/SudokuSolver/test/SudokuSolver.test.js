@@ -5,7 +5,8 @@ import SudokuSolver from "../SudokuSolver.mjs";
 import SudokuBoard from "../../SudokuBoard/SudokuBoard.mjs";
 import { clearBoardInfo } from "./SudokuSolver.exceptions.mjs";
 import {
-  claerBoardSolution,
+  claerBoardSolution1,
+  claerBoardSolution2,
   puzzle2d,
   puzzle1d,
   puzzleStr,
@@ -32,7 +33,7 @@ const cases = [
     caseDesc: "Solving the clear board.",
     first: null,
     check: () => solver.solvePuzzle(),
-    excepted: claerBoardSolution,
+    excepted: claerBoardSolution2,
   },
   {
     caseDesc: "Setting the eazy puzzle to the board and solving that.",
@@ -111,7 +112,7 @@ const cases = [
   },
   {
     caseDesc:
-      "Setting the eazy puzzle to the board as 2D array and trying to solve that under 1000 ms.",
+      "Setting the eazy puzzle to the board as 2D array and trying to solve that under 5000 ms.",
     first: () => solver.setBoard(puzzle2d),
     check: () => solver.solvePuzzle({ timeOut: 5000 }),
     excepted: puzzleSolution,
