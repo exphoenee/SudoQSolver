@@ -115,11 +115,10 @@ export default class SudokuSolver {
     });
   }
 
-  /* generating (k-j) different puzzles, where the first free cell is filled with all the possible numbenr j...k
-    arg:    puzzle n x n sized 2D array
-    return: m pieces of SudokuBorad class therefrom filtered out the incorrect versions */
+  /* generating new temporary boards with the content of the poriginal board, finding the less possiblitiy cell and setting the cell value to the next possiblity
+    arg:    null,
+    return: returns an array of SudokuBoards (Object) whit a number that is written already in a unfilled cell or a Boolean with value false if there are no more possibility */
   #getPosiblities() {
-    /* TODO: ezt meg kell oldani, hogy nem az első üreset telálja meg, hanem azt az üreset, aminek a legkevesebb lehetősége van. */
     const nextCell = this.#sudokuboard.getFreeCellWithLessPosiblity();
     //const nextCell = this.#sudokuboard.getFirstFreeCell();
 
@@ -145,10 +144,10 @@ export default class SudokuSolver {
       * if not generates new possibilities and returns that (recourevely),
       * returns a puzzle of a flase is there is not any solution
       arg: m pieces of SudokuBorad class therefrom filtered out the incorrect versions
-      return: boolean only false value, or
-              n pieces of SudokuBorad class therefrom filtered out the incorrect versions */
+      return: boolean only false value if there is no solution, or
+              a SudokuBoard (Class) as result */
   #checkPossiblities(possiblities) {
-    if (possiblities.length > 0) {
+    if (Array.isArray(possiblities) && possiblities.length > 0) {
       let possiblity = possiblities.shift();
       this.#sudokuboard.setBoard(possiblity.getCellValues({ format: "2D" }));
       const treeBranch = this.#solve(possiblity);
