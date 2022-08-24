@@ -18,8 +18,15 @@ export default class SudokuBoard {
   #cols;
   #boxes;
   #separator;
+  #warnings;
+  #errors;
 
-  constructor(boxSizeX, boxSizeY, puzzle = null) {
+  constructor(
+    boxSizeX,
+    boxSizeY,
+    puzzle = null,
+    { warnings, errors } = { warnings: false, errors: false }
+  ) {
     this.#boxSizeX = boxSizeX;
     this.#boxSizeY = boxSizeY;
     this.#dimensionX = boxSizeX ** 2;
@@ -31,6 +38,8 @@ export default class SudokuBoard {
     this.#rows = [];
     this.#cols = [];
     this.#boxes = [];
+    this.#warnings = warnings;
+    this.#errors = errors;
 
     this.generateBoard();
 
@@ -99,11 +108,12 @@ export default class SudokuBoard {
         }
       }
     } else {
-      console.error(
-        `Something went wrong, only number of ${
-          this.#cellNumber
-        } cells allowed you tried to create the +1.`
-      );
+      this.#errors &&
+        console.error(
+          `Something went wrong, only number of ${
+            this.#cellNumber
+          } cells allowed you tried to create the +1.`
+        );
     }
   }
 
@@ -303,16 +313,20 @@ export default class SudokuBoard {
       .every((dups) => dups === true);
   }
 
-  /* checking the given cell has duplicates its row, column or section
+  /* checking the given cell has duplicates its row, column or section and sets the cell with the duplicates to issued
     arg:    Cell (object) x, y (integers) the coordinates of the cell
-    return: true or false that means there are a duplicates for this cell */
+    return: undefined */
   setCellIssue({ x, y, cell }) {
     if (!cell) cell = this.getCellByCoords(x, y);
-    return this.getBatchesOfCell({ x, y, cell }).forEach((batch) => {
+    this.getBatchesOfCell({ x, y, cell }).forEach((batch) => {
       batch.cells.forEach((cell) => cell.unsetIssued());
-      batch
-        .getDuplicateValuedCells()
-        .forEach((issuedCell) => issuedCell.setIssued());
+      batch.getDuplicateValuedCells().forEach((issuedCell) => {
+        this.#warnings &&
+          console.warn(
+            `This modification of cell with id: ${cell.id} on coords x: ${cell.x} y: ${cell.y} in box id: ${cell.boxId} to value: ${cell.value} made the puzzle incorrect! Becuase the cell is a duplicate!`
+          );
+        issuedCell.setIssued();
+      });
     });
   }
 
@@ -329,25 +343,39 @@ export default class SudokuBoard {
     ];
   }
 
+  /* the method sets the possiblities all the a cells that are in the same batches with the given cell
+  arg:    Cell (object) or coordinates x, y (integer, integer)
+  return: undefined */
   setCellPosiblities({ cell, x, y }) {
     if (!cell) cell = this.getCellByCoords(x, y);
-    const possibilities = this.getCellPossiblities(cell);
-    if (possibilities.length > 0) {
-      cell.setPossibilities(possibilities);
-    } else {
-      console.warn("This modification made the puzzle incorrect!");
-    }
+
+    this.getBatchesOfCell({
+      x,
+      y,
+      cell,
+    }).forEach((batch) =>
+      batch.cells.forEach((batchCell) => {
+        const possibilities = this.getCellPossiblities(batchCell);
+        if (possibilities.length > 0) {
+          batchCell.setPossibilities(possibilities);
+        } else {
+          this.#warnings &&
+            console.warn(
+              `This modification of cell with id: ${cell.id} on coords x: ${cell.x} y: ${cell.y} in box id: ${cell.boxId} to value: ${cell.value} made the puzzle incorrect! Becuase the cell has no possibilities!`
+            );
+        }
+      })
+    );
   }
 
   /* the method is checking the puzzle does or not any duplicates in the rows, columns or boxes
   arg:    null,
   return: boolen the puzzle is correct true, that means there aren't any duplicates */
   puzzleIsCorrect() {
-    /* TODO: Nem csak akkor megfelelő a pzzle, ha nincs duplikátum, hanem ha nincs olyan cella, amibe nem leht számot írni. */
-    const batches = [...this.#rows, ...this.#cols, ...this.#boxes];
-    for (let batch of batches) {
+    for (let batch of [...this.#rows, ...this.#cols, ...this.#boxes])
       if (batch.hasDuplicates()) return false;
-    }
+    for (let cell of this.cells)
+      if (cell.possibilities.length === 0) return false;
     return true;
   }
 
@@ -415,13 +443,14 @@ export default class SudokuBoard {
     if (this.validateCoord(x, y)) {
       return this.#cells.find((cell) => cell.x == x && cell.y == y);
     } else {
-      console.error(
-        `The x coordinate value must be between 1...${
-          this.#dimensionX
-        }, the y must be between 1...${
-          this.#dimensionY
-        }. You asked x: ${x} and y: ${y}.`
-      );
+      this.#errors &&
+        console.error(
+          `The x coordinate value must be between 1...${
+            this.#dimensionX
+          }, the y must be between 1...${
+            this.#dimensionY
+          }. You asked x: ${x} and y: ${y}.`
+        );
     }
   }
 
@@ -493,7 +522,7 @@ export default class SudokuBoard {
       );
       this.#setAllIssuedCells();
     } else {
-      console.error(msg);
+      this.#errors && console.error(msg);
     }
   }
 
@@ -552,9 +581,10 @@ export default class SudokuBoard {
     } else if (id !== undefined) {
       selectedCell = this.#cells.find((cell) => cell.id === id);
     } else {
-      console.error(
-        `The setCellValue arguments must be x (${x}), y (${y}), or a Cell (${cell}) object, or an id (${id})! There is no such cell that meets the requirements.`
-      );
+      this.#errors &&
+        console.error(
+          `The setCellValue arguments must be x (${x}), y (${y}), or a Cell (${cell}) object, or an id (${id})! There is no such cell that meets the requirements.`
+        );
     }
 
     if (selectedCell) {
