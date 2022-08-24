@@ -169,7 +169,7 @@ export default class SudokuRenderer {
       +e.target.dataset.row,
       +e.target.value,
     ];
-    const cell = this.#sudokuboard.getCellByCoords(x, y);
+    const cell = this.#sudokuboard.getCell(x, y);
     const { min, max, unfilled } = cell.accepted;
     try {
       this.#sudokuboard.setCellValue({ x, y }, value || unfilled);
@@ -273,9 +273,9 @@ export default class SudokuRenderer {
     this.#addSizes(this.#board, this.#boardSizes);
 
     this.#errors = this.createContainer("errors", this.app);
+    this.#numbers = this.createContainer("numbers", this.app);
     this.#control = this.createContainer("control", this.app);
     this.#generatorBoard = this.createContainer("generator", this.app);
-    this.#numbers = this.createContainer("numbers", this.app);
     this.#userMsg("Let's solve this puzzle!");
 
     this.#sudokuboard.getAllRows().forEach((row) => this.renderRow(row));
@@ -406,7 +406,7 @@ export default class SudokuRenderer {
   renderExamples() {
     for (let puzzle in this.examples) {
       this.renderButton(
-        puzzle,
+        puzzle + " example",
         () => {
           this.#sudokuboard.setBoard(this.examples[puzzle], true);
           this.updateUICells();
