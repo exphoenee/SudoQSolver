@@ -41,7 +41,7 @@ export default class SudokuBoard {
     this.#warnings = warnings;
     this.#errors = errors;
 
-    this.generateBoard();
+    this.#generateBoard();
 
     if (this.#boardFormat(puzzle)[0] !== "err") {
       if (this.#boardFormat(puzzle)[0] === "1D") {
@@ -54,11 +54,11 @@ export default class SudokuBoard {
 
   /* This method organizing the cells into rows, columns, and boxes.
   In this calss everything goes by references. */
-  generateBoard() {
-    this.createCells();
-    this.createRows();
-    this.createCols();
-    this.createBoxes();
+  #generateBoard() {
+    this.#createCells();
+    this.#createRows();
+    this.#createCols();
+    this.#createBoxes();
   }
 
   /* gives back the size of the board */
@@ -82,7 +82,7 @@ export default class SudokuBoard {
    ** unfilled value is that value what means the cell is unfilled
    * given, the cell has an initial value or not
    * issued, the cell has an issue or not */
-  createCells() {
+  #createCells() {
     if (this.#cells.length <= this.#cellNumber) {
       for (let y = 0; y < this.#dimensionY; y++) {
         for (let x = 0; x < this.#dimensionX; x++) {
@@ -117,7 +117,7 @@ export default class SudokuBoard {
     }
   }
 
-  /* gives the values of all the cells in the board
+  /* gives all the cells in the board
   arg:    null
   return: 1D of Cells (Object) */
   get cells() {
@@ -153,7 +153,7 @@ export default class SudokuBoard {
   }
 
   /* filtering out the cells, that are in the same column, putting into a Batch, that handle the columns */
-  createCols() {
+  #createCols() {
     this.#cols = this.#filterSameBatchID(
       this.#dimensionX,
       this.#dimensionY,
@@ -162,7 +162,7 @@ export default class SudokuBoard {
   }
 
   /* filtering out the cells, that are in the same rows, putting into a Batch, that handle the rows */
-  createRows() {
+  #createRows() {
     this.#rows = this.#filterSameBatchID(
       this.#dimensionY,
       this.#dimensionX,
@@ -171,12 +171,19 @@ export default class SudokuBoard {
   }
 
   /* filtering out the cells, that are in the same boxes, putting into a Batch, that handle the boxes */
-  createBoxes() {
+  #createBoxes() {
     this.#boxes = this.#filterSameBatchID(
       this.#boxSize,
       this.#boxSize,
       "boxId"
     );
+  }
+
+  /* gives a column according to the given column number
+  arg:    colNr (Integer)
+  return: Batch (Objects) */
+  getCol(colNr) {
+    return this.#cols[colNr];
   }
 
   /* gives a row according to the given row number
@@ -205,13 +212,6 @@ export default class SudokuBoard {
   return: 1D array of Batch (Objects) */
   getAllRows() {
     return this.#rows;
-  }
-
-  /* gives a column according to the given column number
-  arg:    colNr (Integer)
-  return: Batch (Objects) */
-  getCol(colNr) {
-    return this.#cols[colNr];
   }
 
   /* gives a section according to the given section number
@@ -278,7 +278,7 @@ export default class SudokuBoard {
                   * y (integer),
                   * cell (integer),
       return:   array of integer what is missing form the row, column, and box of the cell */
-  getCellPossiblities({ x, y, cell }) {
+  getCellPossibilities({ x, y, cell }) {
     !cell && (cell = this.getCellByCoords(x, y));
 
     const [missingFromCol, missingFromRow, missingFromBox] =
@@ -316,7 +316,7 @@ export default class SudokuBoard {
   /* checking the given cell has duplicates its row, column or section and sets the cell with the duplicates to issued
     arg:    Cell (object) x, y (integers) the coordinates of the cell
     return: undefined */
-  setCellIssue({ x, y, cell }) {
+  #setCellIssue({ x, y, cell }) {
     if (!cell) cell = this.getCellByCoords(x, y);
     this.getBatchesOfCell({ x, y, cell }).forEach((batch) => {
       batch.cells.forEach((cell) => cell.unsetIssued());
@@ -346,7 +346,7 @@ export default class SudokuBoard {
   /* the method sets the possiblities all the a cells that are in the same batches with the given cell
   arg:    Cell (object) or coordinates x, y (integer, integer)
   return: undefined */
-  setCellPosiblities({ cell, x, y }) {
+  #setCellPosiblities({ cell, x, y }) {
     if (!cell) cell = this.getCellByCoords(x, y);
 
     this.getBatchesOfCell({
@@ -355,7 +355,7 @@ export default class SudokuBoard {
       cell,
     }).forEach((batch) =>
       batch.cells.forEach((batchCell) => {
-        const possibilities = this.getCellPossiblities(batchCell);
+        const possibilities = this.getCellPossibilities(batchCell);
         if (possibilities.length > 0) {
           batchCell.setPossibilities(possibilities);
         } else {
@@ -395,26 +395,36 @@ export default class SudokuBoard {
     return this.cells.filter((cell) => cell.value === value);
   }
 
-  generatePossiblityMap() {
-    return this.cells
-      .map((cell) => (cell.possiblities = this.getCellPossiblities))
-      .sort(a, (b) => a.possiblities.length - b.possiblities.length);
+  /* Gives sets the cell possiblities that we can write in the cell
+  arg:    null,
+  return:  */
+  updatePossibilityMap() {
+    this.cells.forEach((cell) =>
+      cell.setPossibilities(this.getCellPossibilities(cell))
+    );
   }
 
-  /* the method gives back a free cell with the less possiblity */
-  /* TODO: ez nem működik valamiért!!! */
+  /* Gives back the an array that contains the cell possiblities that we can write in the cell
+  arg:    null,
+  return: array of arrays of integers tha numbers that*/
+  getPossibilityMap() {
+    return this.cells.map((cell) => this.getCellPossibilities(cell));
+  }
+
+  /* the method gives back a free cell with the less possiblity
+  arg:    null
+  return a Cell (object) */
   getFreeCellWithLessPosiblity() {
     const freeCell = this.#cells
       .filter((cell) => cell.value == 0)
       .map((cell) => {
-        const possiblities = this.getCellPossiblities(cell);
+        const possiblities = this.getCellPossibilities(cell);
         return { cell, possiblities };
       })
       .sort((a, b) => a.possiblities.length - b.possiblities.length)[0].cell;
 
-    console.log(this.getCellPossiblities(freeCell));
-
-    if (freeCell && freeCell.length > 0) return freeCell;
+    if (freeCell && this.getCellPossibilities(freeCell).length > 0)
+      return freeCell;
     return false;
   }
 
@@ -590,8 +600,8 @@ export default class SudokuBoard {
     if (selectedCell) {
       selectedCell.setValue(value);
 
-      this.setCellIssue(selectedCell);
-      this.setCellPosiblities(selectedCell);
+      this.#setCellIssue(selectedCell);
+      this.#setCellPosiblities(selectedCell);
     }
   }
 
