@@ -299,7 +299,7 @@ export default class SudokuBoard {
   hasCellDuplicates({ x, y, cell }) {
     if (!cell) cell = this.getCellByCoords(x, y);
     return this.getBatchesOfCell({ x, y, cell })
-      .map((batch) => batch.hasBatchDuplicates())
+      .map((batch) => batch.hasDuplicates())
       .every((dups) => dups === true);
   }
 
@@ -537,6 +537,13 @@ export default class SudokuBoard {
     if (selectedCell) {
       selectedCell.setValue(value);
       this.#setAllIssuedCells();
+
+      const possibilities = this.getCellPossiblities(selectedCell);
+      if (possibilities.length > 0) {
+        selectedCell.setPossibilities(possibilities);
+      } else {
+        console.warn("This modification made the puzzle incorrect!");
+      }
     }
   }
 
