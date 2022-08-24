@@ -86,15 +86,74 @@ const cases = [
     caseDesc: "Generating an easy puzzle.",
     first: () => {
       const level = "easy";
-      const { puzzle, generationTime, trialStep } = generator.generateBoard({
+      const { puzzle, generationTime, trialStep } = generator.generatePuzzle({
         level,
       });
-      console.log(
-        "level: " + level,
-        "freeCells: ",
-        generator.getFreeCells().length
-      );
-      console.log("puzzle: ", puzzle);
+
+      sudokuboard.setBoard(puzzle);
+    },
+    check: () => {
+      const solver = new SudokuSolver(sudokuboard);
+      return !!solver.solvePuzzle({ format: "string" });
+    },
+    excepted: true,
+  },
+  {
+    caseDesc: "Generating an medium puzzle.",
+    first: () => {
+      const level = "medium";
+      const { puzzle, generationTime, trialStep } = generator.generatePuzzle({
+        level,
+      });
+
+      sudokuboard.setBoard(puzzle);
+    },
+    check: () => {
+      const solver = new SudokuSolver(sudokuboard);
+      return !!solver.solvePuzzle({ format: "string" });
+    },
+    excepted: true,
+  },
+  {
+    caseDesc: "Generating an hard puzzle.",
+    first: () => {
+      const level = "hard";
+      const { puzzle, generationTime, trialStep } = generator.generatePuzzle({
+        level,
+      });
+
+      sudokuboard.setBoard(puzzle);
+    },
+    check: () => {
+      const solver = new SudokuSolver(sudokuboard);
+      return !!solver.solvePuzzle({ format: "string" });
+    },
+    excepted: true,
+  },
+  {
+    caseDesc: "Generating an evil puzzle.",
+    first: () => {
+      const level = "evil";
+      const { puzzle, generationTime, trialStep } = generator.generatePuzzle({
+        level,
+      });
+
+      sudokuboard.setBoard(puzzle);
+    },
+    check: () => {
+      const solver = new SudokuSolver(sudokuboard);
+      return !!solver.solvePuzzle({ format: "string" });
+    },
+    excepted: true,
+  },
+  {
+    caseDesc: "Generating an custom puzzle with 0.23.",
+    first: () => {
+      const level = 0.23;
+      const { puzzle, generationTime, trialStep } = generator.generatePuzzle({
+        level,
+      });
+
       sudokuboard.setBoard(puzzle);
     },
     check: () => {
