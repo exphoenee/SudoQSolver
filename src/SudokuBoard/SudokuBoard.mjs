@@ -266,9 +266,13 @@ export default class SudokuBoard {
   /* gives the batches where the cell is in
   arg:    cell (Object) or coordinates x and y (Integer, Integer)
   return: array of Batch (Objects) in order column, row, box */
-  getBatchesOfCell({ x, y, cell }) {
-    if (!cell) cell = this.getCellByCoords(x, y);
-    return [this.getCol(cell.x), this.getRow(cell.y), this.getBox(cell.boxId)];
+  getBatchesOfCell({ x, y, cell, id }) {
+    const selectedCell = this.getCell({ x, y, cell, id });
+    return [
+      this.getCol(selectedCell.x),
+      this.getRow(selectedCell.y),
+      this.getBox(selectedCell.boxId),
+    ];
   }
 
   /* this method gives the numbers what can we write into a cell, the cell couldn't has a value what is represented in the column, the row and the box thath the cell is contained,
@@ -278,14 +282,14 @@ export default class SudokuBoard {
                   * y (integer),
                   * cell (integer),
       return:   array of integer what is missing form the row, column, and box of the cell */
-  getCellPossibilities({ x, y, cell }) {
-    !cell && (cell = this.getCellByCoords(x, y));
+  getCellPossibilities({ x, y, cell, id }) {
+    const selectedCell = this.getCell({ x, y, cell, id });
 
     const [missingFromCol, missingFromRow, missingFromBox] =
       this.getBatchesOfCell({
         x,
         y,
-        cell,
+        selectedCell,
       }).map((batch) => batch.getMissingNumbers());
 
     const intersection = (arr1, arr2) =>
@@ -306,9 +310,9 @@ export default class SudokuBoard {
 
   /* checking that the cell has duplicates its row, column or section arg:    x, y (integers) the coordinates of the cell
     return: true or false that means there are a duplicates for this cell */
-  hasCellDuplicates({ x, y, cell }) {
-    if (!cell) cell = this.getCellByCoords(x, y);
-    return this.getBatchesOfCell({ x, y, cell })
+  haselectedCellDuplicates({ x, y, cell, id }) {
+    const selectedCell = this.getCell({ x, y, cell, id });
+    return this.getBatchesOfCell({ x, y, selectedCell })
       .map((batch) => batch.hasDuplicates())
       .every((dups) => dups === true);
   }
@@ -316,14 +320,14 @@ export default class SudokuBoard {
   /* checking the given cell has duplicates its row, column or section and sets the cell with the duplicates to issued
     arg:    Cell (object) x, y (integers) the coordinates of the cell
     return: undefined */
-  #setCellIssue({ x, y, cell }) {
-    if (!cell) cell = this.getCellByCoords(x, y);
-    this.getBatchesOfCell({ x, y, cell }).forEach((batch) => {
-      batch.cells.forEach((cell) => cell.unsetIssued());
+  #setCellIssue({ x, y, cell, id }) {
+    const selectedCell = this.getCell({ x, y, cell, id });
+    this.getBatchesOfCell({ x, y, selectedCell }).forEach((batch) => {
+      batch.cells.forEach((babthCell) => babthCell.unsetIssued());
       batch.getDuplicateValuedCells().forEach((issuedCell) => {
         this.#warnings &&
           console.warn(
-            `This modification of cell with id: ${cell.id} on coords x: ${cell.x} y: ${cell.y} in box id: ${cell.boxId} to value: ${cell.value} made the puzzle incorrect! Becuase the cell is a duplicate!`
+            `This modification of cell with id: ${selectedCell.id} on coords x: ${selectedCell.x} y: ${selectedCell.y} in box id: ${selectedCell.boxId} to value: ${selectedCell.value} made the puzzle incorrect! Becuase the cell is a duplicate!`
           );
         issuedCell.setIssued();
       });
@@ -347,12 +351,12 @@ export default class SudokuBoard {
   arg:    Cell (object) or coordinates x, y (integer, integer)
   return: undefined */
   #setCellPosiblities({ cell, x, y, id }) {
-    if (!cell) cell = this.getCellByCoords(x, y);
+    const selectedCell = this.getCell({ x, y, cell, id });
 
     this.getBatchesOfCell({
       x,
       y,
-      cell,
+      selectedCell,
     }).forEach((batch) =>
       batch.cells.forEach((batchCell) => {
         const possibilities = this.getCellPossibilities(batchCell);
@@ -361,7 +365,7 @@ export default class SudokuBoard {
         } else {
           this.#warnings &&
             console.warn(
-              `This modification of cell with id: ${cell.id} on coords x: ${cell.x} y: ${cell.y} in box id: ${cell.boxId} to value: ${cell.value} made the puzzle incorrect! Becuase the cell has no possibilities!`
+              `This modification of cell with id: ${selectedCell.id} on coords x: ${selectedCell.x} y: ${selectedCell.y} in box id: ${selectedCell.boxId} to value: ${selectedCell.value} made the puzzle incorrect! Becuase the cell has no possibilities!`
             );
         }
       })
@@ -599,7 +603,7 @@ export default class SudokuBoard {
     } else {
       this.#errors &&
         console.error(
-          `The setCellValue arguments must be x (${x}), y (${y}), or a Cell (${cell}) object, or an id (${id})! There is no such cell that meets the requirements.`
+          `The cell arguments must be x (${x}), y (${y}), or a Cell (${cell}) object, or an id (${id})! There is no such cell that meets the requirements.`
         );
     }
     return selectedCell;
