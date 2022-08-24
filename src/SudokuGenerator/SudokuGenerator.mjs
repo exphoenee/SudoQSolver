@@ -8,10 +8,20 @@ export default class SudokuGenerator {
   #boxSizeX;
   #boxSizeY;
   #solver;
+  #warnings;
+  #errors;
+  #defaultLevels;
 
-  constructor({ sudokuboard, boxSizeX, boxSizeY }) {
+  constructor(
+    { sudokuboard, boxSizeX, boxSizeY },
+    { warnings, errors } = { warnings: false, errors: false }
+  ) {
     this.#boxSizeX = boxSizeX || sudokuboard.boardSize.boxSizeX;
     this.#boxSizeY = boxSizeY || sudokuboard.boardSize.boxSizeY;
+    this.#warnings = warnings;
+    this.#errors = errors;
+
+    this.#defaultLevels = { easy: 35, medium: 45, hard: 65, evil: 75 };
 
     this.#sudokuboard = new SudokuBoard(this.#boxSizeX, this.#boxSizeY);
     this.#solver = new SudokuSolver(this.#sudokuboard);
@@ -22,6 +32,10 @@ export default class SudokuGenerator {
   return  SudokuBoard (Object) */
   get sudokuboard() {
     return this.#sudokuboard;
+  }
+
+  get levels() {
+    return this.#defaultLevels;
   }
 
   /* gives back info form all the cells in the board
@@ -63,54 +77,45 @@ export default class SudokuGenerator {
     this.setCellRandomValue(cell);
   }
 
-  generateBoard({ level } = { level: "easy" }) {
+  generatePuzzle({ level } = { level: "easy" }) {
+    const nrOfCell = this.sudokuboard.cells.length;
     const cellAmmount = {
-      easy: 0.75,
-      medium: 0.65,
-      hard: 0.45,
-      evil: 0.4,
-      default: () => (isNanN(+level) ? 0.75 : +level),
+      ...this.#defaultLevels,
+      default: () => (isNaN(+level) ? 75 : +level),
     };
 
-    const nrOfCell = this.sudokuboard.cells.length;
-    const nrOfSetFree = Math.floor(nrOfCell * cellAmmount[level.toLowerCase()]);
+    const nrOfSetFree = Math.floor(
+      (isNaN(+level)
+        ? nrOfCell * cellAmmount[level.toLowerCase()]
+        : Math.max(+level * nrOfCell, 5)) / 100
+    );
+
     const trialGoal = Math.floor(nrOfCell * 0.24);
     let trialStep = 0;
-
     let solution;
 
     const startTime = performance.now();
     do {
       this.#sudokuboard.clearBoard();
 
-      const sampleNr = trialGoal - trialStep;
-
       [...this.#sudokuboard.cells]
         .sort(() => Math.random() - 0.5)
-        .splice(0, sampleNr)
+        .splice(0, trialGoal)
         .forEach((cell) => this.setCellRandomValue(cell));
 
       trialStep++;
-      console.log("trialStep: " + trialStep, "sampleNr: " + sampleNr);
+      solution = this.#solver.solvePuzzle({ format: "string", timeOut: 10000 });
+    } while (solution === false);
 
-      solution = this.#solver.solvePuzzle({ format: "string", timeOut: 1 });
-
-      [...this.#sudokuboard.cells]
-        .sort(() => Math.random() - 0.5)
-        .splice(0, nrOfSetFree)
-        .forEach((cell) => cell.setValue(0));
-    } while (solution === false || sampleNr > 5);
+    [...this.#sudokuboard.cells]
+      .sort(() => Math.random() - 0.5)
+      .splice(0, nrOfSetFree)
+      .forEach((cell) => cell.setValue(0));
 
     const endTime = performance.now();
     const generationTime = endTime - startTime;
 
-    console.log(
-      "Puzzle generation time: " + generationTime / 1000 + " seconds"
-    );
-
     const puzzle = this.sudokuboard.getCellValues({ format: "string" });
-    console.log(level + " puzzle: " + puzzle);
-    console.log("solution: " + solution);
 
     return {
       puzzle,
