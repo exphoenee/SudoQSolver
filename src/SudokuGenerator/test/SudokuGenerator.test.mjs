@@ -56,8 +56,8 @@ const cases = [
         .getAllRows()
         .forEach((row) => row.cells.forEach((cell, i) => cell.setValue(i + 1)));
       for (let y = 1; y < 9; y++)
-        generator.sudokuboard.getCellByCoords(8, y).setValue(1);
-      generator.sudokuboard.getCellByCoords(8, 0).setValue(0);
+        generator.sudokuboard.getCell({ x: 8, y }).setValue(1);
+      generator.sudokuboard.getCell({ x: 8, y: 0 }).setValue(0);
     },
     check: () => {
       return [
