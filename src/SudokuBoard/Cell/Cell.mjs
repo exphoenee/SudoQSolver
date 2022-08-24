@@ -23,6 +23,8 @@ export default class Cell {
   #boxId;
   #accepted;
   #reference;
+  #possibilities;
+  #validValues;
 
   constructor({
     x,
@@ -48,6 +50,11 @@ export default class Cell {
     this.#given = given || false;
     this.#issued = issued || false;
     this.#reference = reference || null;
+    this.#validValues = Array.from(
+      { length: accepted.max },
+      (_, i) => i + accepted.min
+    );
+    this.#possibilities = this.#validValues;
     return this;
   }
 
@@ -71,6 +78,15 @@ export default class Cell {
   }
   get value() {
     return this.#value;
+  }
+  get validValues() {
+    return this.#validValues;
+  }
+  get possibilities() {
+    return this.#possibilities;
+  }
+  setPossibilities(possibilities) {
+    this.#possibilities = possibilities;
   }
 
   /* gives all the properties of a cell for debuging purpose made */
