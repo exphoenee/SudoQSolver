@@ -135,14 +135,14 @@ const cases = [
   {
     caseDesc: "Getting info of first cell, the board is set to puzzle.",
     first: null,
-    check: () => board.getCellByCoords(0, 0).info,
+    check: () => board.getCell({ x: 0, y: 0 }).info,
     excepted: puzzleFirstCell,
   },
   {
     caseDesc:
       "Getting getting the info of X3 - Y6 cell, the board is set to puzzle.",
     first: null,
-    check: () => board.getCellByCoords(3, 5).info,
+    check: () => board.getCell({ x: 3, y: 5 }).info,
     excepted: puzzleX3Y6Cell,
   },
   {
@@ -175,49 +175,49 @@ const cases = [
     caseDesc:
       "Setting the second free cell value to 1 throug coordinate, checking the value of that.",
     first: () => board.setCellValue({ x: 1, y: 0 }, 1),
-    check: () => board.getCellByCoords(1, 0).info,
+    check: () => board.getCell({ x: 1, y: 0 }).info,
     excepted: { ...firstFreeCell, value: 1, issued: true },
   },
   {
     caseDesc:
       "Setting the first free cell value to 0 thorug id selector, checking the value of that.",
     first: () => board.setCellValue({ id: 1 }, 0),
-    check: () => board.getCellByCoords(1, 0).info,
+    check: () => board.getCell({ x: 1, y: 0 }).info,
     excepted: { ...firstFreeCell, value: 0, issued: false },
   },
   {
     caseDesc:
       "Setting the first free cell value to 2 throug Cell reference, checking the value of that.",
     first: () => board.setCellValue({ cell: board.getFirstFreeCell() }, 1),
-    check: () => board.getCellByCoords(1, 0).info,
+    check: () => board.getCell({ x: 1, y: 0 }).info,
     excepted: { ...firstFreeCell, value: 1, issued: true },
   },
   {
     caseDesc:
       "Trying to set first free cell to invalid value: 11, checking the value of that.",
     first: () => board.setCellValue({ x: 1, y: 0 }, 11),
-    check: () => board.getCellByCoords(1, 0).info,
+    check: () => board.getCell({ x: 1, y: 0 }).info,
     excepted: { ...firstFreeCell, value: 0, issued: false },
   },
   {
     caseDesc:
       "Trying to set first free cell to invalid value: 'a' string, checking the value of that.",
     first: () => board.setCellValue({ x: 1, y: 0 }, "a"),
-    check: () => board.getCellByCoords(1, 0).info,
+    check: () => board.getCell({ x: 1, y: 0 }).info,
     excepted: { ...firstFreeCell, value: 0, issued: false },
   },
   {
     caseDesc:
       "Trying to set first free cell to invalid value: true boolean, checking the value of that.",
     first: () => board.setCellValue({ x: 1, y: 0 }, true),
-    check: () => board.getCellByCoords(1, 0).info,
+    check: () => board.getCell({ x: 1, y: 0 }).info,
     excepted: { ...firstFreeCell, value: 0, issued: false },
   },
   {
     caseDesc:
       "Trying to set first free cell to invalid value: true boolean, checking the value of that.",
     first: () => board.setCellValue({ x: 1, y: 0 }, false),
-    check: () => board.getCellByCoords(1, 0).info,
+    check: () => board.getCell({ x: 1, y: 0 }).info,
     excepted: { ...firstFreeCell, value: 0, issued: false },
   },
   {
