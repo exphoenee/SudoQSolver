@@ -239,46 +239,26 @@ export default class SudokuBoard {
     return this.#filterValuesFromBatch(this.getBox(boxNr));
   }
 
-  /* gives the missing numbers of a row according to the given row number
-  arg:    rowNr (Integer)
-  return: array of integers that are the possible values what missing from the row  */
-  getMissingFromRow(rowNr) {
-    return this.getRow(rowNr).getMissingNumbers();
-  }
-
-  /* gives into the row already written numbers according to the given row number
-  arg:    rowNr (Integer)
-  return: array of integers that are the possible values what are in the row already */
-  getFilledFromRow(rowNr) {
-    return this.getRow(rowNr).getFilledNumbers();
-  }
-
-  /* gives the missing numbers of a column according to the given column number
-  arg:    column (Integer)
-  return: array of integers that are the possible values what missing from the column  */
-  getMissingFromCol(colNr) {
-    return this.getCol(colNr).getMissingNumbers();
-  }
-
-  /* gives into the column already written numbers according to the given column number
-  arg:    colNr (Integer)
-  return: array of integers that are the possible values what are in the column already */
-  getFilledFromCol(colNr) {
-    return this.getCol(colNr).getFilledNumbers();
+  /* gives into the section already written numbers according to the given section number
+  arg:    batch (Integer)
+  return: array of integers that are the possible values what are in the section already */
+  getFilledFromBatch(batch) {
+    return batch.getFilledNumbers();
   }
 
   /* gives the missing numbers of a section according to the given section number
   arg:    boxNr (Integer)
   return: array of integers that are the possible values what missing from the section  */
-  getMissingFromBox(boxNr) {
-    return this.getBox(boxNr).getMissingNumbers();
+  getMissingFromBatch(batch) {
+    return batch.getMissingNumbers();
   }
 
-  /* gives into the section already written numbers according to the given section number
-  arg:    boxNr (Integer)
-  return: array of integers that are the possible values what are in the section already */
-  getFilledFromBox(boxNr) {
-    return this.getBox(boxNr).getFilledNumbers();
+  /* gives the batches where the cell is in
+  arg:    cell (Object) or coordinates x and y (Integer, Integer)
+  return: array of Batch (Objects) in order column, row, box */
+  getBatchesOfCell({ x, y, cell }) {
+    if (!cell) cell = this.getCellByCoords(x, y);
+    return [this.getCol(cell.x), this.getRow(cell.y), this.getBox(cell.boxId)];
   }
 
   /* this method gives the numbers what can we write into a cell, the cell couldn't has a value what is represented in the column, the row and the box thath the cell is contained,
@@ -290,9 +270,14 @@ export default class SudokuBoard {
       return:   array of integer what is missing form the row, column, and box of the cell */
   getCellPossiblities({ x, y, cell }) {
     !cell && (cell = this.getCellByCoords(x, y));
-    const missingFromCol = this.getMissingFromCol(cell.x);
-    const missingFromRow = this.getMissingFromRow(cell.y);
-    const missingFromBox = this.getMissingFromBox(cell.boxId);
+
+    const [missingFromCol, missingFromRow, missingFromBox] =
+      this.getBatchesOfCell({
+        x,
+        y,
+        cell,
+      }).map((batch) => batch.getMissingNumbers());
+
     const intersection = (arr1, arr2) =>
       arr1.filter((value) => arr2.includes(value));
 
@@ -302,36 +287,20 @@ export default class SudokuBoard {
     );
   }
 
-  /* checking that the column has duplicates
-    arg:    colNr (integers) the column number of the board
-    return: true or false that means there are a duplicates for this column */
-  hasColumnDuplicates(colNr) {
-    return this.getCol(colNr).hasDuplicates();
-  }
-
-  /* checking that the row has duplicates
-    arg:    rowNr (integers) the row number of the board
-    return: true or false that means there are a duplicates for this row */
-  hasRowDuplicates(rowNr) {
-    return this.getRow(rowNr).hasDuplicates();
-  }
-
-  /* checking that the box has duplicates
-    arg:    boxNr (integers) the box number of the board
+  /* checking that the batch has duplicates
+    arg:    Batch (Object)
     return: true or false that means there are a duplicates for this box */
-  hasBoxDuplicates(boxNr) {
-    return this.getBox(boxNr).hasDuplicates();
+  hasBatchDuplicates(batch) {
+    return batch.hasDuplicates();
   }
 
   /* checking that the cell has duplicates its row, column or section arg:    x, y (integers) the coordinates of the cell
     return: true or false that means there are a duplicates for this cell */
   hasCellDuplicates({ x, y, cell }) {
     if (!cell) cell = this.getCellByCoords(x, y);
-    return (
-      this.hasColumnDuplicates(cell.y) &&
-      this.hasRowDuplicates(cell.x) &&
-      this.hasBoxDuplicates(cell.boxId)
-    );
+    return this.getBatchesOfCell({ x, y, cell })
+      .map((batch) => batch.hasBatchDuplicates())
+      .every((dups) => dups === true);
   }
 
   /* the method gives the issued cells in an array
