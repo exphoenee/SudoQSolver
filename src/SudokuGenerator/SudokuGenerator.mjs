@@ -103,6 +103,8 @@ export default class SudokuGenerator {
         .splice(0, trialGoal)
         .forEach((cell) => this.setCellRandomValue(cell));
 
+      console.log(this.#sudokuboard.getCellValues({ format: "string" }));
+
       trialStep++;
       solution = this.#solver.solvePuzzle({ format: "string", timeOut: 10000 });
     } while (solution === false);
