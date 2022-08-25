@@ -322,6 +322,7 @@ export default class SudokuBoard {
     const selectedCell = this.getCell({ x, y, cell, id });
     this.getBatchesOfCell({ x, y, selectedCell }).forEach((batch) => {
       batch.cells.forEach((babthCell) => babthCell.unsetIssued());
+
       batch.getDuplicateValuedCells().forEach((issuedCell) => {
         this.#warnings &&
           console.warn(
