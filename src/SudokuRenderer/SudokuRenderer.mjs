@@ -53,17 +53,6 @@ export default class SudokuRenderer {
     //add some example puzzles here
     //source: https://www.sudokuonline.io/
     this.#examples = {
-      Reset: [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      ],
       Wrong: [
         [1, 2, 3, 4, 5, 6, 7, 8, 9],
         [1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -184,7 +173,7 @@ export default class SudokuRenderer {
       +e.target.dataset.row,
       +e.target.value,
     ];
-    const cell = this.#sudokuboard.getCell(x, y);
+    const cell = this.#sudokuboard.getCell({ x, y });
     const { min, max, unfilled } = cell.accepted;
     try {
       this.#sudokuboard.setCellValue({ x, y }, value || unfilled);
@@ -403,17 +392,27 @@ export default class SudokuRenderer {
   }
 
   #renderExamples() {
-    for (let puzzle in this.examples) {
+    for (let puzzle in { Reset: null, ...this.examples }) {
       this.#renderButton(
         puzzle + " example",
-        () => {
-          this.#sudokuboard.setBoard(this.examples[puzzle], true);
-          this.updateUICells();
-          this.#userMsgTemporary({
-            text: `Puzzle changed to ${puzzle}!`,
-            delay: 2000,
-          });
-        },
+        puzzle === "Reset"
+          ? () => {
+              console.log(puzzle);
+              this.#sudokuboard.clearBoard();
+              this.updateUICells();
+              this.#userMsgTemporary({
+                text: `Puzzle changed to ${puzzle}!`,
+                delay: 2000,
+              });
+            }
+          : () => {
+              this.#sudokuboard.setBoard(this.examples[puzzle], true);
+              this.updateUICells();
+              this.#userMsgTemporary({
+                text: `Puzzle changed to ${puzzle}!`,
+                delay: 2000,
+              });
+            },
         this.#control
       );
     }
