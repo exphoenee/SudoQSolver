@@ -401,7 +401,7 @@ export default class SudokuBoard {
   /* Gives sets the cell possiblities that we can write in the cell
   arg:    null,
   return:  */
-  updatePossibilityMap() {
+  #updatePossibilityMap() {
     this.cells.forEach((cell) =>
       cell.setPossibilities(this.getCellPossibilities(cell))
     );
@@ -615,8 +615,8 @@ export default class SudokuBoard {
     if (selectedCell) {
       selectedCell.setValue(value);
 
-      this.#setCellIssue(selectedCell);
-      this.#setCellPosiblities(selectedCell);
+      this.#setAllIssuedCells();
+      this.#updatePossibilityMap();
     }
   }
 
