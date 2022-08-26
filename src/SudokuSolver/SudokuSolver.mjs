@@ -71,16 +71,13 @@ export default class SudokuSolver {
       warnings: false,
     }
   ) {
-    if (puzzle) {
-      this.#sudokuboard.setBoard(puzzle);
-    }
+    if (puzzle) this.#sudokuboard.setBoard(puzzle);
 
     this.#timeOut = timeOut;
     this.#timeOut && (this.#startTime = performance.now());
 
     if (this.#sudokuboard.puzzleIsCorrect()) {
       const result = this.#solve({ warnings });
-
       return result ? this.convertPuzzle(result, format, unfilledChar) : false;
     }
   }
@@ -95,9 +92,9 @@ export default class SudokuSolver {
       (this.warnings || warnings) && console.warn("Solver timed out!");
       return false;
     }
-    return !this.#sudokuboard.coordsOfFirstFreeCell()
-      ? this.#sudokuboard.getCellValues({ format: "2D" })
-      : this.#checkPossiblities(this.#getPosiblities());
+    return this.#sudokuboard.coordsOfFirstFreeCell()
+      ? this.#checkPossiblities(this.#getPosiblities())
+      : this.#sudokuboard.getCellValues({ format: "2D" });
   }
 
   /* Cerates a temporary board and sets the cell value to the given value

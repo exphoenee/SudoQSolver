@@ -11,7 +11,7 @@ import {
   wrong2d,
   wrong1d,
   wrongStr,
-} from "../../Model/Puzzles.mjs";
+} from "../../Model/3x3_Puzzles.mjs";
 
 //console.log(puzzle2d, puzzle1d, puzzleStr);
 //console.log("-----------");
