@@ -102,6 +102,7 @@ export default class SudokuGenerator {
         .sort(() => Math.random() - 0.5)
         .splice(0, trialGoal)
         .forEach((cell) => this.setCellRandomValue(cell));
+
       trialStep++;
       solution = this.#solver.solvePuzzle({ format: "string", timeOut: 10000 });
     } while (solution === false);

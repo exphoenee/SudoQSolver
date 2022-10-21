@@ -322,7 +322,6 @@ export default class SudokuBoard {
     const selectedCell = this.getCell({ x, y, cell, id });
     this.getBatchesOfCell({ x, y, selectedCell }).forEach((batch) => {
       batch.cells.forEach((babthCell) => babthCell.unsetIssued());
-
       batch.getDuplicateValuedCells().forEach((issuedCell) => {
         this.#warnings &&
           console.warn(
@@ -401,7 +400,7 @@ export default class SudokuBoard {
   /* Gives sets the cell possiblities that we can write in the cell
   arg:    null,
   return:  */
-  #updatePossibilityMap() {
+  updatePossibilityMap() {
     this.cells.forEach((cell) =>
       cell.setPossibilities(this.getCellPossibilities(cell))
     );
@@ -615,8 +614,8 @@ export default class SudokuBoard {
     if (selectedCell) {
       selectedCell.setValue(value);
 
-      this.#setAllIssuedCells();
-      this.#updatePossibilityMap();
+      this.#setCellIssue(selectedCell);
+      this.#setCellPosiblities(selectedCell);
     }
   }
 
