@@ -53,6 +53,17 @@ export default class SudokuRenderer {
     //add some example puzzles here
     //source: https://www.sudokuonline.io/
     this.#examples = {
+      Reset: [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      ],
       Wrong: [
         [1, 2, 3, 4, 5, 6, 7, 8, 9],
         [1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -120,7 +131,6 @@ export default class SudokuRenderer {
         [0, 8, 0, 0, 0, 2, 0, 6, 0],
       ],
     };
-
     //rendering the table
     this.#render();
   }
@@ -154,7 +164,7 @@ export default class SudokuRenderer {
   /* updateing the UI with a puzzle or solution
     arg:    puzzle n x n sized 2D array
     return: a boolean true means the column doesn't has duplicates */
-  #updateUICells() {
+  updateUICells() {
     this.#sudokuboard.cells.forEach(
       (cell) => (cell.ref.value = +cell.value || "")
     );
@@ -165,7 +175,7 @@ export default class SudokuRenderer {
   /* the method updating the SudokuBoard according to the UI input value
       arg:    e Event,
       return: undefined */
-  #updateUICell(e) {
+  updateUICell(e) {
     e.preventDefault();
 
     const [x, y, value] = [
@@ -173,19 +183,13 @@ export default class SudokuRenderer {
       +e.target.dataset.row,
       +e.target.value,
     ];
-    const cell = this.#sudokuboard.getCell({ x, y });
+    const cell = this.#sudokuboard.getCell(x, y);
     const { min, max, unfilled } = cell.accepted;
     try {
       this.#sudokuboard.setCellValue({ x, y }, value || unfilled);
+    } catch {
       this.#userMsgTemporary({
-        text: `Cell value is set to value ${
-          this.#sudokuboard.getCell({ x, y }).value
-        } in row ${y + 1} and column ${x + 1}.`,
-        delay: 2000,
-      });
-    } catch (e) {
-      this.#userMsgTemporary({
-        text: e,
+        text: `Wrong value! You gave ${value}, but it must be between ${min}...${max}!`,
         delay: 2000,
       });
     }
@@ -282,7 +286,7 @@ export default class SudokuRenderer {
         this.#userMsg("...solving...");
         this.extractInputs();
         this.solve();
-        this.#updateUICells();
+        this.updateUICells();
       },
       this.#control
     );
@@ -310,7 +314,7 @@ export default class SudokuRenderer {
         if (this.#selectedCell) {
           this.#selectedCell.ref.value = num;
           this.#sudokuboard.setCellValue({ cell: this.#selectedCell }, num);
-          this.#updateUICells();
+          this.updateUICells();
         }
       });
     }
@@ -370,7 +374,7 @@ export default class SudokuRenderer {
       cellDOM.classList.add("selected");
       this.#selectedCell = cellInfo;
     });
-    cellDOM.addEventListener("change", (e) => this.#updateUICell(e));
+    cellDOM.addEventListener("change", (e) => this.updateUICell(e));
     parent.appendChild(cellDOM);
     cellInfo.addRef(cellDOM);
   }
@@ -384,7 +388,7 @@ export default class SudokuRenderer {
             level,
           });
           this.#sudokuboard.setBoard(puzzle, true);
-          this.#updateUICells();
+          this.updateUICells();
           this.#userMsgTemporary({
             text: `Generated a ${level} level puzzle! That tooked only ${
               Math.round(generationTime / 100) / 10
@@ -398,26 +402,17 @@ export default class SudokuRenderer {
   }
 
   #renderExamples() {
-    for (let puzzle in { Reset: null, ...this.examples }) {
+    for (let puzzle in this.examples) {
       this.#renderButton(
         puzzle + " example",
-        puzzle === "Reset"
-          ? () => {
-              this.#sudokuboard.clearBoard();
-              this.#updateUICells();
-              this.#userMsgTemporary({
-                text: `Puzzle changed to ${puzzle}!`,
-                delay: 2000,
-              });
-            }
-          : () => {
-              this.#sudokuboard.setBoard(this.examples[puzzle], true);
-              this.#updateUICells();
-              this.#userMsgTemporary({
-                text: `Puzzle changed to ${puzzle}!`,
-                delay: 2000,
-              });
-            },
+        () => {
+          this.#sudokuboard.setBoard(this.examples[puzzle], true);
+          this.updateUICells();
+          this.#userMsgTemporary({
+            text: `Puzzle changed to ${puzzle}!`,
+            delay: 2000,
+          });
+        },
         this.#control
       );
     }
